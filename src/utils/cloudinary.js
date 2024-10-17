@@ -1,4 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
+import { response } from "express";
 import fs from "fs";
 
 // Configuration
@@ -14,10 +15,14 @@ const uploadOnCloudinary = async (localFilePath) => {
 
     const response = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "auto",
+      overwrite: "true",
     });
 
     fs.unlinkSync(localFilePath);
     // console.log("file uploaded successfully", response.url());
+
+    let oldPublicId = response.public_id;
+
     return response;
   } catch (error) {
     fs.unlinkSync(localFilePath); // remove the temporary saved file
@@ -25,4 +30,17 @@ const uploadOnCloudinary = async (localFilePath) => {
   }
 };
 
-export { uploadOnCloudinary };
+const deleteFromCloudinary = async (url, resourceType = "image") => {
+  try {
+    const publicId = url.split("/").pop().split(".")[0];
+    await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
+    });
+  } catch (error) {
+    console.log(
+      `The following error occurred during deleting the file from cloudinary : ${error}`
+    );
+  }
+};
+
+export { uploadOnCloudinary, deleteFromCloudinary };
