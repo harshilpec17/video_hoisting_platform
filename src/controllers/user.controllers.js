@@ -7,8 +7,6 @@ import {
 } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
-import { deleteModel } from "mongoose";
-import { deleteOnCloudinary } from "../utils/deleteOnClodinary.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -262,9 +260,9 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 
-  const user = await User.findById(req._id);
+  const user = await User.findById(req.user._id);
 
-  const comparedPassword = user.isPasswordCorrect(currentPassword);
+  const comparedPassword = await user.isPasswordCorrect(currentPassword);
 
   if (!comparedPassword) {
     throw new ApiErrors(400, "Given password is incorrect");
@@ -288,12 +286,12 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 const updateAccountDetail = asyncHandler(async (req, res) => {
   const { fullName, email } = req.body;
 
-  if (!fullName || !email) {
+  if (!fullName && !email) {
     throw new ApiErrors(400, "All field required");
   }
 
-  const user = User.findByIdAndUpdate(
-    req?.user._id,
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
     {
       $set: {
         fullName: fullName,
@@ -337,7 +335,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     {
       new: true,
     }
-  ).select("-password");
+  ).select("-password -refreshToken");
 
   if (newUser && oldAvatarUrl) {
     await deleteFromCloudinary(oldAvatarUrl);
@@ -361,7 +359,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     throw new ApiErrors(500, "Error while uploading the image");
   }
 
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(req?.user._id);
 
   const oldCoverImageUrl = user?.coverImage;
 
@@ -369,13 +367,13 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     user._id,
     {
       $set: {
-        coverImage: coverImage?.url,
+        coverImage: coverImage.url,
       },
     },
     {
       new: true,
     }
-  ).select("-password");
+  ).select("-password -refreshToken");
 
   console.log(newUser);
 

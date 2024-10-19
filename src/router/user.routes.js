@@ -1,9 +1,11 @@
 import { Router } from "express";
 import {
+  changeCurrentPassword,
   loginUser,
   logoutUser,
   refreshAccessToken,
   registerUser,
+  updateAccountDetail,
   updateUserAvatar,
   updateUserCoverImage,
 } from "../controllers/user.controllers.js";
@@ -33,13 +35,17 @@ router
   .post(upload.single("avatar"), updateUserAvatar);
 
 router
-  .route("/login/update-coverimage")
+  .route("/login/update-cover-image")
   .post(upload.single("coverImage"), updateUserCoverImage);
+
+router.route("/login/update-account-details").post(updateAccountDetail);
 
 // secure routes
 
 router.route("/logout").post(verifyJWT, logoutUser);
 
 router.route("/refresh-token").post(refreshAccessToken);
+
+router.route("/change-password").post(changeCurrentPassword);
 
 export default router;
