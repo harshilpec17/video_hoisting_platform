@@ -4,6 +4,7 @@ import { User } from "../models/user.models.js";
 import { ApiErrors } from "../utils/ApiErrors.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { Types } from "mongoose";
 
 const createTweet = asyncHandler(async (req, res) => {
   //TODO: create tweet
@@ -33,13 +34,49 @@ const getUserTweets = asyncHandler(async (req, res) => {
     throw new ApiErrors(400, "UserId does not exist");
   }
 
+  const { ObjectId } = Types;
+
   const userTweet = await Tweet.aggregate([
-    {
-      $match: {
-        owner: userId,
+    [
+      {
+        $match: {
+          owner: new ObjectId(userId),
+        },
       },
-    },
+
+      {
+        $lookup: {
+          from: "users",
+          localField: "owner",
+          foreignField: "_id",
+          as: "user_info",
+        },
+      },
+      {
+        $addFields: {
+          user_info: {
+            $arrayElemAt: ["$user_info", 0],
+          },
+        },
+      },
+      {
+        $project: {
+          content: 1,
+          owner: 1,
+          user_info: {
+            userName: 1,
+            fullName: 1,
+            avatar: 1,
+            createdAt: 1,
+          },
+        },
+      },
+    ],
   ]);
+
+  if (!userTweet?.length) {
+    throw new ApiErrors(404, "userTweet does not exist");
+  }
 
   console.log(userTweet);
 
