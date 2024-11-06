@@ -11,6 +11,10 @@ const videoSchema = new mongoose.Schema(
       type: String, // cloudinary URL
       required: true,
     },
+    title: {
+      type: String,
+      required: true,
+    },
     description: {
       type: String, // cloudinary URL
       required: true,

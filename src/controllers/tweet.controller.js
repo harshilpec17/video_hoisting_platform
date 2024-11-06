@@ -105,14 +105,18 @@ const updateTweet = asyncHandler(async (req, res) => {
   const updateTweet = await Tweet.findByIdAndUpdate(
     paramsId,
     {
-      $unset: {
-        content: 1,
+      $set: {
+        content: newTweet,
       },
     },
     {
       new: true,
     }
   );
+
+  if (updateTweet === null) {
+    throw new ApiErrors(400, "Tweet could not be found");
+  }
 
   return res
     .status(200)
