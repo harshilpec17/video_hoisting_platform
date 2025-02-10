@@ -74,7 +74,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
     ],
   ]);
 
-  if (!userTweet?.length) {
+  if (!userTweet?.length === 0) {
     throw new ApiErrors(404, "userTweet does not exist");
   }
 
