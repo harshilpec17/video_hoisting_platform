@@ -22,6 +22,8 @@ import subscriptionRouter from "./router/subscription.routes.js";
 import tweetRouter from "./router/tweet.routes.js";
 import videoRouter from "./router/video.routes.js";
 import commentRouter from "./router/comment.routes.js";
+// ignore this error
+import likeRouter from "./router/like.routes.js";
 
 // routes declaration
 
@@ -30,4 +32,5 @@ app.use("/api/v1/users/", subscriptionRouter);
 app.use("/api/v1/users/", tweetRouter);
 app.use("/api/v1/users/", videoRouter);
 app.use("/api/v1/users/comment", commentRouter);
+app.use("/api/v1/users/like", likeRouter);
 export { app };
