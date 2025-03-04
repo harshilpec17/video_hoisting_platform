@@ -101,16 +101,6 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
 
   const playlistVideo = await Playlist.findById(playlistId);
 
-  //   if (playlistVideo.length === 0) {
-  //     throw new ApiErrors(400, "No Playlist found");
-  //   } else {
-  //     const isItAdded = await playlistVideo.videos?.includes(videoId);
-
-  //     if (isItAdded) {
-  //       throw new ApiErrors(400, "Video is already present inside the playlist");
-  //     }
-  //   }
-
   playlistVideo.videos.push(videoToBeAdded);
 
   const videoObjectIds = playlistVideo.videos.map(
