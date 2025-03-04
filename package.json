@@ -11,8 +11,9 @@
   "author": "Harshil Suthar",
   "license": "ISC",
   "devDependencies": {
+    "eslint": "^9.20.1",
     "nodemon": "^3.1.4",
-    "prettier": "^3.3.3"
+    "prettier": "^3.5.1"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
