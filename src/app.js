@@ -23,6 +23,7 @@ import tweetRouter from "./router/tweet.routes.js";
 import videoRouter from "./router/video.routes.js";
 import commentRouter from "./router/comment.routes.js";
 import playlistRouter from "./router/playlist.routes.js";
+import dashboardRouter from "./router/dashboard.routes.js";
 // ignore this error
 import likeRouter from "./router/like.routes.js";
 
@@ -35,4 +36,5 @@ app.use("/api/v1/users/", videoRouter);
 app.use("/api/v1/users/comment", commentRouter);
 app.use("/api/v1/users/like", likeRouter);
 app.use("/api/v1/users/playlist", playlistRouter);
+app.use("/api/v1/users/dashboard", dashboardRouter);
 export { app };
