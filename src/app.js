@@ -24,11 +24,12 @@ import videoRouter from "./router/video.routes.js";
 import commentRouter from "./router/comment.routes.js";
 import playlistRouter from "./router/playlist.routes.js";
 import dashboardRouter from "./router/dashboard.routes.js";
+import healthcheckRouter from "./router/healthcheck.routes.js";
 // ignore this error
 import likeRouter from "./router/like.routes.js";
 
 // routes declaration
-
+app.use("/api/v1/healthcheck", healthcheckRouter);
 app.use("/api/v1/users/", userRouter);
 app.use("/api/v1/users/", subscriptionRouter);
 app.use("/api/v1/users/", tweetRouter);
