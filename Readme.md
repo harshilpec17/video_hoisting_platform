@@ -10,7 +10,7 @@ A **full-fledged video hosting platform** built with a **robust backend architec
 - **Authentication & Security:** JWT (Access & Refresh Tokens), Bcrypt, Cookie-Parser
 - **File Handling:** Multer, Cloudinary (for video storage)
 - **API Development:** RESTful APIs, Role-Based Access Control (RBAC)
-- **Real-time Features:** WebSockets (for live interactions)
+- **Real-time Features:** Community Post and Twitter like use
 
 ---
 
