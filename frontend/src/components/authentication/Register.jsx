@@ -1,9 +1,10 @@
+import { useNavigate } from "react-router";
+
 const Register = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-[#121212]">
-      <header className="fixed top-0 z-10 mx-auto w-full max-w-full bg-[#121212] p-6 text-white lg:px-10">
-        <h1>DevUI</h1>
-      </header>
       <div className="mx-auto flex w-full items-stretch justify-between gap-10">
         <div className="mt-20 flex w-full flex-col items-start justify-start p-6 md:w-1/2 lg:px-10">
           <div className="w-full">
@@ -16,44 +17,61 @@ const Register = () => {
           </div>
           <div className="my-14 flex w-full flex-col items-start justify-start gap-4">
             <div className="flex w-full flex-col items-start justify-start gap-2">
-              <label className="text-xs text-slate-200">First name</label>
+              <label className="text-xs text-slate-200">Full Name *</label>
               <input
-                placeholder="Enter a first name..."
+                placeholder="Enter a Full name"
                 autoComplete="false"
                 className="w-full border-[1px] border-white bg-black p-4 text-white placeholder:text-gray-500"
               />
             </div>
             <div className="flex w-full flex-col items-start justify-start gap-2">
-              <label className="text-xs text-slate-200">Last name</label>
-              <input
-                placeholder="Enter a last name..."
-                autoComplete="false"
-                className="w-full border-[1px] border-white bg-black p-4 text-white placeholder:text-gray-500"
-              />
-            </div>
-            <div className="flex w-full flex-col items-start justify-start gap-2">
-              <label className="text-xs text-slate-200">Email</label>
-              <input
-                placeholder="Enter an email..."
-                autoComplete="false"
-                className="w-full border-[1px] border-white bg-black p-4 text-white placeholder:text-gray-500"
-              />
-            </div>
-            <div className="flex w-full flex-col items-start justify-start gap-2">
-              <label className="text-xs text-slate-200">Username</label>
+              <label className="text-xs text-slate-200">Username *</label>
               <input
                 placeholder="Enter a username..."
                 autoComplete="false"
                 className="w-full border-[1px] border-white bg-black p-4 text-white placeholder:text-gray-500"
               />
             </div>
+
             <div className="flex w-full flex-col items-start justify-start gap-2">
-              <label className="text-xs text-slate-200">Password</label>
+              <label className="text-xs text-slate-200">Email *</label>
+              <input
+                placeholder="Enter an email..."
+                autoComplete="false"
+                className="w-full border-[1px] border-white bg-black p-4 text-white placeholder:text-gray-500"
+              />
+            </div>
+
+            <div className="flex w-full flex-col items-start justify-start gap-2">
+              <label className="text-xs text-slate-200">Password *</label>
               <input
                 placeholder="Enter a password..."
                 autoComplete="false"
                 type="password"
                 className="w-full border-[1px] border-white bg-black p-4 text-white placeholder:text-gray-500"
+              />
+            </div>
+            <label className="text-xs text-slate-200">Avatar *</label>
+
+            <div className="flex w-full flex-col items-start justify-start gap-2">
+              <input
+                type="file"
+                id="profile_pic"
+                name="profile_pic"
+                accept=".jpg, .jpeg, .png"
+                className="p-4 text-center bg-gray-700 text-white"
+              />
+            </div>
+
+            <label className="text-xs text-slate-200">Cover Image</label>
+
+            <div className="flex w-full flex-col items-start justify-start gap-2">
+              <input
+                type="file"
+                id="profile_pic"
+                name="profile_pic"
+                accept=".jpg, .jpeg, .png"
+                className="p-4 text-center bg-gray-700 text-white"
               />
             </div>
 
@@ -131,7 +149,10 @@ const Register = () => {
             </button>
             <p className="my-14 text-sm font-light text-white">
               Already registered?{" "}
-              <span className="cursor-pointer font-bold hover:underline">
+              <span
+                className="cursor-pointer font-bold hover:underline"
+                onClick={() => navigate("/login")}
+              >
                 Sign in to your account
               </span>
             </p>
