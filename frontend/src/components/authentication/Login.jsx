@@ -2,7 +2,7 @@ import React, { use, useRef, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer, Zoom } from "react-toastify";
-import { Bounce } from "react-toastify";
+
 const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -10,7 +10,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     if (token) {
       navigate("/videolistingpage");
     }
@@ -21,13 +21,23 @@ const Login = () => {
       axios
         .post("http://localhost:8000/api/v1/users/login", {
           email: emailRef.current.value,
+          userName: emailRef.current.value,
           password: passwordRef.current.value,
         })
 
         .then((response) => {
           if (response.status === 200) {
-            localStorage.setItem("token", response.data.data.accessToken);
+            localStorage.setItem(
+              "refreshToken",
+              response.data.data.refreshToken
+            );
+            localStorage.setItem("user", JSON.stringify(response.data.data));
+            sessionStorage.setItem(
+              "accessToken",
+              response.data.data.accessToken
+            );
             console.log(response.data.data.accessToken);
+            console.log(response.data.data.refreshToken);
 
             navigate("/videolistingpage");
           }
