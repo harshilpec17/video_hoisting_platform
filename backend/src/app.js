@@ -27,6 +27,7 @@ import dashboardRouter from "./router/dashboard.routes.js";
 import healthcheckRouter from "./router/healthcheck.routes.js";
 // ignore this error
 import likeRouter from "./router/like.routes.js";
+import { errorHandler } from "./middlewares/error.middleware.js";
 
 // routes declaration
 app.use("/api/v1/healthcheck", healthcheckRouter);
@@ -38,4 +39,6 @@ app.use("/api/v1/users/comment", commentRouter);
 app.use("/api/v1/users/like", likeRouter);
 app.use("/api/v1/users/playlist", playlistRouter);
 app.use("/api/v1/users/dashboard", dashboardRouter);
+
+app.use(errorHandler);
 export { app };

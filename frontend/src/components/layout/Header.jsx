@@ -3,9 +3,10 @@ import { useNavigate } from "react-router";
 
 const Header = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("refreshToken");
   const logoutUser = () => {
     localStorage.clear();
+    sessionStorage.clear();
     navigate("/login");
   };
 

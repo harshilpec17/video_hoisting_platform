@@ -69,7 +69,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   if (!avatarLocalFilePath) {
-    throw new ApiErrors(400, "avatar file is required");
+    throw new ApiErrors(400, "Please provide avatar image file");
   }
 
   // check image for coverImage

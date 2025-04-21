@@ -11,100 +11,48 @@ import {
 import { Types } from "mongoose";
 
 const getAllVideos = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
-  //TODO: get all videos based on query, sort, pagination
+  const {
+    page = 1,
+    limit = 10,
+    query,
+    sortBy = "createdAt",
+    sortType = "desc",
+    userId,
+  } = req.query;
 
+  const filter = {};
+
+  // If a query is provided, filter by title
   if (query) {
-    const filter = {};
-    filter.title = { $regex: query };
-    const sortOrder = sortType === "asc" ? 1 : -1;
-    const sort = { [sortBy]: sortOrder };
-
-    const skip = (page - 1) * limit;
-
-    const videos = await Video.find(filter)
-      .sort(sort)
-      .skip(skip)
-      .limit(parseInt(limit));
-    // const videoByTitle = await Video.aggregate([
-    //   {
-    //     $match: {
-    //       title: query,
-    //     },
-    //   },
-    // ]);
-
-    const total = await Video.countDocuments(query);
-
-    if (videos.length === 0) {
-      throw new ApiErrors(400, "No Title found in the database");
-    }
-
-    return res.status(200).json(
-      new ApiResponse(200, videos, {
-        total,
-        page: parseInt(page),
-        pages: Math.ceil(total / limit),
-      })
-    );
+    filter.title = { $regex: query, $options: "i" }; // Case-insensitive search
   }
 
+  // If a userId is provided, filter by owner
   if (userId) {
-    const getVideoFromUserId = await Video.aggregate([
-      {
-        $match: {
-          owner: new Types.ObjectId(userId),
-        },
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "owner",
-          foreignField: "_id",
-          as: "user_info",
-        },
-      },
-      {
-        $addFields: {
-          user_info: {
-            $arrayElemAt: ["$user_info", 0],
-          },
-        },
-      },
-      {
-        $project: {
-          title: 1,
-          thumbnail: 1,
-          description: 1,
-          duration: 1,
-          isPublished: 1,
-          videoFile: 1,
-          owner: 1,
-          user_info: {
-            userName: 1,
-            fullName: 1,
-            avatar: 1,
-            createdAt: 1,
-          },
-        },
-      },
-    ]);
-
-    if (!getVideoFromUserId?.length) {
-      throw new ApiErrors(400, "No user has been found");
-    }
-    console.log(getVideoFromUserId);
-
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(
-          200,
-          getVideoFromUserId,
-          "All the video associated with the userId has been found"
-        )
-      );
+    filter.owner = new Types.ObjectId(userId);
   }
+
+  const sortOrder = sortType === "asc" ? 1 : -1;
+  const sort = { [sortBy]: sortOrder };
+
+  const skip = (page - 1) * limit;
+
+  // Fetch videos based on filters, sort, and pagination
+  const videos = await Video.find(filter)
+    .sort(sort)
+    .skip(skip)
+    .limit(parseInt(limit))
+    .populate("owner", "userName avatar"); // Populate owner details
+
+  const total = await Video.countDocuments(filter);
+
+  return res.status(200).json(
+    new ApiResponse(200, videos, {
+      total,
+      page: parseInt(page),
+      pages: Math.ceil(total / limit),
+    })
+  );
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {

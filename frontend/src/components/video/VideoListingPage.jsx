@@ -1,6 +1,37 @@
 import React from "react";
-
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setVideo } from "../../store/createVideoSlice";
 const VideoListingPage = () => {
+  const [videoData, setVideoData] = useState(null);
+
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const videoData = async () => {
+      try {
+        console.log("api/video");
+
+        const response = await axios.get("/url/video", {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        });
+
+        if (response.status === 200) {
+          setVideoData(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching video data:", error);
+      }
+    };
+
+    videoData();
+  }, []);
+
   return (
     <>
       <div class="h-screen overflow-y-auto bg-[#121212] text-white">
@@ -209,6 +240,50 @@ const VideoListingPage = () => {
           </aside>
           <section class="w-full pb-[70px] sm:ml-[70px] sm:pb-0 lg:ml-0">
             <div class="grid grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-4 p-4">
+              {videoData &&
+                videoData.map((video, index) => (
+                  <>
+                    <div class="w-full" key={video.id}>
+                      <div class="relative mb-2 w-full pt-[56%]">
+                        <div
+                          onClick={() => {
+                            navigate("/video");
+                            dispatch(setVideo(video));
+                            window.scrollTo(0, 0);
+                          }}
+                          class="absolute inset-0"
+                        >
+                          <img
+                            src={video.thumbnail}
+                            alt="JavaScript Fundamentals: Variables and Data Types"
+                            class="h-full w-full"
+                          />
+                        </div>
+                        <span class="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
+                          {video.duration.toFixed(2)}
+                        </span>
+                      </div>
+                      <div class="flex gap-x-2">
+                        <div class="h-10 w-10 shrink-0">
+                          <img
+                            src="https://images.pexels.com/photos/3532545/pexels-photo-3532545.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                            alt="codemaster"
+                            class="h-full w-full rounded-full"
+                          />
+                        </div>
+                        <div class="w-full">
+                          <h6 class="mb-1 font-semibold">{video.title}</h6>
+                          <p class="flex text-sm text-gray-200">
+                            {video.views} Views · {video.uploadedTime} ago
+                          </p>
+                          <p class="text-sm text-gray-200">
+                            {video.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ))}
               <div class="w-full">
                 <div class="relative mb-2 w-full pt-[56%]">
                   <div class="absolute inset-0">
@@ -241,7 +316,7 @@ const VideoListingPage = () => {
                   </div>
                 </div>
               </div>
-              <div class="w-full">
+              {/* <div class="w-full">
                 <div class="relative mb-2 w-full pt-[56%]">
                   <div class="absolute inset-0">
                     <img
@@ -590,7 +665,7 @@ const VideoListingPage = () => {
                     <p class="text-sm text-gray-200">React Patterns</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </section>
         </div>

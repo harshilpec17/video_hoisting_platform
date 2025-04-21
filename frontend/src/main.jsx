@@ -13,7 +13,10 @@ import {
   Routes,
 } from "react-router";
 import ProtectedRoutes from "./components/protectedRoutes/ProtectedRoutes.jsx";
-import VideoListingPage from "./components/video/videoListingPage.jsx";
+import VideoListingPage from "./components/video/VideoListingPage.jsx";
+import VideoDetailPage from "./components/video/VideoDetailPage.jsx";
+import { Provider } from "react-redux";
+import { store } from "./store/store.js";
 
 const root = createRoot(document.getElementById("root"));
 
@@ -33,12 +36,23 @@ const router = createBrowserRouter(
           }
         />
       </Route>
+      <Route
+        path="video"
+        element={
+          <ProtectedRoutes>
+            <VideoDetailPage />
+          </ProtectedRoutes>
+        }
+      />
+      <Route />
     </>
   )
 );
 
 root.render(
   <StrictMode>
-    <RouterProvider router={router}></RouterProvider>
+    <Provider store={store}>
+      <RouterProvider router={router}></RouterProvider>
+    </Provider>
   </StrictMode>
 );
