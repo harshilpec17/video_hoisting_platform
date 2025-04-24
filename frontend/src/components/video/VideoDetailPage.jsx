@@ -1,11 +1,35 @@
-import React from "react";
+import React, { use, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { timeAgoFormat } from "../../utils/timeAgo";
+import axios from "axios";
+import { useState } from "react";
 
 const VideoDetailPage = () => {
   const { video } = useSelector((state) => state.video);
 
-  console.log(timeAgoFormat(video?.createdAt));
+  const [channelData, setChannelData] = useState(null);
+
+  const userName = video.owner.userName;
+
+  const getChannelStatus = async (userName) => {
+    try {
+      const resposne = await axios.get(`/url/c/${userName}`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+        },
+      });
+
+      if (resposne.status === 200) {
+        setChannelData(resposne);
+      }
+    } catch (error) {
+      console.error("Error fetching channel data:", error);
+    }
+  };
+
+  useEffect(() => {
+    getChannelStatus(userName);
+  }, [userName]);
 
   return (
     <>
@@ -624,7 +648,7 @@ const VideoDetailPage = () => {
                     <div class="w-full md:w-1/2 lg:w-full xl:w-1/2">
                       <h1 class="text-lg font-bold">{video.title}</h1>
                       <p class="flex text-sm text-gray-200">
-                        {video.views} Views ·{timeAgoFormat(video.createdAt)}{" "}
+                        {video.views} Views · {timeAgoFormat(video.createdAt)}{" "}
                       </p>
                     </div>
                     <div class="w-full md:w-1/2 lg:w-full xl:w-1/2">
@@ -900,7 +924,7 @@ const VideoDetailPage = () => {
                     <div class="flex items-center gap-x-4">
                       <div class="mt-2 h-12 w-12 shrink-0">
                         <img
-                          src="https://images.pexels.com/photos/18264716/pexels-photo-18264716/free-photo-of-man-people-laptop-internet.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                          src="https://images.pexels.com/photos/18148932/pexels-photo-18148932/free-photo-of-w"
                           alt="reactpatterns"
                           class="h-full w-full rounded-full"
                         />
@@ -937,13 +961,7 @@ const VideoDetailPage = () => {
                   </div>
                   <hr class="my-4 border-white" />
                   <div class="h-5 overflow-hidden group-focus:h-auto">
-                    <p class="text-sm">
-                      🚀 Dive into the world of React with our latest tutorial
-                      series: &quot;Advanced React Patterns&quot;! 🛠️ Whether
-                      you&#x27;re a seasoned developer or just starting out,
-                      this series is designed to elevate your React skills to
-                      the next level.
-                    </p>
+                    <p class="text-sm">{video.description}</p>
                   </div>
                 </div>
                 <button class="peer w-full rounded-lg border p-4 text-left duration-200 hover:bg-white/5 focus:bg-white/5 sm:hidden">
