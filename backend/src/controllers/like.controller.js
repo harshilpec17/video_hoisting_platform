@@ -36,7 +36,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
       await Like.findByIdAndDelete(existingReaction);
       return res
         .status(200)
-        .json(new ApiResponse(200, `user ${reactionType} has been removed`));
+        .json(new ApiResponse(200, `User ${reactionType} has been removed`));
     } else {
       const updatedReaction = await Like.findByIdAndUpdate(
         existingReaction._id,
@@ -70,7 +70,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, newReaction, `User ${reactionType} this Video`));
+    .json(new ApiResponse(200, `User ${reactionType} this Video`));
 });
 
 const toggleCommentLike = asyncHandler(async (req, res) => {

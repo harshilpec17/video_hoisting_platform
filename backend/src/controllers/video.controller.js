@@ -9,6 +9,7 @@ import {
   uploadOnCloudinary,
 } from "../utils/cloudinary.js";
 import { Types } from "mongoose";
+import { Like } from "../models/like.model.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
   const {
@@ -271,6 +272,112 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, publishVideoStatusUpdate, statusMessage));
 });
 
+const getVideoLikes = asyncHandler(async (req, res) => {
+  const videoId = req.params.videoId;
+
+  const isObjectIdValid = isValidObjectId(videoId);
+
+  if (!isObjectIdValid) {
+    throw new ApiErrors(400, "Please provide the right ID");
+  }
+
+  const video = await Like.aggregate([
+    {
+      $match: {
+        video: new mongoose.Types.ObjectId(videoId),
+        reaction: "like",
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "likeCount",
+        foreignField: "video",
+        as: "likeCount",
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "owner",
+        foreignField: "likedBy",
+        as: "owner",
+      },
+    },
+    {
+      $group: {
+        _id: "$video", // Group by video ID
+        likeCount: { $sum: 1 }, // Count the number of likes
+      },
+    },
+
+    {
+      $project: {
+        _id: 0,
+        videoId: "$_id",
+        likeCount: 1,
+      },
+    },
+  ]);
+
+  if (!video) {
+    throw new ApiErrors(404, "Video not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, video, "Video likes retrieved successfully"));
+});
+
+const getVideoDisLikes = asyncHandler(async (req, res) => {
+  const videoId = req.params.videoId;
+
+  const isObjectIdValid = isValidObjectId(videoId);
+
+  if (!isObjectIdValid) {
+    throw new ApiErrors(400, "Please provide the right ID");
+  }
+
+  const video = await Like.aggregate([
+    {
+      $match: {
+        video: new mongoose.Types.ObjectId(videoId),
+        reaction: "dislike",
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "dislikeCount",
+        foreignField: "video",
+        as: "dislikeCount",
+      },
+    },
+    {
+      $group: {
+        _id: "$video", // Group by video ID
+        dislikeCount: { $sum: 1 }, // Count the number of likes
+      },
+    },
+
+    {
+      $project: {
+        _id: 0,
+        videoId: "$_id",
+        dislikeCount: 1,
+      },
+    },
+  ]);
+
+  if (!video) {
+    throw new ApiErrors(404, "Video not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, video, "Video disLikes retrieved successfully"));
+});
+
 export {
   getAllVideos,
   publishAVideo,
@@ -278,4 +385,6 @@ export {
   updateVideo,
   deleteVideo,
   togglePublishStatus,
+  getVideoLikes,
+  getVideoDisLikes,
 };

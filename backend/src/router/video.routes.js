@@ -3,9 +3,11 @@ import {
   deleteVideo,
   getAllVideos,
   getVideoById,
+  getVideoLikes,
   publishAVideo,
   togglePublishStatus,
   updateVideo,
+  getVideoDisLikes,
 } from "../controllers/video.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -35,6 +37,9 @@ router
   .get(getVideoById)
   .delete(deleteVideo)
   .patch(upload.single("newThumbnail"), updateVideo);
+
+router.route("/video/like/:videoId").get(getVideoLikes);
+router.route("/video/dislike/:videoId").get(getVideoDisLikes);
 
 router.route("/toggle/publish/:videoId").patch(togglePublishStatus);
 
