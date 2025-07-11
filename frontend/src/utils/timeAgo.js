@@ -1,10 +1,25 @@
-import TimeAgo from "javascript-time-ago";
-import en from "javascript-time-ago/locale/en";
+export function timeAgo(createdAt) {
+  const now = new Date();
+  const difference = Math.abs(now - new Date(createdAt));
 
-TimeAgo.addDefaultLocale(en);
-const timeAgo = new TimeAgo("en-US");
+  const seconds = difference / 1000;
+  const minutes = seconds / 60;
+  const hours = minutes / 60;
+  const days = hours / 24;
+  const weeks = days / 7;
+  const years = weeks / 52;
 
-export const timeAgoFormat = (date) => {
-  const dateObj = new Date(date);
-  return timeAgo.format(dateObj);
-};
+  if (seconds < 60) {
+    return `${Math.round(seconds)} seconds ago`;
+  } else if (minutes < 60) {
+    return `${Math.round(minutes)} minutes ago`;
+  } else if (hours < 24) {
+    return `${Math.round(hours)} hours ago`;
+  } else if (days < 7) {
+    return `${Math.round(days)} days ago`;
+  } else if (weeks < 52) {
+    return `${Math.round(weeks)} weeks ago`;
+  } else {
+    return `${Math.round(years)} years ago`;
+  }
+}
