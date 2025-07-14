@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setVideo } from "../../store/createVideoSlice";
+import { fetchVideoById, setVideo } from "../../store/createVideoSlice";
+import { setVideoList } from "../../store/createVideoSlice";
+
+import { timeAgo } from "../../utils/timeAgo";
+
 const VideoListingPage = () => {
   const [videoData, setVideoData] = useState(null);
 
@@ -13,8 +17,6 @@ const VideoListingPage = () => {
   useEffect(() => {
     const videoData = async () => {
       try {
-        console.log("api/video");
-
         const response = await axios.get("/url/video", {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
@@ -23,6 +25,7 @@ const VideoListingPage = () => {
 
         if (response.status === 200) {
           setVideoData(response.data.data);
+          dispatch(setVideoList(response.data.data));
         }
       } catch (error) {
         console.error("Error fetching video data:", error);
@@ -34,13 +37,13 @@ const VideoListingPage = () => {
 
   return (
     <>
-      <div class="h-screen overflow-y-auto bg-[#121212] text-white">
-        <div class="flex min-h-[calc(100vh-66px)] sm:min-h-[calc(100vh-82px)]">
-          <aside class="group fixed inset-x-0 bottom-0 z-40 w-full shrink-0 border-t border-white bg-[#121212] px-2 py-2 sm:absolute sm:inset-y-0 sm:max-w-[70px] sm:border-r sm:border-t-0 sm:py-6 sm:hover:max-w-[250px] lg:sticky lg:max-w-[250px]">
-            <ul class="flex justify-around gap-y-2 sm:sticky sm:top-[106px] sm:min-h-[calc(100vh-130px)] sm:flex-col">
-              <li class="">
-                <button class="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
-                  <span class="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
+      <div className="h-screen overflow-y-auto bg-[#121212] text-white">
+        <div className="flex min-h-[calc(100vh-66px)] sm:min-h-[calc(100vh-82px)]">
+          <aside className="group fixed inset-x-0 bottom-0 z-40 w-full shrink-0 border-t border-white bg-[#121212] px-2 py-2 sm:absolute sm:inset-y-0 sm:max-w-[70px] sm:border-r sm:border-t-0 sm:py-6 sm:hover:max-w-[250px] lg:sticky lg:max-w-[250px]">
+            <ul className="flex justify-around gap-y-2 sm:sticky sm:top-[106px] sm:min-h-[calc(100vh-130px)] sm:flex-col">
+              <li className="">
+                <button className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
+                  <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                     <svg
                       style={{ width: "100%" }}
                       viewBox="0 0 20 21"
@@ -52,18 +55,18 @@ const VideoListingPage = () => {
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       ></path>
                     </svg>
                   </span>
-                  <span class="block sm:hidden sm:group-hover:inline lg:inline">
+                  <span className="block sm:hidden sm:group-hover:inline lg:inline">
                     Home
                   </span>
                 </button>
               </li>
-              <li class="hidden sm:block">
-                <button class="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
-                  <span class="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
+              <li className="hidden sm:block">
+                <button className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
+                  <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                     <svg
                       style={{ width: "100%" }}
                       viewBox="0 0 22 22"
@@ -75,18 +78,18 @@ const VideoListingPage = () => {
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       ></path>
                     </svg>
                   </span>
-                  <span class="block sm:hidden sm:group-hover:inline lg:inline">
+                  <span className="block sm:hidden sm:group-hover:inline lg:inline">
                     Liked Videos
                   </span>
                 </button>
               </li>
-              <li class="">
-                <button class="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
-                  <span class="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
+              <li className="">
+                <button className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
+                  <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                     <svg
                       style={{ width: "100%" }}
                       viewBox="0 0 22 20"
@@ -98,18 +101,18 @@ const VideoListingPage = () => {
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       ></path>
                     </svg>
                   </span>
-                  <span class="block sm:hidden sm:group-hover:inline lg:inline">
+                  <span className="block sm:hidden sm:group-hover:inline lg:inline">
                     History
                   </span>
                 </button>
               </li>
-              <li class="hidden sm:block">
-                <button class="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
-                  <span class="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
+              <li className="hidden sm:block">
+                <button className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
+                  <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                     <svg
                       style={{ width: "100%" }}
                       viewBox="0 0 22 16"
@@ -121,25 +124,25 @@ const VideoListingPage = () => {
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       ></path>
                       <path
                         d="M1 5.8C1 4.11984 1 3.27976 1.32698 2.63803C1.6146 2.07354 2.07354 1.6146 2.63803 1.32698C3.27976 1 4.11984 1 5.8 1H11.2C12.8802 1 13.7202 1 14.362 1.32698C14.9265 1.6146 15.3854 2.07354 15.673 2.63803C16 3.27976 16 4.11984 16 5.8V10.2C16 11.8802 16 12.7202 15.673 13.362C15.3854 13.9265 14.9265 14.3854 14.362 14.673C13.7202 15 12.8802 15 11.2 15H5.8C4.11984 15 3.27976 15 2.63803 14.673C2.07354 14.3854 1.6146 13.9265 1.32698 13.362C1 12.7202 1 11.8802 1 10.2V5.8Z"
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       ></path>
                     </svg>
                   </span>
-                  <span class="block sm:hidden sm:group-hover:inline lg:inline">
+                  <span className="block sm:hidden sm:group-hover:inline lg:inline">
                     My Content
                   </span>
                 </button>
               </li>
-              <li class="">
-                <button class="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
-                  <span class="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
+              <li className="">
+                <button className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
+                  <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                     <svg
                       style={{ width: "100%" }}
                       viewBox="0 0 22 20"
@@ -151,18 +154,18 @@ const VideoListingPage = () => {
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       ></path>
                     </svg>
                   </span>
-                  <span class="block sm:hidden sm:group-hover:inline lg:inline">
+                  <span className="block sm:hidden sm:group-hover:inline lg:inline">
                     Collections
                   </span>
                 </button>
               </li>
-              <li class="">
-                <button class="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
-                  <span class="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
+              <li className="">
+                <button className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
+                  <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                     <svg
                       style={{ width: "100%" }}
                       viewBox="0 0 22 20"
@@ -174,18 +177,18 @@ const VideoListingPage = () => {
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       ></path>
                     </svg>
                   </span>
-                  <span class="block sm:hidden sm:group-hover:inline lg:inline">
+                  <span className="block sm:hidden sm:group-hover:inline lg:inline">
                     Subscribers
                   </span>
                 </button>
               </li>
-              <li class="hidden sm:block mt-auto">
-                <button class="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
-                  <span class="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
+              <li className="hidden sm:block mt-auto">
+                <button className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
+                  <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                     <svg
                       style={{ width: "100%" }}
                       viewBox="0 0 22 22"
@@ -197,18 +200,18 @@ const VideoListingPage = () => {
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       ></path>
                     </svg>
                   </span>
-                  <span class="block sm:hidden sm:group-hover:inline lg:inline">
+                  <span className="block sm:hidden sm:group-hover:inline lg:inline">
                     Support
                   </span>
                 </button>
               </li>
-              <li class="hidden sm:block">
-                <button class="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
-                  <span class="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
+              <li className="hidden sm:block">
+                <button className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
+                  <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                     <svg
                       style={{ width: "100%" }}
                       viewBox="0 0 22 22"
@@ -220,452 +223,131 @@ const VideoListingPage = () => {
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       ></path>
                       <path
                         d="M17.7273 13.7273C17.6063 14.0015 17.5702 14.3056 17.6236 14.6005C17.6771 14.8954 17.8177 15.1676 18.0273 15.3818L18.0818 15.4364C18.2509 15.6052 18.385 15.8057 18.4765 16.0265C18.568 16.2472 18.6151 16.4838 18.6151 16.7227C18.6151 16.9617 18.568 17.1983 18.4765 17.419C18.385 17.6397 18.2509 17.8402 18.0818 18.0091C17.913 18.1781 17.7124 18.3122 17.4917 18.4037C17.271 18.4952 17.0344 18.5423 16.7955 18.5423C16.5565 18.5423 16.3199 18.4952 16.0992 18.4037C15.8785 18.3122 15.678 18.1781 15.5091 18.0091L15.4545 17.9545C15.2403 17.745 14.9682 17.6044 14.6733 17.5509C14.3784 17.4974 14.0742 17.5335 13.8 17.6545C13.5311 17.7698 13.3018 17.9611 13.1403 18.205C12.9788 18.4489 12.8921 18.7347 12.8909 19.0273V19.1818C12.8909 19.664 12.6994 20.1265 12.3584 20.4675C12.0174 20.8084 11.5549 21 11.0727 21C10.5905 21 10.1281 20.8084 9.78708 20.4675C9.4461 20.1265 9.25455 19.664 9.25455 19.1818V19.1C9.24751 18.7991 9.15011 18.5073 8.97501 18.2625C8.79991 18.0176 8.55521 17.8312 8.27273 17.7273C7.99853 17.6063 7.69437 17.5702 7.39947 17.6236C7.10456 17.6771 6.83244 17.8177 6.61818 18.0273L6.56364 18.0818C6.39478 18.2509 6.19425 18.385 5.97353 18.4765C5.7528 18.568 5.51621 18.6151 5.27727 18.6151C5.03834 18.6151 4.80174 18.568 4.58102 18.4765C4.36029 18.385 4.15977 18.2509 3.99091 18.0818C3.82186 17.913 3.68775 17.7124 3.59626 17.4917C3.50476 17.271 3.45766 17.0344 3.45766 16.7955C3.45766 16.5565 3.50476 16.3199 3.59626 16.0992C3.68775 15.8785 3.82186 15.678 3.99091 15.5091L4.04545 15.4545C4.25503 15.2403 4.39562 14.9682 4.4491 14.6733C4.50257 14.3784 4.46647 14.0742 4.34545 13.8C4.23022 13.5311 4.03887 13.3018 3.79497 13.1403C3.55107 12.9788 3.26526 12.8921 2.97273 12.8909H2.81818C2.33597 12.8909 1.87351 12.6994 1.53253 12.3584C1.19156 12.0174 1 11.5549 1 11.0727C1 10.5905 1.19156 10.1281 1.53253 9.78708C1.87351 9.4461 2.33597 9.25455 2.81818 9.25455H2.9C3.2009 9.24751 3.49273 9.15011 3.73754 8.97501C3.98236 8.79991 4.16883 8.55521 4.27273 8.27273C4.39374 7.99853 4.42984 7.69437 4.37637 7.39947C4.3229 7.10456 4.18231 6.83244 3.97273 6.61818L3.91818 6.56364C3.74913 6.39478 3.61503 6.19425 3.52353 5.97353C3.43203 5.7528 3.38493 5.51621 3.38493 5.27727C3.38493 5.03834 3.43203 4.80174 3.52353 4.58102C3.61503 4.36029 3.74913 4.15977 3.91818 3.99091C4.08704 3.82186 4.28757 3.68775 4.50829 3.59626C4.72901 3.50476 4.96561 3.45766 5.20455 3.45766C5.44348 3.45766 5.68008 3.50476 5.9008 3.59626C6.12152 3.68775 6.32205 3.82186 6.49091 3.99091L6.54545 4.04545C6.75971 4.25503 7.03183 4.39562 7.32674 4.4491C7.62164 4.50257 7.9258 4.46647 8.2 4.34545H8.27273C8.54161 4.23022 8.77093 4.03887 8.93245 3.79497C9.09397 3.55107 9.18065 3.26526 9.18182 2.97273V2.81818C9.18182 2.33597 9.37338 1.87351 9.71435 1.53253C10.0553 1.19156 10.5178 1 11 1C11.4822 1 11.9447 1.19156 12.2856 1.53253C12.6266 1.87351 12.8182 2.33597 12.8182 2.81818V2.9C12.8193 3.19253 12.906 3.47834 13.0676 3.72224C13.2291 3.96614 13.4584 4.15749 13.7273 4.27273C14.0015 4.39374 14.3056 4.42984 14.6005 4.37637C14.8954 4.3229 15.1676 4.18231 15.3818 3.97273L15.4364 3.91818C15.6052 3.74913 15.8057 3.61503 16.0265 3.52353C16.2472 3.43203 16.4838 3.38493 16.7227 3.38493C16.9617 3.38493 17.1983 3.43203 17.419 3.52353C17.6397 3.61503 17.8402 3.74913 18.0091 3.91818C18.1781 4.08704 18.3122 4.28757 18.4037 4.50829C18.4952 4.72901 18.5423 4.96561 18.5423 5.20455C18.5423 5.44348 18.4952 5.68008 18.4037 5.9008C18.3122 6.12152 18.1781 6.32205 18.0091 6.49091L17.9545 6.54545C17.745 6.75971 17.6044 7.03183 17.5509 7.32674C17.4974 7.62164 17.5335 7.9258 17.6545 8.2V8.27273C17.7698 8.54161 17.9611 8.77093 18.205 8.93245C18.4489 9.09397 18.7347 9.18065 19.0273 9.18182H19.1818C19.664 9.18182 20.1265 9.37338 20.4675 9.71435C20.8084 10.0553 21 10.5178 21 11C21 11.4822 20.8084 11.9447 20.4675 12.2856C20.1265 12.6266 19.664 12.8182 19.1818 12.8182H19.1C18.8075 12.8193 18.5217 12.906 18.2778 13.0676C18.0339 13.2291 17.8425 13.4584 17.7273 13.7273Z"
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       ></path>
                     </svg>
                   </span>
-                  <span class="block sm:hidden sm:group-hover:inline lg:inline">
+                  <span className="block sm:hidden sm:group-hover:inline lg:inline">
                     Settings
                   </span>
                 </button>
               </li>
             </ul>
           </aside>
-          <section class="w-full pb-[70px] sm:ml-[70px] sm:pb-0 lg:ml-0">
-            <div class="grid grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-4 p-4">
+          <section className="w-full pb-[70px] sm:ml-[70px] sm:pb-0 lg:ml-0">
+            <div className="grid grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-4 p-4">
               {videoData &&
                 videoData.map((video, index) => (
                   <>
-                    <div class="w-full" key={video.id}>
-                      <div class="relative mb-2 w-full pt-[56%]">
+                    <div className="w-full">
+                      <div
+                        className="relative mb-2 w-full pt-[56%]"
+                        key={video._id}
+                      >
                         <div
                           onClick={() => {
                             navigate("/video");
-                            dispatch(setVideo(video));
+                            dispatch(fetchVideoById(video._id));
                             window.scrollTo(0, 0);
                           }}
-                          class="absolute inset-0"
+                          className="absolute inset-0"
                         >
                           <img
                             src={video.thumbnail}
                             alt="JavaScript Fundamentals: Variables and Data Types"
-                            class="h-full w-full"
+                            className="h-full w-full"
                           />
                         </div>
-                        <span class="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
-                          {video.duration.toFixed(2)}
+                        <span className="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
+                          {(() => {
+                            const totalSeconds = Math.round(video.duration); // Assuming `video.duration` is in seconds
+                            const hours = Math.floor(totalSeconds / 3600); // Calculate hours
+                            const minutes = Math.floor(
+                              (totalSeconds % 3600) / 60
+                            ); // Calculate remaining minutes
+                            const seconds = totalSeconds % 60; // Calculate remaining seconds
+
+                            if (hours > 0) {
+                              // Format as HH:MM:SS if hours exist
+                              return `${hours
+                                .toString()
+                                .padStart(2, "0")}:${minutes
+                                .toString()
+                                .padStart(2, "0")}:${seconds
+                                .toString()
+                                .padStart(2, "0")}`;
+                            } else {
+                              // Format as MM:SS if no hours
+                              return `${minutes
+                                .toString()
+                                .padStart(2, "0")}:${seconds
+                                .toString()
+                                .padStart(2, "0")}`;
+                            }
+                          })()}
                         </span>
                       </div>
-                      <div class="flex gap-x-2">
-                        <div class="h-10 w-10 shrink-0">
+                      <div className="flex gap-x-2">
+                        <div className="h-10 w-10 shrink-0">
                           <img
-                            src="https://images.pexels.com/photos/3532545/pexels-photo-3532545.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                            src={video.owner.avatar}
                             alt="codemaster"
-                            class="h-full w-full rounded-full"
+                            className="h-full w-full rounded-full"
                           />
                         </div>
-                        <div class="w-full">
-                          <h6 class="mb-1 font-semibold">{video.title}</h6>
-                          <p class="flex text-sm text-gray-200">
-                            {video.views} Views · {video.uploadedTime} ago
+                        <div className="w-full">
+                          <h6 className="mb-1 font-semibold">{video.title}</h6>
+                          <p className="flex text-sm text-gray-200">
+                            {video.views} Views · {timeAgo(video.createdAt)}
                           </p>
-                          <p class="text-sm text-gray-200">
-                            {video.description}
+                          <p className="text-sm text-gray-200">
+                            {video.owner.userName}
                           </p>
                         </div>
                       </div>
                     </div>
                   </>
                 ))}
-              <div class="w-full">
-                <div class="relative mb-2 w-full pt-[56%]">
-                  <div class="absolute inset-0">
+              <div className="w-full">
+                <div className="relative mb-2 w-full pt-[56%]">
+                  <div className="absolute inset-0">
                     <img
                       src="https://images.pexels.com/photos/3561339/pexels-photo-3561339.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                       alt="JavaScript Fundamentals: Variables and Data Types"
-                      class="h-full w-full"
+                      className="h-full w-full"
                     />
                   </div>
-                  <span class="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
+                  <span className="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
                     20:45
                   </span>
                 </div>
-                <div class="flex gap-x-2">
-                  <div class="h-10 w-10 shrink-0">
+                <div className="flex gap-x-2">
+                  <div className="h-10 w-10 shrink-0">
                     <img
                       src="https://images.pexels.com/photos/3532545/pexels-photo-3532545.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                       alt="codemaster"
-                      class="h-full w-full rounded-full"
+                      className="h-full w-full rounded-full"
                     />
                   </div>
-                  <div class="w-full">
-                    <h6 class="mb-1 font-semibold">
+                  <div className="w-full">
+                    <h6 className="mb-1 font-semibold">
                       JavaScript Fundamentals: Variables and Data Types
                     </h6>
-                    <p class="flex text-sm text-gray-200">
+                    <p className="flex text-sm text-gray-200">
                       10.3k Views · 44 minutes ago
                     </p>
-                    <p class="text-sm text-gray-200">Code Master</p>
+                    <p className="text-sm text-gray-200">Code Master</p>
                   </div>
                 </div>
               </div>
-              {/* <div class="w-full">
-                <div class="relative mb-2 w-full pt-[56%]">
-                  <div class="absolute inset-0">
-                    <img
-                      src="https://images.pexels.com/photos/2519817/pexels-photo-2519817.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="Getting Started with Express.js"
-                      class="h-full w-full"
-                    />
-                  </div>
-                  <span class="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
-                    22:18
-                  </span>
-                </div>
-                <div class="flex gap-x-2">
-                  <div class="h-10 w-10 shrink-0">
-                    <img
-                      src="https://images.pexels.com/photos/2519812/pexels-photo-2519812.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="expresslearner"
-                      class="h-full w-full rounded-full"
-                    />
-                  </div>
-                  <div class="w-full">
-                    <h6 class="mb-1 font-semibold">
-                      Getting Started with Express.js
-                    </h6>
-                    <p class="flex text-sm text-gray-200">
-                      11.k Views · 5 hours ago
-                    </p>
-                    <p class="text-sm text-gray-200">Express Learner</p>
-                  </div>
-                </div>
-              </div>
-              <div class="w-full">
-                <div class="relative mb-2 w-full pt-[56%]">
-                  <div class="absolute inset-0">
-                    <img
-                      src="https://images.pexels.com/photos/1739849/pexels-photo-1739849.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="Building a RESTful API with Node.js and Express"
-                      class="h-full w-full"
-                    />
-                  </div>
-                  <span class="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
-                    24:33
-                  </span>
-                </div>
-                <div class="flex gap-x-2">
-                  <div class="h-10 w-10 shrink-0">
-                    <img
-                      src="https://images.pexels.com/photos/1739942/pexels-photo-1739942.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="apibuilder"
-                      class="h-full w-full rounded-full"
-                    />
-                  </div>
-                  <div class="w-full">
-                    <h6 class="mb-1 font-semibold">
-                      Building a RESTful API with Node.js and Express
-                    </h6>
-                    <p class="flex text-sm text-gray-200">
-                      14.5k Views · 7 hours ago
-                    </p>
-                    <p class="text-sm text-gray-200">API Builder</p>
-                  </div>
-                </div>
-              </div>
-              <div class="w-full">
-                <div class="relative mb-2 w-full pt-[56%]">
-                  <div class="absolute inset-0">
-                    <img
-                      src="https://images.pexels.com/photos/1739854/pexels-photo-1739854.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="Introduction to React Native"
-                      class="h-full w-full"
-                    />
-                  </div>
-                  <span class="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
-                    19:58
-                  </span>
-                </div>
-                <div class="flex gap-x-2">
-                  <div class="h-10 w-10 shrink-0">
-                    <img
-                      src="https://images.pexels.com/photos/1739856/pexels-photo-1739856.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="reactnativedev"
-                      class="h-full w-full rounded-full"
-                    />
-                  </div>
-                  <div class="w-full">
-                    <h6 class="mb-1 font-semibold">
-                      Introduction to React Native
-                    </h6>
-                    <p class="flex text-sm text-gray-200">
-                      10.9k Views · 8 hours ago
-                    </p>
-                    <p class="text-sm text-gray-200">React Native Dev</p>
-                  </div>
-                </div>
-              </div>
-              <div class="w-full">
-                <div class="relative mb-2 w-full pt-[56%]">
-                  <div class="absolute inset-0">
-                    <img
-                      src="https://images.pexels.com/photos/1144256/pexels-photo-1144256.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="Creating Custom Hooks in React"
-                      class="h-full w-full"
-                    />
-                  </div>
-                  <span class="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
-                    16:37
-                  </span>
-                </div>
-                <div class="flex gap-x-2">
-                  <div class="h-10 w-10 shrink-0">
-                    <img
-                      src="https://images.pexels.com/photos/1144257/pexels-photo-1144257.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="hookmaster"
-                      class="h-full w-full rounded-full"
-                    />
-                  </div>
-                  <div class="w-full">
-                    <h6 class="mb-1 font-semibold">
-                      Creating Custom Hooks in React
-                    </h6>
-                    <p class="flex text-sm text-gray-200">
-                      9.3k Views · 9 hours ago
-                    </p>
-                    <p class="text-sm text-gray-200">Hook Master</p>
-                  </div>
-                </div>
-              </div>
-              <div class="w-full">
-                <div class="relative mb-2 w-full pt-[56%]">
-                  <div class="absolute inset-0">
-                    <img
-                      src="https://images.pexels.com/photos/1144260/pexels-photo-1144260.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="Building Scalable Web Applications with Django"
-                      class="h-full w-full"
-                    />
-                  </div>
-                  <span class="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
-                    32:18
-                  </span>
-                </div>
-                <div class="flex gap-x-2">
-                  <div class="h-10 w-10 shrink-0">
-                    <img
-                      src="https://images.pexels.com/photos/1144269/pexels-photo-1144269.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="djangomaster"
-                      class="h-full w-full rounded-full"
-                    />
-                  </div>
-                  <div class="w-full">
-                    <h6 class="mb-1 font-semibold">
-                      Building Scalable Web Applications with Django
-                    </h6>
-                    <p class="flex text-sm text-gray-200">
-                      18.9M Views · 12 hours ago
-                    </p>
-                    <p class="text-sm text-gray-200">Django Master</p>
-                  </div>
-                </div>
-              </div>
-              <div class="w-full">
-                <div class="relative mb-2 w-full pt-[56%]">
-                  <div class="absolute inset-0">
-                    <img
-                      src="https://images.pexels.com/photos/1144276/pexels-photo-1144276.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="Creating Interactive UIs with React and D3"
-                      class="h-full w-full"
-                    />
-                  </div>
-                  <span class="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
-                    29:30
-                  </span>
-                </div>
-                <div class="flex gap-x-2">
-                  <div class="h-10 w-10 shrink-0">
-                    <img
-                      src="https://images.pexels.com/photos/1144277/pexels-photo-1144277.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="reactd3"
-                      class="h-full w-full rounded-full"
-                    />
-                  </div>
-                  <div class="w-full">
-                    <h6 class="mb-1 font-semibold">
-                      Creating Interactive UIs with React and D3
-                    </h6>
-                    <p class="flex text-sm text-gray-200">
-                      20.1k Views · 14 hours ago
-                    </p>
-                    <p class="text-sm text-gray-200">ReactD3</p>
-                  </div>
-                </div>
-              </div>
-              <div class="w-full">
-                <div class="relative mb-2 w-full pt-[56%]">
-                  <div class="absolute inset-0">
-                    <img
-                      src="https://images.pexels.com/photos/1144274/pexels-photo-1144274.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="Node.js Authentication with Passport.js"
-                      class="h-full w-full"
-                    />
-                  </div>
-                  <span class="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
-                    26:58
-                  </span>
-                </div>
-                <div class="flex gap-x-2">
-                  <div class="h-10 w-10 shrink-0">
-                    <img
-                      src="https://images.pexels.com/photos/1144270/pexels-photo-1144270.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="passportpro"
-                      class="h-full w-full rounded-full"
-                    />
-                  </div>
-                  <div class="w-full">
-                    <h6 class="mb-1 font-semibold">
-                      Node.js Authentication with Passport.js
-                    </h6>
-                    <p class="flex text-sm text-gray-200">
-                      21.2k Views · 15 hours ago
-                    </p>
-                    <p class="text-sm text-gray-200">Passport Pro</p>
-                  </div>
-                </div>
-              </div>
-              <div class="w-full">
-                <div class="relative mb-2 w-full pt-[56%]">
-                  <div class="absolute inset-0">
-                    <img
-                      src="https://images.pexels.com/photos/1144231/pexels-photo-1144231.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="Data Visualization with Tableau"
-                      class="h-full w-full"
-                    />
-                  </div>
-                  <span class="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
-                    32:14
-                  </span>
-                </div>
-                <div class="flex gap-x-2">
-                  <div class="h-10 w-10 shrink-0">
-                    <img
-                      src="https://images.pexels.com/photos/18264716/pexels-photo-18264716/free-photo-of-man-people-laptop-internet.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="tableaumaster"
-                      class="h-full w-full rounded-full"
-                    />
-                  </div>
-                  <div class="w-full">
-                    <h6 class="mb-1 font-semibold">
-                      Data Visualization with Tableau
-                    </h6>
-                    <p class="flex text-sm text-gray-200">
-                      24.5k Views · 18 hours ago
-                    </p>
-                    <p class="text-sm text-gray-200">Tableau Master</p>
-                  </div>
-                </div>
-              </div>
-              <div class="w-full">
-                <div class="relative mb-2 w-full pt-[56%]">
-                  <div class="absolute inset-0">
-                    <img
-                      src="https://images.pexels.com/photos/1144250/pexels-photo-1144250.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="Building Real-Time Applications with Socket.IO"
-                      class="h-full w-full"
-                    />
-                  </div>
-                  <span class="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
-                    27:37
-                  </span>
-                </div>
-                <div class="flex gap-x-2">
-                  <div class="h-10 w-10 shrink-0">
-                    <img
-                      src="https://images.pexels.com/photos/18264716/pexels-photo-18264716/free-photo-of-man-people-laptop-internet.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="socketioexpert"
-                      class="h-full w-full rounded-full"
-                    />
-                  </div>
-                  <div class="w-full">
-                    <h6 class="mb-1 font-semibold">
-                      Building Real-Time Applications with Socket.IO
-                    </h6>
-                    <p class="flex text-sm text-gray-200">
-                      25.6k Views · 19 hours ago
-                    </p>
-                    <p class="text-sm text-gray-200">Socket.IO Expert</p>
-                  </div>
-                </div>
-              </div>
-              <div class="w-full">
-                <div class="relative mb-2 w-full pt-[56%]">
-                  <div class="absolute inset-0">
-                    <img
-                      src="https://images.pexels.com/photos/1115824/pexels-photo-1115824.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="Advanced CSS: Animations and Transitions"
-                      class="h-full w-full"
-                    />
-                  </div>
-                  <span class="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
-                    31:55
-                  </span>
-                </div>
-                <div class="flex gap-x-2">
-                  <div class="h-10 w-10 shrink-0">
-                    <img
-                      src="https://images.pexels.com/photos/18264716/pexels-photo-18264716/free-photo-of-man-people-laptop-internet.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="cssanimations"
-                      class="h-full w-full rounded-full"
-                    />
-                  </div>
-                  <div class="w-full">
-                    <h6 class="mb-1 font-semibold">
-                      Advanced CSS: Animations and Transitions
-                    </h6>
-                    <p class="flex text-sm text-gray-200">
-                      28.9k Views · 22 hours ago
-                    </p>
-                    <p class="text-sm text-gray-200">CSS Animations</p>
-                  </div>
-                </div>
-              </div>
-              <div class="w-full">
-                <div class="relative mb-2 w-full pt-[56%]">
-                  <div class="absolute inset-0">
-                    <img
-                      src="https://images.pexels.com/photos/1115808/pexels-photo-1115808.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="Advanced React Patterns"
-                      class="h-full w-full"
-                    />
-                  </div>
-                  <span class="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
-                    30:25
-                  </span>
-                </div>
-                <div class="flex gap-x-2">
-                  <div class="h-10 w-10 shrink-0">
-                    <img
-                      src="https://images.pexels.com/photos/18264716/pexels-photo-18264716/free-photo-of-man-people-laptop-internet.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      alt="reactpatterns"
-                      class="h-full w-full rounded-full"
-                    />
-                  </div>
-                  <div class="w-full">
-                    <h6 class="mb-1 font-semibold">Advanced React Patterns</h6>
-                    <p class="flex text-sm text-gray-200">
-                      30.1k Views · 1 day ago
-                    </p>
-                    <p class="text-sm text-gray-200">React Patterns</p>
-                  </div>
-                </div>
-              </div> */}
+              ``{" "}
             </div>
           </section>
         </div>

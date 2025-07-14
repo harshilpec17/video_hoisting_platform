@@ -1,14 +1,11 @@
 import React from "react";
 
-const Video = () => {
+const Video = ({ link }) => {
   return (
     <>
       <div className="video">
         <video width={720} height={320} autoplay controls loop muted>
-          <source
-            src="https://www.w3schools.com/html/mov_bbb.mp4"
-            type="video/mp4"
-          />
+          <source src={link} type="video/mp4" />
         </video>
       </div>
     </>
