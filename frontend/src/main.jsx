@@ -19,6 +19,12 @@ import { Provider } from "react-redux";
 import { store } from "./store/store.js";
 
 const root = createRoot(document.getElementById("root"));
+// window.onbeforeunload = function () {
+//   localStorage.removeItem("refreshToken");
+//   sessionStorage.removeItem("accessToken");
+//   localStorage.removeItem("user");
+//   return "";
+// };
 
 const router = createBrowserRouter(
   createRoutesFromElements(
