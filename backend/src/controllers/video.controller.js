@@ -129,11 +129,202 @@ const getVideoById = asyncHandler(async (req, res) => {
     throw new ApiErrors(400, "Please provide a true Id");
   }
 
-  const video = await Video.findById(videoId);
+  const video = await Video.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(videoId),
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "video",
+        as: "likes",
+      },
+    },
+
+    {
+      $addFields: {
+        likeCount: {
+          $size: {
+            $filter: {
+              input: "$likes",
+              as: "like",
+              cond: { $eq: ["$$like.reaction", "like"] },
+            },
+          },
+        },
+        dislikeCount: {
+          $size: {
+            $filter: {
+              input: "$likes",
+              as: "dislike",
+              cond: { $eq: ["$$dislike.reaction", "dislike"] },
+            },
+          },
+        },
+        isLiked: {
+          $gt: [
+            {
+              $size: {
+                $filter: {
+                  input: "$likes",
+                  as: "like",
+                  cond: {
+                    $and: [
+                      { $eq: ["$$like.reaction", "like"] },
+                      {
+                        $eq: [
+                          "$$like.likedBy",
+                          new mongoose.Types.ObjectId(req.user?._id),
+                        ],
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+            0,
+          ],
+        },
+        isDisliked: {
+          $gt: [
+            {
+              $size: {
+                $filter: {
+                  input: "$likes",
+                  as: "dislike",
+                  cond: {
+                    $and: [
+                      { $eq: ["$$dislike.reaction", "dislike"] },
+                      {
+                        $eq: [
+                          "$$dislike.likedBy",
+                          new mongoose.Types.ObjectId(req.user?._id),
+                        ],
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+            0,
+          ],
+        },
+      },
+    },
+
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $lookup: {
+              from: "subscriptions",
+              localField: "_id",
+              foreignField: "subscribedTo",
+              as: "subscribers",
+            },
+          },
+          {
+            $addFields: {
+              subscriberCount: {
+                $size: "$subscribers",
+              },
+              isSubscribed: {
+                $cond: {
+                  if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+                  then: true,
+                  else: false,
+                },
+              },
+            },
+          },
+
+          {
+            $project: {
+              _id: 1,
+              userName: 1,
+              avatar: 1,
+              subscriberCount: 1,
+              isSubscribed: 1,
+            },
+          },
+        ],
+      },
+    },
+    // {
+    //   $addFields: {
+    //     likeCount: {
+    //       $size: "$likes",
+    //     },
+    //     owner: {
+    //       $first: "$owner",
+    //     },
+    //     isLiked: {
+    //       $cond: {
+    //         if: { $in: [req.user?._id, "$likes.likedBy"] },
+    //         then: true,
+    //         else: false,
+    //       },
+    //     },
+    //   },
+    // },
+
+    {
+      $project: {
+        _id: 1,
+        title: 1,
+        description: 1,
+        videoFile: 1,
+        thumbnail: 1,
+        duration: 1,
+        views: 1,
+        isPublished: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        likeCount: 1,
+        dislikeCount: 1,
+        owner: 1,
+        isLiked: 1,
+        isDisliked: 1,
+      },
+    },
+  ]);
 
   if (video === null || video === undefined) {
     throw new ApiErrors(400, "video does not exist");
   }
+
+  await Video.findByIdAndUpdate(
+    videoId,
+    {
+      $inc: {
+        views: 1,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  const watch = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $addToSet: {
+        watchHistory: videoId,
+      },
+    },
+    {
+      new: true,
+    }
+  ).select("watchHistory");
+
+  console.log(watch);
 
   res
     .status(200)
