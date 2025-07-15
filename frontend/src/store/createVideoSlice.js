@@ -29,32 +29,29 @@ export const videoSlice = createSlice({
     disLikeCount: 0,
     isDisliked: false,
     videoList: [],
-    // video: { data: null },
-    // newVideo: null,
-    // videoId: null,
-    // videoList: [],
-    // id: null,
-    // loading: false,
-    // currentVideo: null,
-    // error: null,
-    // likeCount: 0,
-    // isLiked: false,
-    // disLikeCount: 0,
-    // isDisliked: false,
   },
   reducers: {
-    setVideo: (state, action) => {
-      state.video = action.payload;
-    },
-    setWatchVideo: (state, action) => {
-      state.newVideo = action.payload;
-    },
-
     setVideoList: (state, action) => {
       state.videoList = action.payload;
     },
     setVideoId: (state, action) => {
       state.videoId = action.payload; // update videoId in store
+    },
+
+    setVideoLike: (state, action) => {
+      state.isLiked = action.payload;
+    },
+
+    setVideoLikeCount: (state, action) => {
+      state.likeCount = action.payload;
+    },
+
+    setVideoDisLike: (state, action) => {
+      state.isDisliked = action.payload;
+    },
+
+    setVideoDisLikeCount: (state, action) => {
+      state.disLikeCount = action.payload;
     },
   },
 
@@ -87,5 +84,9 @@ export const {
   setVideoList,
   setWatchVideo,
   setVideoId,
+  setVideoLike,
+  setVideoLikeCount,
+  setVideoDisLike,
+  setVideoDisLikeCount,
 } = videoSlice.actions;
 export default videoSlice.reducer;
