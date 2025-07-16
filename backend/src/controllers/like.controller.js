@@ -239,10 +239,35 @@ const getLikedVideos = asyncHandler(async (req, res) => {
       },
     },
     {
+      $unwind: {
+        path: "$likedVideoByUser",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "likedBy",
+        foreignField: "_id",
+        as: "owner",
+      },
+    },
+    {
+      $unwind: {
+        path: "$owner",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
       $project: {
         _id: 1,
         reaction: 1,
-        video: 1,
+
+        owner: {
+          _id: 1,
+          userName: 1,
+          avatar: 1,
+        },
         likedVideoByUser: {
           _id: 1,
           videoFile: 1,
