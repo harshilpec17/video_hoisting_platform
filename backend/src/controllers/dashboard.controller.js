@@ -91,7 +91,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
 const getChannelVideos = asyncHandler(async (req, res) => {
   // TODO: Get all the videos uploaded by the channel
 
-  const userId = req?.user?._id;
+  const { userId } = req.params;
 
   if (!userId) {
     throw new ApiErrors(400, "userId is not available");
@@ -101,6 +101,37 @@ const getChannelVideos = asyncHandler(async (req, res) => {
     {
       $match: {
         owner: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        videoFile: 1,
+        thumbnail: 1,
+        title: 1,
+        description: 1,
+        duration: 1,
+        views: 1,
+        isPublished: 1,
+        likeCount: 1,
+        dislikeCount: 1,
+        createdAt: 1,
+        updatedAt: 1,
+
+        owner: {
+          _id: 1,
+          fullName: 1,
+          userName: 1,
+          avatar: 1,
+        },
       },
     },
   ]);
