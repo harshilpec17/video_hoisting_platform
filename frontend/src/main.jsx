@@ -17,6 +17,10 @@ import VideoListingPage from "./components/video/VideoListingPage.jsx";
 import VideoDetailPage from "./components/video/VideoDetailPage.jsx";
 import { Provider } from "react-redux";
 import { store } from "./store/store.js";
+import LikedVideoPage from "./components/video/LikedVideoPage.jsx";
+import WatchHistory from "./components/video/WatchHistory.jsx";
+import ChannelVideo from "./components/channel/ChannelVideo.jsx";
+import ChannelPage from "./components/channel/ChannelPage.jsx";
 
 const root = createRoot(document.getElementById("root"));
 // window.onbeforeunload = function () {
@@ -41,16 +45,47 @@ const router = createBrowserRouter(
             </ProtectedRoutes>
           }
         />
+        <Route
+          path="video"
+          element={
+            <ProtectedRoutes>
+              <VideoDetailPage />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="video/likedVideos"
+          element={
+            <ProtectedRoutes>
+              <LikedVideoPage />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="video/watchHistory"
+          element={
+            <ProtectedRoutes>
+              <WatchHistory />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="channel/channelVideos"
+          element={
+            <ProtectedRoutes>
+              <ChannelVideo />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="channel"
+          element={
+            <ProtectedRoutes>
+              <ChannelPage />
+            </ProtectedRoutes>
+          }
+        />
       </Route>
-      <Route
-        path="video"
-        element={
-          <ProtectedRoutes>
-            <VideoDetailPage />
-          </ProtectedRoutes>
-        }
-      />
-      <Route />
     </>
   )
 );
