@@ -4,6 +4,7 @@ import likeReducer from "./LikeSlice";
 import watchHistoryReducer from "./WatchHistorySlice";
 import ChannelReducer from "./ChannelSlice";
 import playlistReducer from "./PlaylistSlice";
+import subscriberSlice from "./SubscriberSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     watchHistory: watchHistoryReducer,
     channel: ChannelReducer,
     playlist: playlistReducer,
+    subscriber: subscriberSlice,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

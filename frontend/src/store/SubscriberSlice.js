@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 export const fetchSubscriberList = createAsyncThunk(
   "subscribers/fetchSubscriberList",
@@ -17,7 +18,7 @@ export const fetchSubscriberList = createAsyncThunk(
   }
 );
 
-export const fetchSuscribedList = createAsyncThunk(
+export const fetchSubcribedList = createAsyncThunk(
   "subscribers/fetchSubscribedList",
   async (channelId, { rejectedValue }) => {
     try {
@@ -57,9 +58,20 @@ const SubscriberSlice = createSlice({
     });
     builder.addCase(fetchSubscriberList.fulfilled, (state, action) => {
       state.loading = false;
-      state.watchHistory = action.payload;
+      state.subscriberList = action.payload;
     });
     builder.addCase(fetchSubscriberList.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(fetchSubcribedList.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchSubcribedList.fulfilled, (state, action) => {
+      state.loading = false;
+      state.subscribedList = action.payload;
+    });
+    builder.addCase(fetchSubcribedList.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
