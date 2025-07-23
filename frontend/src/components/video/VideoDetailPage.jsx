@@ -25,6 +25,10 @@ import {
   fetchChannelVideo,
   fetchUserChannelProfile,
 } from "../../store/ChannelSlice";
+import {
+  setIsSubscribed,
+  subscriptionToggle,
+} from "../../store/SubscriberSlice";
 
 const VideoDetailPage = () => {
   const navigate = useNavigate();
@@ -42,7 +46,7 @@ const VideoDetailPage = () => {
 
   const channelData = useSelector((state) => state.channel.channelProfile);
 
-  const [isSubscribed, setIsSubscribed] = useState(null);
+  const [isSubscribed, setIsSubscribed] = useState(channelData?.isSubscribed);
   const [comments, setComments] = useState(null);
   const [commentText, setCommentText] = useState("");
   const [commentId, setCommentId] = useState(null);
@@ -50,17 +54,6 @@ const VideoDetailPage = () => {
   const [editingCommentId, setEditingCommentId] = useState(null);
   const loggedInUser = JSON.parse(localStorage.getItem("user"));
   const loggedInUserId = loggedInUser?.user?._id;
-
-  const logOut = () => {
-    localStorage.removeItem("refreshToken");
-    sessionStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
-    navigate("/login");
-  };
-
-  const userName = useSelector(
-    (state) => state.video?.currentVideo?.owner[0]?.userName
-  );
 
   const handleLike = async () => {
     if (isLiked) {
@@ -132,26 +125,26 @@ const VideoDetailPage = () => {
     }
   };
 
-  const subscriptionToggle = async (channelId) => {
-    try {
-      const response = await axios.post(
-        `url/ch/${channelId}`,
-        { loggedInUserId },
-        {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        console.log("subscribed status", response.data);
-        toast.success(response.data.message);
-        dispatch(fetchUserChannelProfile(userName));
-      }
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-    }
-  };
+  // const subscriptionToggle = async (channelId) => {
+  //   try {
+  //     const response = await axios.post(
+  //       `url/ch/${channelId}`,
+  //       { loggedInUserId },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+  //         },
+  //       }
+  //     );
+  //     if (response.status === 200) {
+  //       console.log("subscribed status", response.data);
+  //       toast.success(response.data.message);
+  //       dispatch(fetchUserChannelProfile(userName));
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching comments:", error);
+  //   }
+  // };
 
   const getAllComments = async () => {
     try {
@@ -263,6 +256,17 @@ const VideoDetailPage = () => {
     if (commentText.trim() !== "") {
       addComment(commentText);
       setCommentText(""); // Clear the input field after submitting
+    }
+  };
+
+  const handleSubscriptionToggle = async ({ userName, channelId }) => {
+    try {
+      await dispatch(
+        subscriptionToggle({ channelId, loggedInUserId })
+      ).unwrap();
+      dispatch(fetchUserChannelProfile(userName));
+    } catch (err) {
+      toast.error("Failed to toggle subscription.");
     }
   };
 
@@ -391,31 +395,35 @@ const VideoDetailPage = () => {
                         </div>
                       </div>
                       <div className="block">
-                        <button
-                          onClick={() => {
-                            setIsSubscribed(!isSubscribed);
-                            subscriptionToggle(channelData._id);
-                          }}
-                          className="group/btn mr-1 flex w-full items-center gap-x-2 bg-[#ae7aff] px-3 py-2 text-center font-bold text-black shadow-[5px_5px_0px_0px_#4f4e4e] transition-all duration-150 ease-in-out active:translate-x-[5px] active:translate-y-[5px] active:shadow-[0px_0px_0px_0px_#4f4e4e] sm:w-auto"
-                        >
-                          <span className="inline-block w-5">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="2"
-                              stroke="currentColor"
-                              aria-hidden="true"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"
-                              ></path>
-                            </svg>
-                          </span>
-                          {isSubscribed ? "Subscribed" : "Subscribe"}
-                        </button>
+                        {isSubscribed ? (
+                          <button
+                            onClick={() => {
+                              handleSubscriptionToggle({
+                                userName: channelData?.userName,
+                                channelId: channelData?._id,
+                              });
+                              setIsSubscribed(!isSubscribed);
+                            }}
+                            type="button"
+                            className="text-white hover:text-red-700 border border-red-800 hover:border-red-700 bg-red-800 hover:bg-transparent focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:text-white dark:hover:text-red-500 dark:hover:bg-transparent dark:focus:ring-red-900"
+                          >
+                            Subscribed
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              handleSubscriptionToggle({
+                                userName: channelData?.userName,
+                                channelId: channelData?._id,
+                              });
+                              setIsSubscribed(!isSubscribed);
+                            }}
+                            type="button"
+                            className="text-white hover:text-purple-700 border border-purple-800 hover:border-purple-700 bg-purple-800 hover:bg-transparent focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-purple-500 dark:text-white dark:hover:text-purple-400 dark:hover:bg-transparent dark:focus:ring-purple-900"
+                          >
+                            Subscribe
+                          </button>
+                        )}
                       </div>
                     </div>
                   )}

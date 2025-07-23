@@ -1,5 +1,31 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
+
+export const subscriptionToggle = createAsyncThunk(
+  "subscribers/subscriptionToggle",
+  async ({ channelId, loggedInUserId }, { rejectedValue }) => {
+    try {
+      const response = await axios.post(
+        `url/ch/${channelId}`,
+        { loggedInUserId },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        console.log("subscribed status", response.data);
+        toast.success(response.data.message);
+        return response.data;
+      }
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      toast.error("Failed to toggle subscription");
+    }
+  }
+);
 
 export const fetchSubscriberList = createAsyncThunk(
   "subscribers/fetchSubscriberList",
@@ -40,7 +66,8 @@ const SubscriberSlice = createSlice({
   initialState: {
     subscriberList: [],
     subscribedList: [],
-    isSubscribed: false,
+    isSubscribed: null,
+    subscribedData: null,
   },
 
   reducers: {
@@ -49,6 +76,9 @@ const SubscriberSlice = createSlice({
     },
     setSubscribedList: (state, action) => {
       state.subscribedList = action.payload;
+    },
+    setIsSubscribed: (state, action) => {
+      state.isSubscribed = action.payload;
     },
   },
 
@@ -75,8 +105,20 @@ const SubscriberSlice = createSlice({
       state.loading = false;
       state.error = action.error.message;
     });
+    builder.addCase(subscriptionToggle.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(subscriptionToggle.fulfilled, (state, action) => {
+      state.loading = false;
+      state.subscribedData = action.payload;
+    });
+    builder.addCase(subscriptionToggle.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
   },
 });
 
-export const { setSubscribedList, setSubsriberList } = SubscriberSlice.actions;
+export const { setSubscribedList, setSubsriberList, setIsSubscribed } =
+  SubscriberSlice.actions;
 export default SubscriberSlice.reducer;

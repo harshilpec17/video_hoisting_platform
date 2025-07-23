@@ -27,7 +27,13 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 
     return res
       .status(200)
-      .json(new ApiResponse(200, "User unsubscribe the channel"));
+      .json(
+        new ApiResponse(
+          200,
+          { isSubscribed: false },
+          "User unsubscribe the channel"
+        )
+      );
   }
 
   const createSubscription = await Subscription.create({
@@ -42,14 +48,17 @@ const toggleSubscription = asyncHandler(async (req, res) => {
   res
     .status(200)
     .json(
-      new ApiResponse(200, createSubscription, "user subscribed this channel")
+      new ApiResponse(
+        200,
+        { isSubscribed: true },
+        "User subscribed this channel"
+      )
     );
 });
 
 // controller to return subscriber list of a channel
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {
   const { channelId } = req.params;
-  console.log(channelId);
 
   if (!channelId) {
     throw new ApiErrors(400, "channelId is not available");
@@ -73,45 +82,74 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
               from: "subscriptions",
               localField: "_id",
               foreignField: "channel",
-              as: "subscribedToSubscriber",
+              as: "subscriber",
             },
           },
           {
             $addFields: {
-              subscribedToSubscriber: {
-                $cond: {
-                  if: {
-                    $in: [channelId, "$subscribedToSubscriber"],
-                  },
-                  then: true,
-                  else: false,
-                },
-              },
-              subscriberCount: {
-                $size: "$subscribedToSubscriber",
+              channelSubscriber: {
+                $size: ["$subscriber"],
               },
             },
           },
         ],
       },
     },
+
     {
       $unwind: "$subscriber",
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        let: { subscriberId: "$subscriber._id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$channel", "$$subscriberId"] },
+                  {
+                    $eq: [
+                      "$subscription",
+                      new mongoose.Types.ObjectId(channelId),
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: "mutualSub",
+      },
+    },
+
+    {
+      $addFields: {
+        "subscriber.subscribedToSubscriber": {
+          $cond: {
+            if: { $gt: [{ $size: "$mutualSub" }, 0] },
+            then: true,
+            else: false,
+          },
+        },
+      },
     },
     {
       $project: {
         _id: 0,
         subscriber: {
           _id: 1,
-          username: 1,
           fullName: 1,
           avatar: 1,
+          userName: 1,
           subscribedToSubscriber: 1,
-          subscribersCount: 1,
+          channelSubscriber: 1,
         },
       },
     },
   ]);
+
   if (!subscriber?.length) {
     throw new ApiErrors(400, "No subscribers found");
   }
@@ -152,22 +190,28 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
         pipeline: [
           {
             $lookup: {
-              from: "videos",
+              from: "subscriptions",
               localField: "_id",
-              foreignField: "owner",
-              as: "allVideos",
+              foreignField: "channel",
+              as: "subscribers",
             },
           },
           {
             $addFields: {
-              latestVideo: {
-                $last: "$allVideos",
+              isSubscribed: true,
+            },
+          },
+          {
+            $addFields: {
+              channelSubscriber: {
+                $size: ["$subscribers"],
               },
             },
           },
         ],
       },
     },
+
     {
       $unwind: "$subscribedChannel",
     },
@@ -179,12 +223,8 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
           userName: 1,
           fullName: 1,
           avatar: 1,
-          latestVideo: {
-            videoFile: 1,
-            thumbnail: 1,
-            title: 1,
-            description: 1,
-          },
+          channelSubscriber: 1,
+          isSubscribed: 1,
         },
       },
     },
