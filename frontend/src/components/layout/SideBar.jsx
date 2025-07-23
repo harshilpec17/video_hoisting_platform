@@ -1,10 +1,15 @@
-import React from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { fetchLikedVideos } from "../../store/LikeSlice";
 import { fetchWatchHistory } from "../../store/WatchHistorySlice";
-import { BiDislike } from "react-icons/bi";
-import { fetchChannelVideo } from "../../store/ChannelSlice";
+import {
+  fetchChannelVideo,
+  fetchUserChannelProfile,
+} from "../../store/ChannelSlice";
+import {
+  fetchSubscriberList,
+  fetchSubcribedList,
+} from "../../store/SubscriberSlice";
 
 const SideBar = () => {
   const navigate = useNavigate();
@@ -12,12 +17,11 @@ const SideBar = () => {
 
   const loggedInUser = JSON.parse(localStorage.getItem("user"));
   const loggedInUserId = loggedInUser?.user?._id;
-
-  console.log("Logged in user ID:", loggedInUserId);
+  const loggedUserName = loggedInUser?.user?.userName;
 
   return (
     <>
-      <aside className="group fixed inset-x-0 bottom-0 z-40 w-full shrink-0 border-t border-white bg-[#121212] px-2 py-2  sm:absolute sm:inset-y-0 sm:max-w-[70px] sm:border-r sm:border-t-0 sm:py-6 sm:hover:max-w-[250px] lg:sticky lg:max-w-[250px]">
+      <div className="group fixed inset-x-0 bottom-0 z-40 w-full shrink-0 border border-white bg-[#121212] px-2 py-2  sm:absolute sm:inset-y-0 sm:max-w-[70px] sm:border-r sm:border-t-0 sm:py-6 sm:hover:max-w-[250px] lg:sticky lg:max-w-[250px]">
         <ul className="flex justify-around gap-y-2 sm:sticky sm:top-[106px] sm:min-h-[calc(100vh-130px)] sm:flex-col">
           <li className="">
             <button
@@ -111,8 +115,11 @@ const SideBar = () => {
           <li className="hidden sm:block">
             <button
               onClick={() => {
-                navigate("/channel/channelVideos");
+                navigate("/channel");
                 dispatch(fetchChannelVideo(loggedInUserId));
+                dispatch(fetchUserChannelProfile(loggedUserName));
+                dispatch(fetchSubscriberList(loggedInUserId));
+                dispatch(fetchSubcribedList(loggedInUserId));
               }}
               className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
             >
@@ -140,7 +147,7 @@ const SideBar = () => {
                 </svg>
               </span>
               <span className="block sm:hidden sm:group-hover:inline lg:inline">
-                My Content
+                My Channel
               </span>
             </button>
           </li>
@@ -244,7 +251,7 @@ const SideBar = () => {
             </button>
           </li>
         </ul>
-      </aside>
+      </div>
     </>
   );
 };
