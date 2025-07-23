@@ -1,10 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { fetchUserChannelProfile } from "./ChannelSlice";
 
 export const subscriptionToggle = createAsyncThunk(
   "subscribers/subscriptionToggle",
-  async ({ channelId, loggedInUserId }, { rejectedValue }) => {
+  async (
+    { channelId, loggedInUserId, userName },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const response = await axios.post(
         `url/ch/${channelId}`,
@@ -18,18 +22,20 @@ export const subscriptionToggle = createAsyncThunk(
       if (response.status === 200) {
         console.log("subscribed status", response.data);
         toast.success(response.data.message);
+        await dispatch(fetchUserChannelProfile(userName));
         return response.data;
       }
     } catch (error) {
-      console.error("Error fetching comments:", error);
+      console.error("Error toggling subscription:", error);
       toast.error("Failed to toggle subscription");
+      return rejectWithValue(error.message);
     }
   }
 );
 
 export const fetchSubscriberList = createAsyncThunk(
   "subscribers/fetchSubscriberList",
-  async (channelId, { rejectedValue }) => {
+  async (channelId, { rejectWithValue }) => {
     try {
       const response = await axios.get(`/url/u/${channelId}`, {
         headers: {
@@ -39,14 +45,14 @@ export const fetchSubscriberList = createAsyncThunk(
       console.log("subscriberList", response.data.data);
       return response.data.data;
     } catch (error) {
-      return rejectedValue(error.message);
+      return rejectWithValue(error.message);
     }
   }
 );
 
-export const fetchSubcribedList = createAsyncThunk(
+export const fetchSubscribedList = createAsyncThunk(
   "subscribers/fetchSubscribedList",
-  async (channelId, { rejectedValue }) => {
+  async (channelId, { rejectWithValue }) => {
     try {
       const response = await axios.get(`/url/ch/${channelId}`, {
         headers: {
@@ -56,7 +62,7 @@ export const fetchSubcribedList = createAsyncThunk(
       console.log("subscribedList", response.data.data);
       return response.data.data;
     } catch (error) {
-      return rejectedValue(error.message);
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -71,7 +77,7 @@ const SubscriberSlice = createSlice({
   },
 
   reducers: {
-    setSubsriberList: (state, action) => {
+    setSubscriberList: (state, action) => {
       state.subscriberList = action.payload;
     },
     setSubscribedList: (state, action) => {
@@ -94,14 +100,14 @@ const SubscriberSlice = createSlice({
       state.loading = false;
       state.error = action.error.message;
     });
-    builder.addCase(fetchSubcribedList.pending, (state) => {
+    builder.addCase(fetchSubscribedList.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(fetchSubcribedList.fulfilled, (state, action) => {
+    builder.addCase(fetchSubscribedList.fulfilled, (state, action) => {
       state.loading = false;
       state.subscribedList = action.payload;
     });
-    builder.addCase(fetchSubcribedList.rejected, (state, action) => {
+    builder.addCase(fetchSubscribedList.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
@@ -119,6 +125,6 @@ const SubscriberSlice = createSlice({
   },
 });
 
-export const { setSubscribedList, setSubsriberList, setIsSubscribed } =
+export const { setSubscribedList, setSubscriberList, setIsSubscribed } =
   SubscriberSlice.actions;
 export default SubscriberSlice.reducer;

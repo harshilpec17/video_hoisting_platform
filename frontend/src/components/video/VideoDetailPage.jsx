@@ -46,7 +46,12 @@ const VideoDetailPage = () => {
 
   const channelData = useSelector((state) => state.channel.channelProfile);
 
-  const [isSubscribed, setIsSubscribed] = useState(channelData?.isSubscribed);
+  const isSubscribed = useSelector(
+    (state) => state.channel.channelProfile?.isSubscribed
+  );
+
+  console.log("channelData", channelData);
+
   const [comments, setComments] = useState(null);
   const [commentText, setCommentText] = useState("");
   const [commentId, setCommentId] = useState(null);
@@ -259,23 +264,9 @@ const VideoDetailPage = () => {
     }
   };
 
-  const handleSubscriptionToggle = async ({ userName, channelId }) => {
-    try {
-      await dispatch(
-        subscriptionToggle({ channelId, loggedInUserId })
-      ).unwrap();
-      dispatch(fetchUserChannelProfile(userName));
-    } catch (err) {
-      toast.error("Failed to toggle subscription.");
-    }
-  };
-
   useEffect(() => {
-    if (videoId) {
-      dispatch(fetchVideoById(videoId));
-      getAllComments();
-    }
-  }, [videoId, dispatch]);
+    getAllComments();
+  }, [videoId]);
 
   return (
     <>
@@ -398,11 +389,13 @@ const VideoDetailPage = () => {
                         {isSubscribed ? (
                           <button
                             onClick={() => {
-                              handleSubscriptionToggle({
-                                userName: channelData?.userName,
-                                channelId: channelData?._id,
-                              });
-                              setIsSubscribed(!isSubscribed);
+                              dispatch(
+                                subscriptionToggle({
+                                  loggedInUserId: loggedInUserId,
+                                  channelId: channelData?._id,
+                                  userName: channelData?.userName,
+                                })
+                              );
                             }}
                             type="button"
                             className="text-white hover:text-red-700 border border-red-800 hover:border-red-700 bg-red-800 hover:bg-transparent focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:text-white dark:hover:text-red-500 dark:hover:bg-transparent dark:focus:ring-red-900"
@@ -412,11 +405,13 @@ const VideoDetailPage = () => {
                         ) : (
                           <button
                             onClick={() => {
-                              handleSubscriptionToggle({
-                                userName: channelData?.userName,
-                                channelId: channelData?._id,
-                              });
-                              setIsSubscribed(!isSubscribed);
+                              dispatch(
+                                subscriptionToggle({
+                                  loggedInUserId: loggedInUserId,
+                                  channelId: channelData?._id,
+                                  userName: channelData?.userName,
+                                })
+                              );
                             }}
                             type="button"
                             className="text-white hover:text-purple-700 border border-purple-800 hover:border-purple-700 bg-purple-800 hover:bg-transparent focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-purple-500 dark:text-white dark:hover:text-purple-400 dark:hover:bg-transparent dark:focus:ring-purple-900"
@@ -599,7 +594,7 @@ const VideoDetailPage = () => {
                                       video?.owner?.userName
                                     )
                                   );
-                                  // dispatch(fetchVideoById(video._id));
+                                  dispatch(fetchVideoById(video._id));
                                 }}
                                 src={
                                   video?.thumbnail ||

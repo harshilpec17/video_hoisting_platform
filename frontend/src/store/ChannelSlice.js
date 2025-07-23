@@ -10,7 +10,6 @@ export const fetchChannelVideo = createAsyncThunk(
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
       });
-      console.log(response.data.data);
 
       return response.data.data;
     } catch (error) {
