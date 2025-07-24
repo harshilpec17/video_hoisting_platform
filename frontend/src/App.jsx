@@ -1,3 +1,4 @@
+import { ToastContainer } from "react-toastify";
 import "./App.css";
 import Footer from "./components/layout/Footer";
 import Header from "./components/layout/Header";
@@ -8,6 +9,7 @@ function App() {
     <>
       <Header />
       <Outlet />
+      <ToastContainer />
       <Footer />
     </>
   );
