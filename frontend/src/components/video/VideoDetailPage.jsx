@@ -353,7 +353,9 @@ const VideoDetailPage = () => {
                                 fetchUserChannelProfile(channelData?.userName)
                               );
                               dispatch(fetchChannelVideo(channelData?._id));
-                              navigate("/channel");
+                              navigate("/channel", {
+                                state: { isMyChannel: false },
+                              });
                             }}
                             src={
                               channelData?.avatar ||
@@ -373,7 +375,9 @@ const VideoDetailPage = () => {
                               fetchUserChannelProfile(channelData?.userName)
                             );
                             dispatch(fetchChannelVideo(channelData?._id));
-                            navigate("/channel");
+                            navigate("/channel", {
+                              state: { isMyChannel: false },
+                            });
                           }}
                           className="block cursor-pointer"
                         >
