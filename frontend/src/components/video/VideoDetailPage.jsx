@@ -17,18 +17,18 @@ import {
   setVideoId,
   setVideoLike,
   setVideoLikeCount,
-} from "../../store/createVideoSlice";
-import { fetchVideoById, setWatchVideo } from "../../store/createVideoSlice";
+} from "../../store/videoSlice.js";
+import { fetchVideoById, setWatchVideo } from "../../store/videoSlice.js";
 import SideBar from "../layout/SideBar";
 import { duration } from "../../utils/duration";
 import {
   fetchChannelVideo,
   fetchUserChannelProfile,
-} from "../../store/ChannelSlice";
+} from "../../store/channelSlice";
 import {
   setIsSubscribed,
   subscriptionToggle,
-} from "../../store/SubscriberSlice";
+} from "../../store/subscriberSlice";
 
 const VideoDetailPage = () => {
   const navigate = useNavigate();

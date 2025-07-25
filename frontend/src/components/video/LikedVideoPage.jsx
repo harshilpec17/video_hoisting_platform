@@ -4,7 +4,7 @@ import { timeAgo } from "../../utils/timeAgo";
 import { useDispatch, useSelector } from "react-redux";
 import { duration } from "../../utils/duration";
 import { useNavigate } from "react-router";
-import { fetchVideoById, setVideoId } from "../../store/createVideoSlice";
+import { fetchVideoById, setVideoId } from "../../store/videoSlice.js";
 
 const LikedVideoPage = () => {
   const dispatch = useDispatch();

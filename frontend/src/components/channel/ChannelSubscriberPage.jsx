@@ -5,9 +5,9 @@ import {
   fetchSubscribedList,
   fetchSubscriberList,
   subscriptionToggle,
-} from "../../store/SubscriberSlice";
+} from "../../store/subscriberSlice";
 
-import { fetchUserChannelProfile } from "../../store/ChannelSlice";
+import { fetchUserChannelProfile } from "../../store/channelSlice";
 
 const ChannelSubscriberPage = () => {
   const dispatch = useDispatch();

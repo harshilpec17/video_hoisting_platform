@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { duration } from "../../utils/duration";
 import { timeAgo } from "../../utils/timeAgo";
-import { fetchVideoById } from "../../store/createVideoSlice";
-import { setVideoId } from "../../store/createVideoSlice";
+import { fetchVideoById } from "../../store/videoSlice";
+import { setVideoId } from "../../store/videoSlice";
 import { useNavigate } from "react-router";
 
 const WatchHistory = () => {

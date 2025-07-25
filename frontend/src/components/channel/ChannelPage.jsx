@@ -4,14 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import ChannelVideo from "./ChannelVideo";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { fetchUserChannelProfile } from "../../store/ChannelSlice";
+import { fetchUserChannelProfile } from "../../store/channelSlice";
 import ChannelSubscribedPage from "./ChannelSubscribedPage";
 import ChannelSubscriberPage from "./ChannelSubscriberPage";
 import {
   fetchSubscribedList,
   fetchSubscriberList,
   subscriptionToggle,
-} from "../../store/SubscriberSlice";
+} from "../../store/subscriberSlice";
 import { useLocation } from "react-router";
 
 const ChannelPage = () => {

@@ -5,8 +5,8 @@ import axios from "axios";
 import {
   fetchSubscribedList,
   subscriptionToggle,
-} from "../../store/SubscriberSlice";
-import { fetchUserChannelProfile } from "../../store/ChannelSlice";
+} from "../../store/subscriberSlice";
+import { fetchUserChannelProfile } from "../../store/channelSlice";
 
 const ChannelSubscribedPage = () => {
   const dispatch = useDispatch();
