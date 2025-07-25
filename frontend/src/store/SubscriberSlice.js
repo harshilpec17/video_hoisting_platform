@@ -67,7 +67,7 @@ export const fetchSubscribedList = createAsyncThunk(
   }
 );
 
-const SubscriberSlice = createSlice({
+const subscriberSlice = createSlice({
   name: "subscriber",
   initialState: {
     subscriberList: [],
@@ -126,5 +126,5 @@ const SubscriberSlice = createSlice({
 });
 
 export const { setSubscribedList, setSubscriberList, setIsSubscribed } =
-  SubscriberSlice.actions;
-export default SubscriberSlice.reducer;
+  subscriberSlice.actions;
+export default subscriberSlice.reducer;

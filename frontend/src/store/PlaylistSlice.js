@@ -78,7 +78,7 @@ export const updatePlaylist = createAsyncThunk(
   }
 );
 
-const PlaylistSlice = createSlice({
+const playlistSlice = createSlice({
   name: "playlist",
   initialState: {
     playlists: [],
@@ -158,5 +158,5 @@ const PlaylistSlice = createSlice({
   },
 });
 
-export const { setPlaylists, clearPlaylists } = PlaylistSlice.actions;
-export default PlaylistSlice.reducer;
+export const { setPlaylists, clearPlaylists } = playlistSlice.actions;
+export default playlistSlice.reducer;
