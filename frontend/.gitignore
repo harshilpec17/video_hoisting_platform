@@ -1,5 +1,4 @@
 ### Node ###
-/.DS_Store
 node_modules
 # Logs
 logs
@@ -139,3 +138,8 @@ dist
 
 # SvelteKit build / generate output
 .svelte-kit
+
+# 
+.DS_Store
+# macOS specific file
+.DS_Store
