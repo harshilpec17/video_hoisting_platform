@@ -1,15 +1,18 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { fetchLikedVideos } from "../../store/LikeSlice";
-import { fetchWatchHistory } from "../../store/WatchHistorySlice";
+import { fetchLikedVideos } from "../../store/likeSlice";
+import { fetchWatchHistory } from "../../store/watchHistorySlice";
 import {
   fetchChannelVideo,
   fetchUserChannelProfile,
-} from "../../store/ChannelSlice";
+} from "../../store/channelSlice";
 import {
   fetchSubscriberList,
   fetchSubscribedList,
-} from "../../store/SubscriberSlice";
+} from "../../store/subscriberSlice";
+import { fetchAllTweets, fetchUserTweets } from "../../store/tweetSlice.js";
+import { startLoading, stopLoading } from "../../store/loaderSlice.js";
+import { toast } from "react-toastify";
 
 const SideBar = () => {
   const navigate = useNavigate();
@@ -82,7 +85,6 @@ const SideBar = () => {
               </span>
             </button>
           </li>
-
           <li className="">
             <button
               onClick={() => {
@@ -108,18 +110,27 @@ const SideBar = () => {
                 </svg>
               </span>
               <span className="block sm:hidden sm:group-hover:inline lg:inline">
-                History
+                Watch History
               </span>
             </button>
           </li>
           <li className="hidden sm:block">
             <button
-              onClick={() => {
-                navigate("/channel");
-                dispatch(fetchChannelVideo(loggedInUserId));
-                dispatch(fetchUserChannelProfile(loggedUserName));
-                dispatch(fetchSubscriberList(loggedInUserId));
-                dispatch(fetchSubscribedList(loggedInUserId));
+              onClick={async () => {
+                try {
+                  dispatch(startLoading());
+                  await navigate("/channel");
+                  await dispatch(fetchChannelVideo(loggedInUserId));
+                  await dispatch(fetchUserChannelProfile(loggedUserName));
+                  await dispatch(fetchSubscriberList(loggedInUserId));
+                  await dispatch(fetchSubscribedList(loggedInUserId));
+                  await dispatch(fetchUserTweets(loggedInUserId));
+                } catch {
+                  console.error("Failed to update page:", error);
+                  toast.error("Failed to update page");
+                } finally {
+                  dispatch(stopLoading());
+                }
               }}
               className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
             >
@@ -151,49 +162,47 @@ const SideBar = () => {
               </span>
             </button>
           </li>
-          <li className="">
-            <button className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
+          <li className="hidden sm:block">
+            <button
+              onClick={async () => {
+                try {
+                  dispatch(startLoading());
+                  navigate("/tweet");
+                  await dispatch(fetchAllTweets({ page: 1, limit: 10 }));
+                } catch (error) {
+                  console.error("Error fetching tweets:", error);
+                  toast.error("Failed to fetch tweets");
+                } finally {
+                  dispatch(stopLoading());
+                }
+              }}
+              className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
+            >
               <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                 <svg
                   style={{ width: "100%" }}
-                  viewBox="0 0 22 20"
+                  viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M12 5L10.8845 2.76892C10.5634 2.1268 10.4029 1.80573 10.1634 1.57116C9.95158 1.36373 9.69632 1.20597 9.41607 1.10931C9.09916 1 8.74021 1 8.02229 1H4.2C3.0799 1 2.51984 1 2.09202 1.21799C1.71569 1.40973 1.40973 1.71569 1.21799 2.09202C1 2.51984 1 3.0799 1 4.2V5M1 5H16.2C17.8802 5 18.7202 5 19.362 5.32698C19.9265 5.6146 20.3854 6.07354 20.673 6.63803C21 7.27976 21 8.11984 21 9.8V14.2C21 15.8802 21 16.7202 20.673 17.362C20.3854 17.9265 19.9265 18.3854 19.362 18.673C18.7202 19 17.8802 19 16.2 19H5.8C4.11984 19 3.27976 19 2.63803 18.673C2.07354 18.3854 1.6146 17.9265 1.32698 17.362C1 16.7202 1 15.8802 1 14.2V5Z"
+                    d="M7 17C4.23858 17 2 14.7614 2 12C2 9.23858 4.23858 7 7 7C9.76142 7 12 9.23858 12 12C12 14.7614 9.76142 17 7 17ZM7 17V21L11 17"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  ></path>
-                </svg>
-              </span>
-              <span className="block sm:hidden sm:group-hover:inline lg:inline">
-                Collections
-              </span>
-            </button>
-          </li>
-          <li className="">
-            <button className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
-              <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
-                <svg
-                  style={{ width: "100%" }}
-                  viewBox="0 0 22 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
+                  />
                   <path
-                    d="M11 13.5H6.5C5.10444 13.5 4.40665 13.5 3.83886 13.6722C2.56045 14.06 1.56004 15.0605 1.17224 16.3389C1 16.9067 1 17.6044 1 19M15 16L17 18L21 14M13.5 5.5C13.5 7.98528 11.4853 10 9 10C6.51472 10 4.5 7.98528 4.5 5.5C4.5 3.01472 6.51472 1 9 1C11.4853 1 13.5 3.01472 13.5 5.5Z"
+                    d="M17 7C19.7614 7 22 9.23858 22 12C22 14.7614 19.7614 17 17 17C16.4477 17 15.9477 16.8946 15.5 16.7071"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  ></path>
+                  />
                 </svg>
               </span>
               <span className="block sm:hidden sm:group-hover:inline lg:inline">
-                Subscribers
+                Community
               </span>
             </button>
           </li>
