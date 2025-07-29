@@ -33,7 +33,7 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 app.use("/api/v1/healthcheck", healthcheckRouter);
 app.use("/api/v1/users/", userRouter);
 app.use("/api/v1/users/", subscriptionRouter);
-app.use("/api/v1/users/", tweetRouter);
+app.use("/api/v1/users/tweets", tweetRouter);
 app.use("/api/v1/users/", videoRouter);
 app.use("/api/v1/users/comment", commentRouter);
 app.use("/api/v1/users/like", likeRouter);

@@ -60,6 +60,90 @@ const getUserTweets = asyncHandler(async (req, res) => {
         },
       },
       {
+        $lookup: {
+          from: "likes",
+          localField: "_id",
+          foreignField: "tweet",
+          as: "likes",
+        },
+      },
+      {
+        $addFields: {
+          likes: { $ifNull: ["$likes", []] },
+        },
+      },
+      {
+        $addFields: {
+          likeCount: {
+            $size: {
+              $filter: {
+                input: "$likes",
+                as: "like",
+                cond: { $eq: ["$$like.reaction", "like"] },
+              },
+            },
+          },
+          dislikeCount: {
+            $size: {
+              $filter: {
+                input: "$likes",
+                as: "dislike",
+                cond: { $eq: ["$$dislike.reaction", "dislike"] },
+              },
+            },
+          },
+          isLiked: {
+            $gt: [
+              {
+                $size: {
+                  $filter: {
+                    input: "$likes",
+                    as: "like",
+                    cond: {
+                      $and: [
+                        { $eq: ["$$like.reaction", "like"] },
+                        {
+                          $eq: [
+                            "$$like.likedBy",
+                            new mongoose.Types.ObjectId(req.user?._id),
+                          ],
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+              0,
+            ],
+          },
+          isDisliked: {
+            $gt: [
+              {
+                $size: {
+                  $filter: {
+                    input: "$likes",
+                    as: "dislike",
+                    cond: {
+                      $and: [
+                        { $eq: ["$$dislike.reaction", "dislike"] },
+                        {
+                          $eq: [
+                            "$$dislike.likedBy",
+                            new mongoose.Types.ObjectId(req.user?._id),
+                          ],
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+              0,
+            ],
+          },
+        },
+      },
+
+      {
         $project: {
           content: 1,
           owner: 1,
@@ -67,8 +151,12 @@ const getUserTweets = asyncHandler(async (req, res) => {
             userName: 1,
             fullName: 1,
             avatar: 1,
-            createdAt: 1,
           },
+          createdAt: 1,
+          likeCount: 1,
+          dislikeCount: 1,
+          isLiked: 1,
+          isDisliked: 1,
         },
       },
     ],
@@ -147,4 +235,126 @@ const deleteTweet = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, deleteTweet, "Tweet deleted successfully"));
 });
 
-export { createTweet, getUserTweets, updateTweet, deleteTweet };
+const getAllTweets = asyncHandler(async (req, res) => {
+  // Get page and limit from query, set defaults
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const tweets = await Tweet.aggregate([
+    { $sort: { createdAt: -1 } },
+    { $skip: skip },
+    { $limit: limit },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "user_info",
+      },
+    },
+    { $addFields: { user_info: { $arrayElemAt: ["$user_info", 0] } } },
+
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "tweet",
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        likes: { $ifNull: ["$likes", []] },
+      },
+    },
+    {
+      $addFields: {
+        likeCount: {
+          $size: {
+            $filter: {
+              input: "$likes",
+              as: "like",
+              cond: { $eq: ["$$like.reaction", "like"] },
+            },
+          },
+        },
+        dislikeCount: {
+          $size: {
+            $filter: {
+              input: "$likes",
+              as: "dislike",
+              cond: { $eq: ["$$dislike.reaction", "dislike"] },
+            },
+          },
+        },
+        isLiked: {
+          $gt: [
+            {
+              $size: {
+                $filter: {
+                  input: "$likes",
+                  as: "like",
+                  cond: {
+                    $and: [
+                      { $eq: ["$$like.reaction", "like"] },
+                      {
+                        $eq: [
+                          "$$like.likedBy",
+                          new mongoose.Types.ObjectId(req.user?._id),
+                        ],
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+            0,
+          ],
+        },
+        isDisliked: {
+          $gt: [
+            {
+              $size: {
+                $filter: {
+                  input: "$likes",
+                  as: "dislike",
+                  cond: {
+                    $and: [
+                      { $eq: ["$$dislike.reaction", "dislike"] },
+                      {
+                        $eq: [
+                          "$$dislike.likedBy",
+                          new mongoose.Types.ObjectId(req.user?._id),
+                        ],
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+            0,
+          ],
+        },
+      },
+    },
+    {
+      $project: {
+        content: 1,
+        owner: 1,
+        createdAt: 1,
+        user_info: { userName: 1, fullName: 1, avatar: 1 },
+        likeCount: 1,
+        dislikeCount: 1,
+        isLiked: 1,
+        isDisliked: 1,
+      },
+    },
+  ]);
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, tweets, "All tweets fetched successfully"));
+});
+
+export { createTweet, getUserTweets, updateTweet, deleteTweet, getAllTweets };
