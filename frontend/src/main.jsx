@@ -21,6 +21,8 @@ import LikedVideoPage from "./components/video/LikedVideoPage.jsx";
 import WatchHistory from "./components/video/WatchHistory.jsx";
 import ChannelVideo from "./components/channel/ChannelVideo.jsx";
 import ChannelPage from "./components/channel/ChannelPage.jsx";
+import TweetHomePage from "./components/tweet/TweetHomePage.jsx";
+import Loader from "./utils/Loader.jsx";
 
 const root = createRoot(document.getElementById("root"));
 // window.onbeforeunload = function () {
@@ -82,6 +84,22 @@ const router = createBrowserRouter(
           element={
             <ProtectedRoutes>
               <ChannelPage />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="tweet"
+          element={
+            <ProtectedRoutes>
+              <TweetHomePage />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="loader"
+          element={
+            <ProtectedRoutes>
+              <Loader />
             </ProtectedRoutes>
           }
         />

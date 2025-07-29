@@ -30,11 +30,13 @@ export const fetchUserTweets = createAsyncThunk(
   "tweets/fetchUserTweets",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/api/tweets/user/${userId}`, {
+      const response = await axios.get(`/url/tweets/user/${userId}`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
       });
+      console.log("Fetched user tweets:", response.data.data);
+
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -48,7 +50,7 @@ export const createTweet = createAsyncThunk(
   async (tweetText, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "url/tweets/tweet",
+        "url/tweets/create",
         { tweetText },
         {
           headers: {
@@ -56,6 +58,8 @@ export const createTweet = createAsyncThunk(
           },
         }
       );
+      console.log("Created tweet:", response.data.data);
+
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -69,7 +73,7 @@ export const updateTweet = createAsyncThunk(
   async ({ tweetId, newTweet }, { rejectWithValue }) => {
     try {
       const response = await axios.patch(
-        `/api/tweets/${tweetId}`,
+        `/url/tweets/${tweetId}`,
         { newTweet },
         {
           headers: {
@@ -89,11 +93,59 @@ export const deleteTweet = createAsyncThunk(
   "tweets/deleteTweet",
   async (tweetId, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`/api/tweets/${tweetId}`, {
+      const response = await axios.delete(`url/tweets/${tweetId}`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
       });
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const handleLikeTweet = createAsyncThunk(
+  "tweets/handleLikeTweet",
+  async (tweetId, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `/url/like/toggle/t/${tweetId}`,
+        {
+          reactionType: "like",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      console.log("Liked tweet:", response.data.data);
+      toast.success("Tweet liked successfully!");
+
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+export const handleDislikeTweet = createAsyncThunk(
+  "tweets/handleDislikeTweet",
+  async (tweetId, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `/url/like/toggle/t/${tweetId}`,
+        {
+          reactionType: "dislike",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      console.log("Disliked tweet:", response.data.data);
+
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -129,8 +181,7 @@ const tweetSlice = createSlice({
         if (action.payload && action.payload.length < TWEETS_LIMIT) {
           state.hasMore = false;
         }
-        state.tweets = [...state.tweets, ...(action.payload || [])];
-        state.page += 1;
+        state.tweets = action.payload || [];
       })
       .addCase(fetchAllTweets.rejected, (state, action) => {
         state.loading = false;
@@ -186,6 +237,38 @@ const tweetSlice = createSlice({
         );
       })
       .addCase(deleteTweet.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+    builder
+      .addCase(handleLikeTweet.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(handleLikeTweet.fulfilled, (state, action) => {
+        state.loading = false;
+        const updatedTweets = state.tweets.map((tweet) =>
+          tweet._id === action.payload._id ? action.payload : tweet
+        );
+        state.tweets = updatedTweets;
+      })
+      .addCase(handleLikeTweet.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+    builder
+      .addCase(handleDislikeTweet.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(handleDislikeTweet.fulfilled, (state, action) => {
+        state.loading = false;
+        const updatedTweets = state.tweets.map((tweet) =>
+          tweet._id === action.payload._id ? action.payload : tweet
+        );
+        state.tweets = updatedTweets;
+      })
+      .addCase(handleDislikeTweet.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
