@@ -6,7 +6,7 @@ import channelSlice from "./channelSlice.js";
 import playlistSlice from "./playlistSlice.js";
 import subscriberSlice from "./subscriberSlice.js";
 import tweetSlice from "./tweetSlice.js";
-import loaderSlice from "./loaderSlice.js"; // Import the loader slice
+import loaderSlice from "./loaderSlice.js";
 
 export const store = configureStore({
   reducer: {
