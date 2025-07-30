@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import videoSlice from "./videoSlice";
-import likeSlice from "./likeSlice";
-import watchHistorySlice from "./watchHistorySlice";
-import channelSlice from "./channelSlice";
-import playlistSlice from "./playlistSlice";
-import subscriberSlice from "./subscriberSlice";
-import tweetSlice from "./tweetSlice";
-import loaderSlice from "./loaderSlice"; // Import the loader slice
+import videoSlice from "./videoSlice.js";
+import likeSlice from "./likeSlice.js";
+import watchHistorySlice from "./watchHistorySlice.js";
+import channelSlice from "./channelSlice.js";
+import playlistSlice from "./playlistSlice.js";
+import subscriberSlice from "./subscriberSlice.js";
+import tweetSlice from "./tweetSlice.js";
+import loaderSlice from "./loaderSlice.js"; // Import the loader slice
 
 export const store = configureStore({
   reducer: {
