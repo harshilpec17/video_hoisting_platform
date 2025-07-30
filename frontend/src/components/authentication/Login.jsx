@@ -22,7 +22,7 @@ const Login = () => {
   const loginUser = () => {
     if (emailRef.current.value && passwordRef.current.value) {
       axios
-        .post("http://localhost:8000/api/v1/users/login", {
+        .post(`${import.meta.env.VITE_API_BASE_URL}/login`, {
           email: emailRef.current.value,
           userName: emailRef.current.value,
           password: passwordRef.current.value,
