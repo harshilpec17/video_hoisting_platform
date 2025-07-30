@@ -75,7 +75,7 @@ const ChannelTweetPage = () => {
       await dispatch(createTweet(tweetText));
       setTweetText("");
       toast.success("Tweet created successfully!");
-      await dispatch(fetchAllTweets({ page, limit: 10 }));
+      await dispatch(fetchUserTweets(loggedInUserId));
     } catch (error) {
       console.error("Error creating tweet:", error);
       toast.error("Failed to create tweet.");
@@ -113,7 +113,7 @@ const ChannelTweetPage = () => {
               <button
                 onClick={handleCreateTweet}
                 disabled={tweetWarning !== ""}
-                className={`px-3 py-2 font-semibold text-black ${
+                className={`px-3 py-2 font-semibold cursor-pointer text-black ${
                   tweetWarning !== ""
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-[#ae7aff]"
