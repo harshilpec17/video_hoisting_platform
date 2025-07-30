@@ -1,14 +1,34 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { fetchLikedVideos } from "../../store/likeSlice";
+import { fetchWatchHistory } from "../../store/watchHistorySlice";
+import {
+  fetchChannelVideo,
+  fetchUserChannelProfile,
+} from "../../store/channelSlice";
+import {
+  fetchSubscriberList,
+  fetchSubscribedList,
+} from "../../store/subscriberSlice";
+import { fetchAllTweets, fetchUserTweets } from "../../store/tweetSlice.js";
+import { startLoading, stopLoading } from "../../store/loaderSlice.js";
+import { toast } from "react-toastify";
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const token = localStorage.getItem("refreshToken");
   const logoutUser = () => {
     localStorage.clear();
     sessionStorage.clear();
     navigate("/login");
   };
+
+  const loggedInUser = JSON.parse(localStorage.getItem("user"));
+  const loggedInUserId = loggedInUser?.user?._id;
+  const loggedUserName = loggedInUser?.user?.userName;
 
   return (
     <>
@@ -190,10 +210,49 @@ const Header = () => {
                     </svg>
                   </button>
                 </div>
-                <ul className="my-4 flex w-full flex-wrap gap-2 px-4 sm:hidden">
-                  <li className="w-full">
-                    <button className="flex w-full items-center justify-start gap-x-4 border border-white px-4 py-1.5 text-left hover:bg-[#ae7aff] hover:text-black focus:border-[#ae7aff] focus:bg-[#ae7aff] focus:text-black">
-                      <span className="inline-block w-full max-w-[20px] group-hover:mr-4 lg:mr-4">
+                <ul className="flex flex-col p-2 gap-y-2 sm:sticky sm:top-[106px] sm:min-h-[calc(100vh-130px)] sm:flex-col sm:hidden">
+                  <li className="sm:hidden">
+                    <button
+                      onClick={() => {
+                        navigate("/videolistingpage");
+                      }}
+                      className="flex flex-row cursor-pointer items-center justify-start p-3 w-full border py-2 focus:text-[#ae7aff]  sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
+                    >
+                      <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
+                        <svg
+                          style={{ width: "100%" }}
+                          viewBox="0 0 20 21"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M6 15.9997H14M9.0177 1.76375L2.23539 7.03888C1.78202 7.3915 1.55534 7.56781 1.39203 7.78861C1.24737 7.9842 1.1396 8.20454 1.07403 8.43881C1 8.70327 1 8.99045 1 9.56481V16.7997C1 17.9198 1 18.4799 1.21799 18.9077C1.40973 19.284 1.71569 19.59 2.09202 19.7818C2.51984 19.9997 3.07989 19.9997 4.2 19.9997H15.8C16.9201 19.9997 17.4802 19.9997 17.908 19.7818C18.2843 19.59 18.5903 19.284 18.782 18.9077C19 18.4799 19 17.9198 19 16.7997V9.56481C19 8.99045 19 8.70327 18.926 8.43881C18.8604 8.20454 18.7526 7.9842 18.608 7.78861C18.4447 7.56781 18.218 7.3915 17.7646 7.03888L10.9823 1.76376C10.631 1.4905 10.4553 1.35388 10.2613 1.30136C10.0902 1.25502 9.9098 1.25502 9.73865 1.30136C9.54468 1.35388 9.36902 1.4905 9.0177 1.76375Z"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          ></path>
+                        </svg>
+                      </span>
+                      <span className="block ml-4 sm:hidden sm:group-hover:inline lg:inline">
+                        Home
+                      </span>
+                    </button>
+                  </li>
+                  <li className="sm:hidden">
+                    <button
+                      onClick={() => {
+                        navigate("/video/likedVideos");
+                        dispatch(
+                          fetchLikedVideos({
+                            userId: loggedInUserId,
+                            reaction: "like",
+                          })
+                        );
+                      }}
+                      className="flex flex-row cursor-pointer items-center justify-start p-3 w-full border py-2 focus:text-[#ae7aff]  sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
+                    >
+                      <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                         <svg
                           style={{ width: "100%" }}
                           viewBox="0 0 22 22"
@@ -209,12 +268,63 @@ const Header = () => {
                           ></path>
                         </svg>
                       </span>
-                      <span>Liked Videos</span>
+                      <span className="block sm:hidden sm:group-hover:inline lg:inline ml-4">
+                        Liked Videos
+                      </span>
                     </button>
                   </li>
-                  <li className="w-full">
-                    <button className="flex w-full items-center justify-start gap-x-4 border border-white px-4 py-1.5 text-left hover:bg-[#ae7aff] hover:text-black focus:border-[#ae7aff] focus:bg-[#ae7aff] focus:text-black">
-                      <span className="inline-block w-full max-w-[20px] group-hover:mr-4 lg:mr-4">
+                  <li className="sm:hidden">
+                    <button
+                      onClick={() => {
+                        navigate("/video/watchHistory");
+                        dispatch(fetchWatchHistory(loggedInUserId));
+                      }}
+                      className="flex flex-row cursor-pointer items-center justify-start p-3 w-full border py-2 focus:text-[#ae7aff]  sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
+                    >
+                      <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
+                        <svg
+                          style={{ width: "100%" }}
+                          viewBox="0 0 22 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M20.7 11.5L18.7005 9.5L16.7 11.5M19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1C13.3019 1 16.1885 2.77814 17.7545 5.42909M10 5V10L13 12"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          ></path>
+                        </svg>
+                      </span>
+                      <span className="block sm:hidden sm:group-hover:inline ml-4 lg:inline">
+                        Watch History
+                      </span>
+                    </button>
+                  </li>
+                  <li className="sm:hidden">
+                    <button
+                      onClick={async () => {
+                        try {
+                          dispatch(startLoading());
+                          await navigate("/channel");
+                          await dispatch(fetchChannelVideo(loggedInUserId));
+                          await dispatch(
+                            fetchUserChannelProfile(loggedUserName)
+                          );
+                          await dispatch(fetchSubscriberList(loggedInUserId));
+                          await dispatch(fetchSubscribedList(loggedInUserId));
+                          await dispatch(fetchUserTweets(loggedInUserId));
+                        } catch {
+                          console.error("Failed to update page:", error);
+                          toast.error("Failed to update page");
+                        } finally {
+                          dispatch(stopLoading());
+                        }
+                      }}
+                      className="flex flex-row cursor-pointer items-center justify-start p-3 w-full border py-2 focus:text-[#ae7aff]  sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
+                    >
+                      <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                         <svg
                           style={{ width: "100%" }}
                           viewBox="0 0 22 16"
@@ -237,12 +347,60 @@ const Header = () => {
                           ></path>
                         </svg>
                       </span>
-                      <span>My Content</span>
+                      <span className="block ml-4 sm:hidden sm:group-hover:inline lg:inline">
+                        My Channel
+                      </span>
                     </button>
                   </li>
-                  <li className="w-full">
-                    <button className="flex w-full items-center justify-start gap-x-4 border border-white px-4 py-1.5 text-left hover:bg-[#ae7aff] hover:text-black focus:border-[#ae7aff] focus:bg-[#ae7aff] focus:text-black">
-                      <span className="inline-block w-full max-w-[20px] group-hover:mr-4 lg:mr-4">
+                  <li className="sm:hidden">
+                    <button
+                      onClick={async () => {
+                        try {
+                          dispatch(startLoading());
+                          navigate("/tweet");
+                          await dispatch(
+                            fetchAllTweets({ page: 1, limit: 10 })
+                          );
+                        } catch (error) {
+                          console.error("Error fetching tweets:", error);
+                          toast.error("Failed to fetch tweets");
+                        } finally {
+                          dispatch(stopLoading());
+                        }
+                      }}
+                      className="flex flex-row cursor-pointer items-center justify-start p-3 w-full border py-2 focus:text-[#ae7aff]  sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
+                    >
+                      <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
+                        <svg
+                          style={{ width: "100%" }}
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M7 17C4.23858 17 2 14.7614 2 12C2 9.23858 4.23858 7 7 7C9.76142 7 12 9.23858 12 12C12 14.7614 9.76142 17 7 17ZM7 17V21L11 17"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M17 7C19.7614 7 22 9.23858 22 12C22 14.7614 19.7614 17 17 17C16.4477 17 15.9477 16.8946 15.5 16.7071"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
+                      <span className="block sm:hidden ml-4  sm:group-hover:inline lg:inline">
+                        Community
+                      </span>
+                    </button>
+                  </li>
+                  <li className="hidden sm:block mt-auto">
+                    <button className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
+                      <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                         <svg
                           style={{ width: "100%" }}
                           viewBox="0 0 22 22"
@@ -258,12 +416,14 @@ const Header = () => {
                           ></path>
                         </svg>
                       </span>
-                      <span>Support</span>
+                      <span className="block sm:hidden sm:group-hover:inline lg:inline">
+                        Support
+                      </span>
                     </button>
                   </li>
-                  <li className="w-full">
-                    <button className="flex w-full items-center justify-start gap-x-4 border border-white px-4 py-1.5 text-left hover:bg-[#ae7aff] hover:text-black focus:border-[#ae7aff] focus:bg-[#ae7aff] focus:text-black">
-                      <span className="inline-block w-full max-w-[20px] group-hover:mr-4 lg:mr-4">
+                  <li className="hidden sm:block">
+                    <button className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
+                      <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                         <svg
                           style={{ width: "100%" }}
                           viewBox="0 0 22 22"
@@ -286,7 +446,9 @@ const Header = () => {
                           ></path>
                         </svg>
                       </span>
-                      <span>Settings</span>
+                      <span className="block sm:hidden sm:group-hover:inline lg:inline">
+                        Settings
+                      </span>
                     </button>
                   </li>
                 </ul>
