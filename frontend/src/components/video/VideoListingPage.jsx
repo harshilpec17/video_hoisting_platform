@@ -87,7 +87,7 @@ const VideoListingPage = () => {
                           <img
                             src={video.thumbnail}
                             alt="JavaScript Fundamentals: Variables and Data Types"
-                            className="h-full w-full"
+                            className="h-full w-full cursor-pointer"
                           />
                         </div>
                         <span className="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
