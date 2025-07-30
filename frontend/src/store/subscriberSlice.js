@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { fetchUserChannelProfile } from "./channelSlice_temp";
+import { fetchUserChannelProfile } from "./channelSlice";
 
 export const subscriptionToggle = createAsyncThunk(
   "subscribers/subscriptionToggle",
