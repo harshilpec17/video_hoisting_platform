@@ -3,10 +3,16 @@ import React from "react";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { RiEditLine } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
+import { startLoading, stopLoading } from "../../store/loaderSlice";
+import { togglePublishVideo } from "../../store/dashboardSlice";
+import { fetchChannelDashboard } from "../../store/dashboardSlice";
+import Loader from "../../utils/Loader";
+import { fetchChannelVideo } from "../../store/channelSlice";
 
 const ChannelDashboard = () => {
   const dispatch = useDispatch();
   const userChannel = useSelector((state) => state.channel.channelProfile);
+  const isLoading = useSelector((state) => state.loader.isLoading);
 
   const channelVideos = useSelector((state) => state.channel.channelVideos);
   const dashboardData = useSelector((state) => state.dashboard.dashboardData);
@@ -17,6 +23,7 @@ const ChannelDashboard = () => {
 
   return (
     <>
+      {isLoading && <Loader />}
       <link
         rel="preload"
         as="image"
@@ -294,25 +301,60 @@ const ChannelDashboard = () => {
                     channelVideos.map((video) => (
                       <>
                         <tr key={video._id} class="group border">
-                          <td class="border-collapse border-b border-gray-600 px-4 py-3 group-last:border-none">
-                            <div class="flex justify-center">
+                          <td className="border-collapse border-b border-gray-600 px-4 py-3 group-last:border-none">
+                            <div className="flex justify-center">
+                              <input
+                                type="checkbox"
+                                className="peer sr-only opacity-0"
+                                id={`toggle-${video._id}`}
+                                checked={video.isPublished}
+                                onChange={async () => {
+                                  try {
+                                    dispatch(startLoading());
+                                    await dispatch(
+                                      togglePublishVideo({
+                                        toggleValue: video?.isPublished
+                                          ? false
+                                          : true,
+                                        videoId: video._id,
+                                      })
+                                    ),
+                                      await dispatch(
+                                        fetchChannelVideo(loggedInUserId)
+                                      );
+                                  } catch (error) {
+                                    console.error(error);
+                                  } finally {
+                                    dispatch(stopLoading());
+                                  }
+                                }}
+                              />
                               <label
-                                for="vid-pub-1"
-                                class="relative inline-block w-12 cursor-pointer overflow-hidden"
+                                htmlFor={`toggle-${video._id}`}
+                                className={`relative flex h-6 w-11 cursor-pointer items-center rounded-full ${
+                                  video.isPublished
+                                    ? "bg-green-500"
+                                    : "bg-gray-400"
+                                } px-0.5 outline-gray-400 transition-colors before:h-5 before:w-5 before:rounded-full before:bg-white before:shadow before:transition-transform before:duration-300 ${
+                                  video.isPublished
+                                    ? "before:translate-x-full"
+                                    : ""
+                                } peer-focus-visible:outline peer-focus-visible:outline-offset-2 peer-focus-visible:outline-gray-400 peer-checked:peer-focus-visible:outline-green-500`}
                               >
-                                <input
-                                  type="checkbox"
-                                  id="vid-pub-1"
-                                  class="peer sr-only"
-                                  checked=""
-                                />
-                                <span class="inline-block h-6 w-full rounded-2xl bg-gray-200 duration-200 after:absolute after:bottom-1 after:left-1 after:top-1 after:h-4 after:w-4 after:rounded-full after:bg-black after:duration-200 peer-checked:bg-[#ae7aff] peer-checked:after:left-7"></span>
+                                <span className="sr-only">Enable</span>
                               </label>
                             </div>
                           </td>
-                          <td class="border-collapse border-b border-gray-600 px-4 py-3 group-last:border-none">
-                            <div class="flex justify-center">
-                              <span class="inline-block rounded-2xl border px-1.5 py-0.5 border-green-600 text-green-600">
+                          {/* ...rest of your columns... */}
+                          <td className="border-collapse border-b border-gray-600 px-4 py-3 group-last:border-none">
+                            <div className="flex justify-center">
+                              <span
+                                className={`inline-block rounded-2xl border px-1.5 py-0.5 ${
+                                  video.isPublished
+                                    ? "border-green-600 text-green-600"
+                                    : "border-orange-600 text-orange-600"
+                                }`}
+                              >
                                 {video.isPublished
                                   ? "Published"
                                   : "Unpublished"}
