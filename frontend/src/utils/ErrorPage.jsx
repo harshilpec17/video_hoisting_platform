@@ -5,6 +5,9 @@ const ErrorPage = ({ message }) => (
     <h1 className="text-3xl font-bold text-red-600 mb-4">
       Service Unavailable
     </h1>
+    <h1 className="text-3xl font-bold text-orange-600 mb-4">
+      Try to switch to another network
+    </h1>
     <p className="text-lg text-gray-700 mb-2">
       {message ||
         "We are experiencing technical difficulties. Please try again later."}
