@@ -7,6 +7,7 @@ import playlistSlice from "./playlistSlice.js";
 import subscriberSlice from "./subscriberSlice.js";
 import tweetSlice from "./tweetSlice.js";
 import loaderSlice from "./loaderSlice.js";
+import dashboardSlice from "./dashboardSlice.js";
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     playlist: playlistSlice,
     subscriber: subscriberSlice,
     tweet: tweetSlice,
+    dashboard: dashboardSlice,
     loader: loaderSlice,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),

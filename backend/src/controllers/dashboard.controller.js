@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 import { Video } from "../models/video.models.js";
-// import { Subscription } from "../models/subscription.model.js";
-// import { Like } from "../models/like.model.js";
 import { ApiErrors } from "../utils/ApiErrors.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -10,7 +8,7 @@ import { User } from "../models/user.models.js";
 const getChannelStats = asyncHandler(async (req, res) => {
   // TODO: Get the channel stats like total video views, total subscribers, total videos, total likes etc.
 
-  const userId = req?.user?._id;
+  const { userId } = req?.params;
 
   const channelStats = await User.aggregate([
     {
@@ -111,6 +109,43 @@ const getChannelVideos = asyncHandler(async (req, res) => {
         as: "owner",
       },
     },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "video",
+        as: "likeDocument",
+      },
+    },
+
+    {
+      $addFields: {
+        likes: { $ifNull: ["$likes", []] },
+      },
+    },
+    {
+      $addFields: {
+        likeCount: {
+          $size: {
+            $filter: {
+              input: "$likeDocument",
+              as: "like",
+              cond: { $eq: ["$$like.reaction", "like"] },
+            },
+          },
+        },
+        dislikeCount: {
+          $size: {
+            $filter: {
+              input: "$likeDocument",
+              as: "dislike",
+              cond: { $eq: ["$$dislike.reaction", "dislike"] },
+            },
+          },
+        },
+      },
+    },
+
     {
       $project: {
         _id: 1,
