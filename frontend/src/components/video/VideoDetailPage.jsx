@@ -78,7 +78,7 @@ const VideoDetailPage = () => {
     }
 
     const response = await axios.post(
-      "/url/like/toggle/v/" + videoId,
+      `${API_BASE_URL}/like/toggle/v/${videoId}`,
       {
         reactionType: "like",
       },
@@ -113,7 +113,7 @@ const VideoDetailPage = () => {
     }
 
     const response = await axios.post(
-      "/url/like/toggle/v/" + videoId,
+      `${API_BASE_URL}/like/toggle/v/${videoId}`,
       {
         reactionType: "dislike",
       },
@@ -153,7 +153,7 @@ const VideoDetailPage = () => {
 
   const getAllComments = async () => {
     try {
-      const response = await axios.get(`/url/comment/${videoId}`, {
+      const response = await axios.get(`${API_BASE_URL}/comment/${videoId}`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
@@ -175,7 +175,7 @@ const VideoDetailPage = () => {
       }
 
       const response = await axios.post(
-        `/url/comment/${videoId}`,
+        `${API_BASE_URL}/comment/${videoId}`,
         { commentText },
         {
           headers: {
@@ -206,7 +206,7 @@ const VideoDetailPage = () => {
       }
 
       const response = await axios.patch(
-        `/url/comment/${commentId}`,
+        `${API_BASE_URL}/comment/${commentId}`,
         { newCommentText: updatedText },
         {
           headers: {
@@ -234,7 +234,7 @@ const VideoDetailPage = () => {
 
     try {
       const response = await axios.delete(
-        `/url/comment/${commentId}`,
+        `${API_BASE_URL}/comment/${commentId}`,
         {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,

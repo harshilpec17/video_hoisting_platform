@@ -1,15 +1,19 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE_URL } from "../utils/constant";
 
 export const fetchChannelVideo = createAsyncThunk(
   "fetchChannelVideo",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/url/dashboard/videos/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-        },
-      });
+      const response = await axios.get(
+        `${API_BASE_URL}/dashboard/videos/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        }
+      );
 
       return response.data.data;
     } catch (error) {
@@ -23,7 +27,7 @@ export const fetchUserChannelProfile = createAsyncThunk(
   "fetchUserChannelProfile",
   async (userName, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/url/c/${userName}`, {
+      const response = await axios.get(`${API_BASE_URL}/c/${userName}`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },

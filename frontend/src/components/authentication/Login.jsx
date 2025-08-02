@@ -3,12 +3,19 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer, Zoom } from "react-toastify";
 import ErrorPage from "../../utils/ErrorPage";
+import { API_BASE_URL } from "../../utils/constant";
+import { startLoading, stopLoading } from "../../store/loaderSlice";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../../utils/Loader";
 
 const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const isLoading = useSelector((state) => state.loader.isLoading);
 
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -19,39 +26,62 @@ const Login = () => {
     }
   }, [navigate]);
 
-  const loginUser = () => {
-    if (emailRef.current.value && passwordRef.current.value) {
-      axios
-        .post(`${import.meta.env.VITE_API_BASE_URL}/login`, {
-          email: emailRef.current.value,
-          userName: emailRef.current.value,
-          password: passwordRef.current.value,
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            localStorage.setItem(
-              "refreshToken",
-              response.data.data.refreshToken
-            );
-            localStorage.setItem("user", JSON.stringify(response.data.data));
-            sessionStorage.setItem(
-              "accessToken",
-              response.data.data.accessToken
-            );
-            console.log(response.data.data.accessToken);
-            console.log(response.data.data.refreshToken);
-            navigate("/videolistingpage");
-          }
-        })
-        .catch((error) => {
-          // Network error: backend unreachable
-          if (!error.response) {
-            setErrorMessage(
-              "Unable to connect to server. Please try again later."
-            );
-            toast.error(
-              "Unable to connect to server. Please try again later.",
-              {
+  const loginUser = async () => {
+    try {
+      if (emailRef.current.value && passwordRef.current.value) {
+        await dispatch(startLoading());
+        await axios
+          .post(`${API_BASE_URL}/login`, {
+            email: emailRef.current.value,
+            userName: emailRef.current.value,
+            password: passwordRef.current.value,
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              localStorage.setItem(
+                "refreshToken",
+                response.data.data.refreshToken
+              );
+              localStorage.setItem("user", JSON.stringify(response.data.data));
+              sessionStorage.setItem(
+                "accessToken",
+                response.data.data.accessToken
+              );
+              console.log(response.data.data.accessToken);
+              console.log(response.data.data.refreshToken);
+              navigate("/videolistingpage");
+            }
+          })
+          .catch((error) => {
+            // Network error: backend unreachable
+            if (!error.response) {
+              setErrorMessage(
+                "Unable to connect to server. Please try again later."
+              );
+              toast.error(
+                "Unable to connect to server. Please try again later.",
+                {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: false,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+                  transition: Zoom,
+                }
+              );
+              return;
+            }
+            // Database connection error from backend
+            if (
+              error.response.status === 503 &&
+              error.response.data.message &&
+              error.response.data.message.includes("Database Connection Error")
+            ) {
+              setErrorMessage("Database Connection Error");
+              toast.error("Database Connection Error", {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -61,18 +91,28 @@ const Login = () => {
                 progress: undefined,
                 theme: "colored",
                 transition: Zoom,
-              }
-            );
-            return;
-          }
-          // Database connection error from backend
-          if (
-            error.response.status === 503 &&
-            error.response.data.message &&
-            error.response.data.message.includes("Database Connection Error")
-          ) {
-            setErrorMessage("Database Connection Error");
-            toast.error("Database Connection Error", {
+              });
+              return;
+            }
+            // Invalid credentials
+            if (error.response.status === 400) {
+              toast.error("Invalid email or password", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Zoom,
+              });
+              console.error("Invalid email or password");
+              navigate("/login");
+              return;
+            }
+            // Other errors
+            toast.error("An unexpected error occurred.", {
               position: "top-right",
               autoClose: 5000,
               hideProgressBar: false,
@@ -83,57 +123,33 @@ const Login = () => {
               theme: "colored",
               transition: Zoom,
             });
-            return;
-          }
-          // Invalid credentials
-          if (error.response.status === 400) {
-            toast.error("Invalid email or password", {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
-              transition: Zoom,
-            });
-            console.error("Invalid email or password");
-            navigate("/login");
-            return;
-          }
-          // Other errors
-          toast.error("An unexpected error occurred.", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            transition: Zoom,
           });
+      } else {
+        toast.error("Please enter Email & Password", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Zoom,
         });
-    } else {
-      toast.error("Please enter Email & Password", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Zoom,
-      });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(stopLoading());
     }
   };
 
   return (
     <>
       {errorMessage && <ErrorPage message={errorMessage} />}
+      {isLoading && <Loader />}
       <ToastContainer />
+
       <div className="h-screen overflow-y-auto bg-[#121212] text-white">
         <div className="mx-auto my-8 flex w-full max-w-sm flex-col px-4">
           <div className="mx-auto inline-block w-16">
@@ -224,7 +240,7 @@ const Login = () => {
             <h3 className="text-[#ae7aff] text-sm text-left mb-4">{}</h3>
 
             <button
-              onClick={() => {
+              onClick={async () => {
                 loginUser();
               }}
               className="bg-[#ae7aff] px-4 py-3 w-full text-black"

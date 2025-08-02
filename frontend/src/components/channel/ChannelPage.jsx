@@ -24,8 +24,6 @@ const ChannelPage = () => {
 
   const channelData = useSelector((state) => state.channel.channelProfile);
 
-  const channelVideos = useSelector((state) => state.channel.channelVideos);
-
   const isSubscribed = useSelector(
     (state) => state.channel.channelProfile?.isSubscribed
   );

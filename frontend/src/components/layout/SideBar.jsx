@@ -13,6 +13,7 @@ import {
 import { fetchAllTweets, fetchUserTweets } from "../../store/tweetSlice.js";
 import { startLoading, stopLoading } from "../../store/loaderSlice.js";
 import { toast } from "react-toastify";
+import { fetchChannelDashboard } from "../../store/dashboardSlice.js";
 
 const SideBar = () => {
   const navigate = useNavigate();
@@ -91,7 +92,7 @@ const SideBar = () => {
                 navigate("/video/watchHistory");
                 dispatch(fetchWatchHistory(loggedInUserId));
               }}
-              className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
+              className="flex flex-col cursor-pointer items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
             >
               <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                 <svg
@@ -132,7 +133,7 @@ const SideBar = () => {
                   dispatch(stopLoading());
                 }
               }}
-              className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
+              className="flex flex-col items-center cursor-pointer justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
             >
               <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                 <svg
@@ -176,7 +177,7 @@ const SideBar = () => {
                   dispatch(stopLoading());
                 }
               }}
-              className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
+              className="flex flex-col items-center cursor-pointer justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
             >
               <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
                 <svg
@@ -203,6 +204,42 @@ const SideBar = () => {
               </span>
               <span className="block sm:hidden sm:group-hover:inline lg:inline">
                 Community
+              </span>
+            </button>
+          </li>
+          <li className="hidden sm:block">
+            <button
+              onClick={async () => {
+                try {
+                  dispatch(startLoading());
+                  await dispatch(fetchUserChannelProfile(loggedUserName));
+                  await dispatch(fetchChannelDashboard(loggedInUserId));
+                  await dispatch(fetchChannelVideo(loggedInUserId));
+                  await navigate("/channel/dashboard");
+                } catch (error) {
+                  console.error("Error fetching user channel profile:", error);
+                  toast.error("Failed to fetch user channel profile");
+                } finally {
+                  dispatch(stopLoading());
+                }
+              }}
+              className="flex flex-col items-center cursor-pointer justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
+            >
+              <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
+                <svg
+                  style={{ width: "100%" }}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 4C7.03 4 3 7.58 3 12c0 2.97 2.16 5.5 5.25 6.61.36.13.75.19 1.13.19.38 0 .77-.06 1.13-.19l1.24.86c.32.22.74.22 1.06 0l1.24-.86c.36.13.75.19 1.13.19.38 0 .77-.06 1.13-.19C18.84 17.5 21 14.97 21 12c0-4.42-4.03-8-9-8zm0 14c-3.87 0-7-2.69-7-6s3.13-6 7-6 7 2.69 7 6-3.13 6-7 6zm0-8a2 2 0 100 4 2 2 0 000-4z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+              <span className="block sm:hidden sm:group-hover:inline lg:inline">
+                My Dashboard
               </span>
             </button>
           </li>

@@ -23,6 +23,7 @@ import ChannelVideo from "./components/channel/ChannelVideo.jsx";
 import ChannelPage from "./components/channel/ChannelPage.jsx";
 import TweetHomePage from "./components/tweet/TweetHomePage.jsx";
 import Loader from "./utils/Loader.jsx";
+import ChannelDashboard from "./components/channel/ChannelDashboard.jsx";
 
 const root = createRoot(document.getElementById("root"));
 // window.onbeforeunload = function () {
@@ -100,6 +101,14 @@ const router = createBrowserRouter(
           element={
             <ProtectedRoutes>
               <Loader />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="channel/dashboard"
+          element={
+            <ProtectedRoutes>
+              <ChannelDashboard />
             </ProtectedRoutes>
           }
         />

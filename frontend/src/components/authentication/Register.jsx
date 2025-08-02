@@ -47,7 +47,7 @@ const Register = () => {
       const formData = new form();
 
       axios
-        .post("http://localhost:8000/api/v1/users/register", formData, {
+        .post(`${API_BASE_URL}/register`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
