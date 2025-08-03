@@ -71,50 +71,54 @@ const VideoListingPage = () => {
           <section className="w-full pb-[70px] sm:ml-[70px] sm:pb-0 lg:ml-0">
             <div className="grid grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-4 p-4">
               {videoData && videoData.length > 0 ? (
-                videoData.map((video, index) => (
-                  <>
-                    <div className="w-full">
-                      <div
-                        key={video._id || index}
-                        className="relative mb-2 w-full pt-[56%]"
-                      >
+                videoData
+                  .filter((video) => video.isPublished === true)
+                  .map((video, index) => (
+                    <>
+                      <div className="w-full">
                         <div
-                          onClick={() => {
-                            handleVideoClick(video);
-                          }}
-                          className="absolute inset-0"
+                          key={video._id || index}
+                          className="relative mb-2 w-full pt-[56%]"
                         >
-                          <img
-                            src={video.thumbnail}
-                            alt="JavaScript Fundamentals: Variables and Data Types"
-                            className="h-full w-full cursor-pointer"
-                          />
+                          <div
+                            onClick={() => {
+                              handleVideoClick(video);
+                            }}
+                            className="absolute inset-0"
+                          >
+                            <img
+                              src={video.thumbnail}
+                              alt="JavaScript Fundamentals: Variables and Data Types"
+                              className="h-full w-full cursor-pointer"
+                            />
+                          </div>
+                          <span className="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
+                            {duration(video.duration)}
+                          </span>
                         </div>
-                        <span className="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
-                          {duration(video.duration)}
-                        </span>
+                        <div className="flex gap-x-2">
+                          <div className="h-10 w-10 shrink-0">
+                            <img
+                              src={video.owner.avatar}
+                              alt="codemaster"
+                              className="h-full w-full rounded-full"
+                            />
+                          </div>
+                          <div className="w-full">
+                            <h6 className="mb-1 font-semibold">
+                              {video.title}
+                            </h6>
+                            <p className="flex text-sm text-gray-200">
+                              {video.views} Views · {timeAgo(video.createdAt)}
+                            </p>
+                            <p className="text-sm text-gray-200">
+                              {video.owner.userName}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex gap-x-2">
-                        <div className="h-10 w-10 shrink-0">
-                          <img
-                            src={video.owner.avatar}
-                            alt="codemaster"
-                            className="h-full w-full rounded-full"
-                          />
-                        </div>
-                        <div className="w-full">
-                          <h6 className="mb-1 font-semibold">{video.title}</h6>
-                          <p className="flex text-sm text-gray-200">
-                            {video.views} Views · {timeAgo(video.createdAt)}
-                          </p>
-                          <p className="text-sm text-gray-200">
-                            {video.owner.userName}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ))
+                    </>
+                  ))
               ) : (
                 <section className="w-full pb-[70px] sm:ml-[70px] sm:pb-0 lg:ml-0 pt-20">
                   <div className="flex h-full items-center justify-center">
