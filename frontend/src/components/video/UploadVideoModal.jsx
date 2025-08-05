@@ -60,7 +60,11 @@ const UploadVideoModal = ({ open, onClose }) => {
 
       return response.data.data;
     } catch (err) {
-      setErrors({ submit: "Something went wrong. Please try again." });
+      console.error("Error uploading video:", err);
+      setErrors({ general: "Something went wrong. Please try again." });
+      setTimeout(() => {
+        onClose(); // Close the modal after 2 seconds
+      }, 2000);
     } finally {
       setIsLoading(false);
     }
@@ -73,12 +77,15 @@ const UploadVideoModal = ({ open, onClose }) => {
       <div className="absolute inset-0 z-50 bg-black/50 px-4 pb-[86px] pt-4 sm:px-14 sm:py-8">
         <div className="h-max overflow-auto border bg-[#121212] p-6 max-w-md mx-auto relative">
           <button
-            className="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl"
+            className="absolute cursor-pointer top-3 right-3 text-gray-400 hover:text-white text-2xl"
             onClick={onClose}
           >
             &times;
           </button>
           <h2 className="text-xl font-bold mb-4 text-white">Upload Video</h2>
+          {errors.general && (
+            <p className="text-red-500 text-sm mb-4">{errors.general}</p>
+          )}
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label className="block text-gray-300 mb-1">
@@ -88,7 +95,7 @@ const UploadVideoModal = ({ open, onClose }) => {
               <input
                 type="file"
                 accept="video/*"
-                className={`w-full rounded p-1 file:mr-4 file:rounded file:border-none file:bg-amber-600 file:px-3 file:py-1.5 ${
+                className={`w-full file:cursor-pointer rounded p-1 file:mr-4 file:rounded file:border-none file:bg-amber-600 file:px-3 file:py-1.5 ${
                   videoFile ? "bg-zinc-700" : "bg-neutral-900 text-white"
                 }`}
                 onChange={(e) => setVideoFile(e.target.files[0])}
@@ -111,7 +118,7 @@ const UploadVideoModal = ({ open, onClose }) => {
                 accept="image/*"
                 placeholder="upload thumbnail"
                 onChange={(e) => setThumbnail(e.target.files[0])}
-                className={`w-full rounded p-1 file:mr-4 file:rounded file:border-none file:bg-amber-600 file:px-3 file:py-1.5 ${
+                className={`w-full file:cursor-pointer rounded p-1 file:mr-4 file:rounded file:border-none file:bg-amber-600 file:px-3 file:py-1.5 ${
                   thumbnail ? "bg-zinc-700" : "bg-neutral-900 text-white"
                 }`}
               />
@@ -164,7 +171,7 @@ const UploadVideoModal = ({ open, onClose }) => {
 
             <button
               type="submit"
-              className={`w-full ${
+              className={`w-full cursor-pointer ${
                 isLoading ? "bg-stone-950" : "bg-amber-600"
               }  text-white  font-semibold py-2 rounded`}
               disabled={isDisabled || isLoading}
