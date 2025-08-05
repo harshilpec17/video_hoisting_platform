@@ -8,6 +8,7 @@ import { fetchChannelVideo } from "../../store/channelSlice";
 import { useState } from "react";
 import UploadVideoModal from "../video/UploadVideoModal";
 import { deleteVideoById } from "../../store/videoSlice";
+import DeleteConfirmationModal from "../../utils/DeleteConfirmationModal";
 
 const ChannelDashboard = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,8 @@ const ChannelDashboard = () => {
   const loggedUserName = loggedInUser?.user?.userName;
 
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [videoToDelete, setVideoToDelete] = useState(null);
   return (
     <>
       {isLoading && <Loader />}
@@ -49,7 +52,7 @@ const ChannelDashboard = () => {
               <div class="block">
                 <button
                   onClick={() => setIsUploadModalOpen(true)}
-                  class="inline-flex items-center gap-x-2 bg-[#ae7aff] px-3 py-2 font-semibold text-black"
+                  class="inline-flex cursor-pointer items-center gap-x-2 bg-[#ae7aff] px-3 py-2 font-semibold text-black"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -74,6 +77,28 @@ const ChannelDashboard = () => {
               open={isUploadModalOpen}
               onClose={() => setIsUploadModalOpen(false)}
             />
+            <DeleteConfirmationModal
+              open={deleteModalOpen}
+              item={"video "}
+              onClose={() => {
+                setDeleteModalOpen(false);
+                setVideoToDelete(null);
+              }}
+              onDelete={async () => {
+                try {
+                  dispatch(startLoading());
+                  await dispatch(deleteVideoById(videoToDelete));
+                  await dispatch(fetchChannelVideo(loggedInUserId));
+                } catch (error) {
+                  console.error(error);
+                } finally {
+                  dispatch(stopLoading());
+                  setDeleteModalOpen(false);
+                  setVideoToDelete(null);
+                }
+              }}
+            />
+
             {dashboardData &&
               dashboardData.map((stat, index) => (
                 <div
@@ -317,20 +342,11 @@ const ChannelDashboard = () => {
                                 <RiEditLine />
                               </div>
                               <div
-                                onClick={async () => {
-                                  try {
-                                    dispatch(startLoading());
-                                    await dispatch(deleteVideoById(video._id));
-                                    await dispatch(
-                                      fetchChannelVideo(loggedInUserId)
-                                    );
-                                  } catch (error) {
-                                    console.error(error);
-                                  } finally {
-                                    dispatch(stopLoading());
-                                  }
+                                onClick={() => {
+                                  setVideoToDelete(video._id);
+                                  setDeleteModalOpen(true);
                                 }}
-                                className="text-2xl font-bold hover:bg-red-500 p-0.5 h-7 rounded"
+                                className="text-2xl cursor-pointer font-bold hover:bg-red-500 p-0.5 h-7 rounded"
                               >
                                 <MdOutlineDeleteOutline />
                               </div>

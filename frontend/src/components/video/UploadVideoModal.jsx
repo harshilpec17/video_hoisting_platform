@@ -55,6 +55,7 @@ const UploadVideoModal = ({ open, onClose }) => {
       setThumbnail(null);
       setErrors({});
       setIsLoading(false);
+      setSuccessMessage("Video uploaded successfully!");
       dispatch(fetchChannelVideo(loggedInUserId));
       onClose(); // Close the modal after successful upload
 
@@ -62,9 +63,6 @@ const UploadVideoModal = ({ open, onClose }) => {
     } catch (err) {
       console.error("Error uploading video:", err);
       setErrors({ general: "Something went wrong. Please try again." });
-      setTimeout(() => {
-        onClose(); // Close the modal after 2 seconds
-      }, 2000);
     } finally {
       setIsLoading(false);
     }
@@ -78,7 +76,10 @@ const UploadVideoModal = ({ open, onClose }) => {
         <div className="h-max overflow-auto border bg-[#121212] p-6 max-w-md mx-auto relative">
           <button
             className="absolute cursor-pointer top-3 right-3 text-gray-400 hover:text-white text-2xl"
-            onClick={onClose}
+            onClick={() => {
+              onClose();
+              setErrors({});
+            }}
           >
             &times;
           </button>
