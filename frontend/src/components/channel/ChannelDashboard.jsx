@@ -1,13 +1,13 @@
-import axios from "axios";
-import React from "react";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { RiEditLine } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { startLoading, stopLoading } from "../../store/loaderSlice";
 import { togglePublishVideo } from "../../store/dashboardSlice";
-import { fetchChannelDashboard } from "../../store/dashboardSlice";
 import Loader from "../../utils/Loader";
 import { fetchChannelVideo } from "../../store/channelSlice";
+import { useState } from "react";
+import UploadVideoModal from "../video/UploadVideoModal";
+import { deleteVideoById } from "../../store/videoSlice";
 
 const ChannelDashboard = () => {
   const dispatch = useDispatch();
@@ -21,109 +21,11 @@ const ChannelDashboard = () => {
   const loggedInUserId = loggedInUser?.user?._id;
   const loggedUserName = loggedInUser?.user?.userName;
 
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   return (
     <>
       {isLoading && <Loader />}
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/3532545/pexels-photo-3532545.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/3532552/pexels-photo-3532552.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/3532549/pexels-photo-3532549.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/2522659/pexels-photo-2522659.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/2519823/pexels-photo-2519823.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/2519812/pexels-photo-2519812.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/18264716/pexels-photo-18264716/free-photo-of-man-people-laptop-internet.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/1739942/pexels-photo-1739942.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/1739856/pexels-photo-1739856.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/1144257/pexels-photo-1144257.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/1144261/pexels-photo-1144261.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/1144268/pexels-photo-1144268.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/1144269/pexels-photo-1144269.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/1144275/pexels-photo-1144275.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/1144277/pexels-photo-1144277.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/1144270/pexels-photo-1144270.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/1144235/pexels-photo-1144235.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/1144232/pexels-photo-1144232.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="https://images.pexels.com/photos/1115822/pexels-photo-1115822.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-      />
+
       <div class="h-screen overflow-y-auto bg-[#121212] text-white">
         <div class="flex min-h-[calc(100vh-66px)] sm:min-h-[calc(100vh-82px)]">
           <div class="mx-auto flex w-full max-w-7xl flex-col gap-y-6 px-4 py-8">
@@ -145,7 +47,10 @@ const ChannelDashboard = () => {
               )}
 
               <div class="block">
-                <button class="inline-flex items-center gap-x-2 bg-[#ae7aff] px-3 py-2 font-semibold text-black">
+                <button
+                  onClick={() => setIsUploadModalOpen(true)}
+                  class="inline-flex items-center gap-x-2 bg-[#ae7aff] px-3 py-2 font-semibold text-black"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -165,6 +70,10 @@ const ChannelDashboard = () => {
                 </button>
               </div>
             </div>
+            <UploadVideoModal
+              open={isUploadModalOpen}
+              onClose={() => setIsUploadModalOpen(false)}
+            />
             {dashboardData &&
               dashboardData.map((stat, index) => (
                 <div
@@ -408,8 +317,18 @@ const ChannelDashboard = () => {
                                 <RiEditLine />
                               </div>
                               <div
-                                onClick={() => {
-                                  handleDeleteComment(comment._id);
+                                onClick={async () => {
+                                  try {
+                                    dispatch(startLoading());
+                                    await dispatch(deleteVideoById(video._id));
+                                    await dispatch(
+                                      fetchChannelVideo(loggedInUserId)
+                                    );
+                                  } catch (error) {
+                                    console.error(error);
+                                  } finally {
+                                    dispatch(stopLoading());
+                                  }
                                 }}
                                 className="text-2xl font-bold hover:bg-red-500 p-0.5 h-7 rounded"
                               >
@@ -418,91 +337,6 @@ const ChannelDashboard = () => {
                             </div>
                           </td>
                         </tr>
-                        {/* <tr class="group border">
-                          <td class="border-collapse border-b border-gray-600 px-4 py-3 group-last:border-none">
-                            <div class="flex justify-center">
-                              <label
-                                for="vid-pub-2"
-                                class="relative inline-block w-12 cursor-pointer overflow-hidden"
-                              >
-                                <input
-                                  type="checkbox"
-                                  id="vid-pub-2"
-                                  class="peer sr-only"
-                                />
-                                <span class="inline-block h-6 w-full rounded-2xl bg-gray-200 duration-200 after:absolute after:bottom-1 after:left-1 after:top-1 after:h-4 after:w-4 after:rounded-full after:bg-black after:duration-200 peer-checked:bg-[#ae7aff] peer-checked:after:left-7"></span>
-                              </label>
-                            </div>
-                          </td>
-                          <td class="border-collapse border-b border-gray-600 px-4 py-3 group-last:border-none">
-                            <div class="flex justify-center">
-                              <span class="inline-block rounded-2xl border px-1.5 py-0.5 border-orange-600 text-orange-600">
-                                Unpublished
-                              </span>
-                            </div>
-                          </td>
-                          <td class="border-collapse border-b border-gray-600 px-4 py-3 group-last:border-none">
-                            <div class="flex items-center gap-4">
-                              <img
-                                class="h-10 w-10 rounded-full"
-                                src="https://images.pexels.com/photos/3532552/pexels-photo-3532552.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                                alt="React Ninja"
-                              />
-                              <h3 class="font-semibold">
-                                React Hooks Explained: useState and useEffect
-                              </h3>
-                            </div>
-                          </td>
-                          <td class="border-collapse border-b border-gray-600 px-4 py-3 group-last:border-none">
-                            <div class="flex justify-center gap-4">
-                              <span class="inline-block rounded-xl bg-green-200 px-1.5 py-0.5 text-green-700">
-                                2520 likes
-                              </span>
-                              <span class="inline-block rounded-xl bg-red-200 px-1.5 py-0.5 text-red-700">
-                                279 dislikes
-                              </span>
-                            </div>
-                          </td>
-                          <td class="border-collapse border-b border-gray-600 px-4 py-3 group-last:border-none">
-                            9/21/2023
-                          </td>
-                          <td class="border-collapse border-b border-gray-600 px-4 py-3 group-last:border-none">
-                            <div class="flex gap-4">
-                              <button class="h-5 w-5 hover:text-[#ae7aff]">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke-width="1.5"
-                                  stroke="currentColor"
-                                  aria-hidden="true"
-                                >
-                                  <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                                  ></path>
-                                </svg>
-                              </button>
-                              <button class="h-5 w-5 hover:text-[#ae7aff]">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke-width="1.5"
-                                  stroke="currentColor"
-                                  aria-hidden="true"
-                                >
-                                  <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
-                                  ></path>
-                                </svg>
-                              </button>
-                            </div>
-                          </td>
-                        </tr> */}
                       </>
                     ))}
                 </tbody>

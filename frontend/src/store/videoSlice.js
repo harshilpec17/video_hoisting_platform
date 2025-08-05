@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE_URL } from "../utils/constant";
 
 export const fetchVideoById = createAsyncThunk(
   "video/fetchVideoById",
@@ -14,6 +15,23 @@ export const fetchVideoById = createAsyncThunk(
       return response.data.data[0];
     } catch (error) {
       console.error("Error fetching video:", error);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const deleteVideoById = createAsyncThunk(
+  "video/deleteVideoById",
+  async (videoId, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/video/${videoId}`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+        },
+      });
+      return response.data.data;
+    } catch (error) {
+      console.error("Error deleting video:", error);
       return rejectWithValue(error.response.data);
     }
   }
@@ -71,6 +89,18 @@ export const videoSlice = createSlice({
       state.isDisliked = action.payload.isDisliked;
     });
     builder.addCase(fetchVideoById.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload; // Set the error
+    });
+    builder.addCase(deleteVideoById.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(deleteVideoById.fulfilled, (state, action) => {
+      state.loading = false;
+      state.currentVideo = null;
+    });
+    builder.addCase(deleteVideoById.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload; // Set the error
     });
