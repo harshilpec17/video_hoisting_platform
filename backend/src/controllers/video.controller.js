@@ -332,26 +332,23 @@ const getVideoById = asyncHandler(async (req, res) => {
 });
 
 const updateVideo = asyncHandler(async (req, res) => {
-  //TODO: update video details like title, description, thumbnail
-
-  // get all the fields from the body and form
   const videoId = req.params.videoId;
 
-  const isIdObjectValid = isValidObjectId(videoId);
+  // Validate video ID
+  if (!isValidObjectId(videoId)) {
+    return res.status(400).json(new ApiResponse(400, null, "Invalid video ID"));
+  }
 
-  if (!isIdObjectValid) {
-    throw new ApiErrors(400, "Please provide a true Id");
+  // Fetch existing video
+  const oldVideo = await Video.findById(videoId);
+  if (!oldVideo) {
+    return res.status(404).json(new ApiResponse(404, null, "Video not found"));
   }
 
   const { newTitle, newDescription } = req.body;
-  let newThumbnail = req.file.path;
-
-  const oldVideo = await Video.findById(videoId);
-
   const updateFields = {};
 
-  // check the Title is same or empty or undefined
-
+  // Title validation
   if (newTitle && newTitle.trim() !== "" && newTitle !== oldVideo.title) {
     updateFields.title = newTitle;
   }
@@ -365,42 +362,60 @@ const updateVideo = asyncHandler(async (req, res) => {
     updateFields.description = newDescription;
   }
 
-  // check the thumbnail data as it is empty array
-  if (
-    req.files &&
-    Array.isArray(req.files?.newThumbnail) &&
-    req.files?.newThumbnail.length > 0
-  ) {
-    newThumbnail = req.files?.newThumbnail[0]?.path;
+  // Thumbnail update
+  let newThumbnailPath;
+  if (req.file) {
+    newThumbnailPath = req.file.path;
+    try {
+      const newUpdatedThumbnail = await uploadOnCloudinary(newThumbnailPath);
+      if (!newUpdatedThumbnail?.url) {
+        return res
+          .status(500)
+          .json(new ApiResponse(500, null, "Cloudinary upload failed"));
+      }
+      updateFields.thumbnail = newUpdatedThumbnail.url;
+    } catch (err) {
+      return res
+        .status(500)
+        .json(new ApiResponse(500, null, "Cloudinary upload error"));
+    }
   }
 
-  //get the thumbnail data and upload on the cloudinary
-  const newUpdatedThumbnail = await uploadOnCloudinary(newThumbnail);
+  // If no changes
+  if (Object.keys(updateFields).length === 0) {
+    return res
+      .status(400)
+      .json(new ApiResponse(400, null, "No changes detected"));
+  }
 
-  updateFields.thumbnail = newUpdatedThumbnail.url;
+  // Update video
+  let updatedVideoDetails;
+  try {
+    updatedVideoDetails = await Video.findByIdAndUpdate(
+      videoId,
+      { $set: updateFields },
+      { new: true }
+    );
+  } catch (err) {
+    return res
+      .status(500)
+      .json(new ApiResponse(500, null, "Database update failed"));
+  }
 
-  // get all the data inside the object and updated the database
-  const updatedVideoDetails = await Video.findByIdAndUpdate(
-    videoId,
-    {
-      $set: updateFields,
-    },
-    {
-      new: true,
+  // Delete old thumbnail from Cloudinary if updated
+  if (updateFields.thumbnail && oldVideo?.thumbnail) {
+    try {
+      await deleteFromCloudinary(oldVideo.thumbnail);
+    } catch (err) {
+      // Log error but don't fail the request
+      console.error("Failed to delete old thumbnail from Cloudinary:", err);
     }
-  );
-
-  // delete the old thumbnail from the database
-  const oldThumbnailUrl = oldVideo?.thumbnail;
-
-  if (updatedVideoDetails && oldThumbnailUrl) {
-    await deleteFromCloudinary(oldThumbnailUrl);
   }
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200, updatedVideoDetails, "Details updated Successfully")
+      new ApiResponse(200, updatedVideoDetails, "Details updated successfully")
     );
 });
 

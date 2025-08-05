@@ -9,6 +9,7 @@ import { useState } from "react";
 import UploadVideoModal from "../video/UploadVideoModal";
 import { deleteVideoById } from "../../store/videoSlice";
 import DeleteConfirmationModal from "../../utils/DeleteConfirmationModal";
+import EditVideoModal from "../video/EditVideoModal";
 
 const ChannelDashboard = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,9 @@ const ChannelDashboard = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [videoToDelete, setVideoToDelete] = useState(null);
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState(null);
   return (
     <>
       {isLoading && <Loader />}
@@ -97,6 +101,11 @@ const ChannelDashboard = () => {
                   setVideoToDelete(null);
                 }
               }}
+            />
+            <EditVideoModal
+              open={isEditModalOpen}
+              onClose={() => setIsEditModalOpen(false)}
+              video={selectedVideo}
             />
 
             {dashboardData &&
@@ -297,11 +306,13 @@ const ChannelDashboard = () => {
                           </td>
                           <td class="border-collapse border-b border-gray-600 px-4 py-3 group-last:border-none">
                             <div class="flex justify-start items-center gap-4">
-                              <img
-                                class="h-10 w-10 rounded-full"
-                                src={video.owner[0].avatar}
-                                alt="Code Master"
-                              />
+                              {video.owner[0].avatar ? (
+                                <img
+                                  class="h-10 w-10 rounded-full"
+                                  src={video.owner[0].avatar}
+                                  alt="Code Master"
+                                />
+                              ) : null}
                               <h3 class="font-semibold">{video.title}</h3>
                             </div>
                           </td>
@@ -334,10 +345,10 @@ const ChannelDashboard = () => {
                             <div class="flex gap-4 justify-center">
                               <div
                                 onClick={() => {
-                                  setEditingCommentId(comment._id);
-                                  setEditingCommentText(comment.content);
+                                  setSelectedVideo(video);
+                                  setIsEditModalOpen(true);
                                 }}
-                                className="text-2xl font-bold hover:bg-orange-500 p-0.5 h-7 rounded"
+                                className="text-2xl font-bold cursor-pointer hover:bg-orange-500 p-0.5 h-7 rounded"
                               >
                                 <RiEditLine />
                               </div>
