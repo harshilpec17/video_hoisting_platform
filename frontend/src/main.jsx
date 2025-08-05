@@ -36,7 +36,7 @@ const root = createRoot(document.getElementById("root"));
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="" element={<App />}>
+      <Route path="/" element={<App />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         // Protected Route

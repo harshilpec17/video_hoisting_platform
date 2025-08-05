@@ -143,3 +143,6 @@ dist
 .DS_Store
 # macOS specific file
 .DS_Store
+
+.env.production
+.package-lock.json
