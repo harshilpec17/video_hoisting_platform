@@ -1,4 +1,5 @@
 import React from "react";
+import { ToastContainer } from "react-toastify";
 
 const DeleteConfirmationModal = ({ open, onClose, onDelete, item }) => {
   if (!open) return null;
@@ -8,8 +9,9 @@ const DeleteConfirmationModal = ({ open, onClose, onDelete, item }) => {
       <div className="bg-[#232323] rounded-lg p-6 shadow-lg max-w-sm w-full text-white">
         <h2 className="text-lg font-bold mb-4">Are you sure?</h2>
         <p className="mb-6 text-gray-300">
-          Do you really want to delete this {item}? This action cannot be
-          undone.
+          Do you really want to delete this{" "}
+          <span className="font-semibold text-blue-300">{item}</span>? This
+          action cannot be undone.
         </p>
         <div className="flex justify-end gap-3">
           <button
@@ -26,6 +28,7 @@ const DeleteConfirmationModal = ({ open, onClose, onDelete, item }) => {
           </button>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

@@ -18,6 +18,7 @@ import Loader from "../../utils/Loader";
 import { startLoading, stopLoading } from "../../store/loaderSlice";
 import { RiEditLine } from "react-icons/ri";
 import { MdOutlineDeleteOutline } from "react-icons/md";
+import DeleteConfirmationModal from "../../utils/DeleteConfirmationModal.jsx";
 
 const ChannelTweetPage = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,8 @@ const ChannelTweetPage = () => {
   const [tweetWarning, setTweetWarning] = useState("");
   const [editingTweetId, setEditingTweetId] = useState(null);
   const [editingTweetText, setEditingTweetText] = useState("");
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [tweetToDelete, setTweetToDelete] = useState(null);
 
   const loggedInUser = JSON.parse(localStorage.getItem("user"));
   const loggedInUserId = loggedInUser?.user?._id;
@@ -98,8 +101,33 @@ const ChannelTweetPage = () => {
 
   return (
     <>
+      <ToastContainer />
       <section className="w-full pb-[70px] pt-4">
         <div className="max-w-xl mx-auto px-2 sm:px-0">
+          <DeleteConfirmationModal
+            open={deleteModalOpen}
+            item={"tweet"}
+            onClose={() => {
+              setDeleteModalOpen(false);
+              setTweetToDelete(null);
+            }}
+            onDelete={async () => {
+              try {
+                dispatch(startLoading());
+                await dispatch(deleteTweet(tweetToDelete));
+                await dispatch(fetchUserTweets(loggedInUserId));
+
+                toast.success("Tweet deleted successfully!");
+              } catch (error) {
+                console.error(error);
+              } finally {
+                dispatch(stopLoading());
+                setDeleteModalOpen(false);
+                setTweetToDelete(null);
+              }
+            }}
+          />
+
           <h2 className="text-xl sm:text-2xl font-bold p-3">Tweets</h2>
           {/* Tweet input box */}
           <div className="mt-2 border pb-2">
@@ -240,18 +268,9 @@ const ChannelTweetPage = () => {
                       <RiEditLine />
                     </div>
                     <div
-                      onClick={async () => {
-                        try {
-                          startLoading();
-                          await dispatch(deleteTweet(tweet._id));
-                          await dispatch(fetchUserTweets(loggedInUserId));
-
-                          toast.success("Tweet deleted successfully!");
-                        } catch (error) {
-                          console.error("Failed to delete tweet:", error);
-                        } finally {
-                          stopLoading();
-                        }
+                      onClick={() => {
+                        setDeleteModalOpen(true);
+                        setTweetToDelete(tweet._id);
                       }}
                       className="text-xl font-bold hover:bg-red-500 h-7 py-1  rounded"
                     >

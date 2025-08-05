@@ -29,6 +29,9 @@ import {
   setIsSubscribed,
   subscriptionToggle,
 } from "../../store/subscriberSlice";
+import DeleteConfirmationModal from "../../utils/DeleteConfirmationModal.jsx";
+import { API_BASE_URL } from "../../utils/constant.js";
+import { startLoading, stopLoading } from "../../store/loaderSlice.js";
 
 const VideoDetailPage = () => {
   const navigate = useNavigate();
@@ -49,6 +52,9 @@ const VideoDetailPage = () => {
   const isSubscribed = useSelector(
     (state) => state.channel.channelProfile?.isSubscribed
   );
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState(null);
 
   console.log("channelData", channelData);
 
@@ -88,9 +94,8 @@ const VideoDetailPage = () => {
         },
       }
     );
-    if (response.status === 200) {
-      toast.success(response.data.data);
-    } else {
+
+    if (response.status !== 200) {
       toast.error(response.data.data);
     }
   };
@@ -273,6 +278,27 @@ const VideoDetailPage = () => {
       <div className="h-screen overflow-y-auto bg-[#121212] text-white">
         <div className="flex min-h-[calc(100vh-66px)] sm:min-h-[calc(100vh-82px)]">
           <SideBar />
+          <DeleteConfirmationModal
+            open={deleteModalOpen}
+            item={"comment"}
+            onClose={() => {
+              setDeleteModalOpen(false);
+              setCommentToDelete(null);
+            }}
+            onDelete={async () => {
+              try {
+                dispatch(startLoading());
+                await dispatch(handleDeleteComment(commentToDelete));
+                await dispatch(getAllComments(videoId));
+              } catch (error) {
+                console.error(error);
+              } finally {
+                dispatch(stopLoading());
+                setDeleteModalOpen(false);
+                setCommentToDelete(null);
+              }
+            }}
+          />
 
           <section className="w-full pb-[70px] sm:mx-[0px] sm:pb-0">
             <div className="flex w-full flex-wrap gap-4 p-4 lg:flex-nowrap">
@@ -520,7 +546,8 @@ const VideoDetailPage = () => {
                                   </div>
                                   <div
                                     onClick={() => {
-                                      handleDeleteComment(comment._id);
+                                      setCommentToDelete(comment._id);
+                                      setDeleteModalOpen(true);
                                     }}
                                     className="text-2xl font-bold hover:bg-red-500 p-0.5 h-7 rounded"
                                   >
@@ -556,30 +583,8 @@ const VideoDetailPage = () => {
                         <hr className="my-4 border-white" />
                       </>
                     ))}
-                  <div className="flex gap-x-4">
-                    <div className="mt-2 h-11 w-11 shrink-0">
-                      <img
-                        src="https://images.pexels.com/photos/18148932/pexels-photo-18148932/free-photo-of-woman-reading-book-on-a-bench.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                        alt="sarahjv"
-                        className="h-full w-full rounded-full"
-                      />
-                    </div>
-                    <div className="block">
-                      <p className="flex items-center text-gray-200">
-                        Sarah Johnson
-                        <span className="text-sm">17 hour ago</span>
-                      </p>
-                      <p className="text-sm text-gray-200">@sarahjv</p>
-                      <p className="mt-3 text-sm">
-                        This series is exactly what I&#x27;ve been looking
-                        htmlFor! Excited to dive into these advanced React
-                        patterns. Thanks htmlFor putting this together!
-                      </p>
-                    </div>
-                  </div>
                 </div>
               </div>
-
               <div className="col-span-12 flex w-full shrink-0 flex-col gap-3 lg:w-[350px] xl:w-[400px]">
                 {videoList &&
                   videoList.length > 0 &&

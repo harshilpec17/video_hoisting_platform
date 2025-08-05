@@ -17,6 +17,7 @@ import Loader from "../../utils/Loader";
 import { startLoading, stopLoading } from "../../store/loaderSlice";
 import { RiEditLine } from "react-icons/ri";
 import { MdOutlineDeleteOutline } from "react-icons/md";
+import DeleteConfirmationModal from "../../utils/DeleteConfirmationModal.jsx";
 
 const TweetHomePage = () => {
   const dispatch = useDispatch();
@@ -28,6 +29,9 @@ const TweetHomePage = () => {
   const [tweetWarning, setTweetWarning] = useState("");
   const [editingTweetId, setEditingTweetId] = useState(null);
   const [editingTweetText, setEditingTweetText] = useState("");
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [tweetToDelete, setTweetToDelete] = useState(null);
 
   const loggedInUser = JSON.parse(localStorage.getItem("user"));
   const loggedInUserId = loggedInUser?.user?._id;
@@ -99,6 +103,29 @@ const TweetHomePage = () => {
       {isLoading && <Loader />}
       <div className="flex flex-col sm:flex-row min-h-[calc(100vh-66px)] sm:min-h-[calc(100vh-82px)]">
         <SideBar />
+        <DeleteConfirmationModal
+          open={deleteModalOpen}
+          item={"tweet"}
+          onClose={() => {
+            setDeleteModalOpen(false);
+            setTweetToDelete(null);
+          }}
+          onDelete={async () => {
+            try {
+              dispatch(startLoading());
+              await dispatch(deleteTweet(tweetToDelete));
+              await dispatch(fetchAllTweets({ page, limit: 10 }));
+
+              toast.success("Tweet deleted successfully!");
+            } catch (error) {
+              console.error(error);
+            } finally {
+              dispatch(stopLoading());
+              setDeleteModalOpen(false);
+              setTweetToDelete(null);
+            }
+          }}
+        />
         <section className="w-full pb-[70px] pt-4">
           <div className="max-w-xl mx-auto px-2 sm:px-0">
             <h2 className="text-xl sm:text-2xl font-bold p-3">Tweets</h2>
@@ -114,7 +141,7 @@ const TweetHomePage = () => {
                 <button
                   onClick={handleCreateTweet}
                   disabled={tweetWarning !== ""}
-                  className={`px-3 py-2 font-semibold text-black ${
+                  className={`px-3 py-2 font-semibold cursor-pointer text-black ${
                     tweetWarning !== ""
                       ? "bg-gray-400 cursor-not-allowed"
                       : "bg-[#ae7aff]"
@@ -233,7 +260,7 @@ const TweetHomePage = () => {
                       </button>
                     </div>
                     {tweet?.owner === loggedInUserId && (
-                      <div className="flex gap-2 relative ml-auto border px-2 py-0.5 mb-1 bg-neutral-800 rounded-lg">
+                      <div className="flex gap-2 cursor-pointer relative ml-auto border px-2 py-0.5 mb-1 bg-neutral-800 rounded-lg">
                         <div
                           onClick={() => {
                             setEditingTweetId(tweet._id);
@@ -244,22 +271,11 @@ const TweetHomePage = () => {
                           <RiEditLine />
                         </div>
                         <div
-                          onClick={async () => {
-                            try {
-                              startLoading();
-                              await dispatch(deleteTweet(tweet._id));
-                              await dispatch(
-                                fetchAllTweets({ page, limit: 10 })
-                              );
-
-                              toast.success("Tweet deleted successfully!");
-                            } catch (error) {
-                              console.error("Failed to delete tweet:", error);
-                            } finally {
-                              stopLoading();
-                            }
+                          onClick={() => {
+                            setDeleteModalOpen(true);
+                            setTweetToDelete(tweet._id);
                           }}
-                          className="text-xl font-bold hover:bg-red-500 h-7 py-1  rounded"
+                          className="text-xl cursor-pointer font-bold hover:bg-red-500 h-7 py-1  rounded"
                         >
                           <MdOutlineDeleteOutline />
                         </div>
