@@ -41,7 +41,7 @@ router
   .route("/login/update-cover-image")
   .patch(verifyJWT, upload.single("coverImage"), updateUserCoverImage);
 
-router.route("login/update-account").patch(verifyJWT, updateAccountDetail);
+router.route("/login/update-account").patch(verifyJWT, updateAccountDetail);
 
 // secure routes
 
