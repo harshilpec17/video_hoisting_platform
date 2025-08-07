@@ -24,6 +24,7 @@ import ChannelPage from "./components/channel/ChannelPage.jsx";
 import TweetHomePage from "./components/tweet/TweetHomePage.jsx";
 import Loader from "./utils/Loader.jsx";
 import ChannelDashboard from "./components/channel/ChannelDashboard.jsx";
+import EditPersonalInfo from "./components/userAccount/EditPersonalInfo.jsx";
 
 const root = createRoot(document.getElementById("root"));
 // window.onbeforeunload = function () {
@@ -109,6 +110,14 @@ const router = createBrowserRouter(
           element={
             <ProtectedRoutes>
               <ChannelDashboard />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="userinfo"
+          element={
+            <ProtectedRoutes>
+              <EditPersonalInfo />
             </ProtectedRoutes>
           }
         />
