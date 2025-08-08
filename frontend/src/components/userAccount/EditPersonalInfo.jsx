@@ -14,6 +14,7 @@ import {
 import { fetchUserTweets } from "../../store/tweetSlice";
 import { startLoading, stopLoading } from "../../store/loaderSlice";
 import ChangePassword from "./ChangePassword";
+import ChangeAvatar from "./ChangeAvatar";
 
 const EditPersonalInfo = () => {
   const navigate = useNavigate();
@@ -30,6 +31,8 @@ const EditPersonalInfo = () => {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
+  const [changeAvatarModalOpen, setChangeAvatarModalOpen] = useState(false);
+  const [imageType, setImageType] = useState("avatar");
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -51,12 +54,15 @@ const EditPersonalInfo = () => {
                 <img src={channelInfo?.coverImage} alt="cover-photo" />
               </div>
               <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                <input type="file" id="cover-image" className="hidden" />
                 <label
                   htmlFor="cover-image"
                   className="inline-block h-10 w-10 cursor-pointer rounded-lg bg-white/60 p-1 text-[#ae7aff] hover:bg-white"
                 >
                   <svg
+                    onClick={() => {
+                      setChangeAvatarModalOpen(true);
+                      setImageType("cover");
+                    }}
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -72,22 +78,36 @@ const EditPersonalInfo = () => {
                   </svg>
                 </label>
               </div>
+              <ChangeAvatar
+                open={changeAvatarModalOpen}
+                onClose={() => setChangeAvatarModalOpen(false)}
+                currentImage={
+                  imageType === "cover"
+                    ? channelInfo?.coverImage
+                    : channelInfo?.avatar
+                }
+                type={imageType}
+                onSuccess={(data) => {}}
+              />
             </div>
             <div className="px-4 pb-4">
               <div className="flex flex-wrap gap-4 pb-4 pt-6">
-                <div className="relative -mt-12 inline-block h-28 w-28 shrink-0 overflow-hidden rounded-full border-2">
+                <div className="relative -mt-12 inline-block h-28 w-28 shrink-0 overflow-hidden rounded-full border-stone-600 border-2">
                   <img
                     src={channelInfo.avatar}
                     alt="Channel"
                     className="h-full w-full"
                   />
                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <input type="file" id="profile-image" className="hidden" />
                     <label
                       htmlFor="profile-image"
                       className="inline-block h-8 w-8 cursor-pointer rounded-lg bg-white/60 p-1 text-[#ae7aff] hover:bg-white"
                     >
                       <svg
+                        onClick={() => {
+                          setChangeAvatarModalOpen(true);
+                          setImageType("avatar");
+                        }}
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -144,7 +164,7 @@ const EditPersonalInfo = () => {
                     }}
                     className={`w-full ${
                       activeTab === "Personal Information"
-                        ? "border-stone-600 border-b-2 bg-stone-400"
+                        ? "border-black border-b-2 bg-purple-500"
                         : "border-transparent"
                     } px-3 py-1.5 text-white cursor-pointer`}
                   >
@@ -159,7 +179,7 @@ const EditPersonalInfo = () => {
                     }}
                     className={`w-full ${
                       activeTab === "Change Password"
-                        ? "border-stone-600 border-b-2 bg-stone-400"
+                        ? "border-black border-b-2 bg-purple-500"
                         : "border-transparent"
                     } px-3 py-1.5 text-white cursor-pointer`}
                   >
