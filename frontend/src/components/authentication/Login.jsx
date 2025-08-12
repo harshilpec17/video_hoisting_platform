@@ -47,8 +47,6 @@ const Login = () => {
                 "accessToken",
                 response.data.data.accessToken
               );
-              console.log(response.data.data.accessToken);
-              console.log(response.data.data.refreshToken);
               navigate("/videolistingpage");
             }
           })

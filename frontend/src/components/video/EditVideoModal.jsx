@@ -98,7 +98,7 @@ const EditVideoModal = ({
 
   return (
     <div className="absolute inset-0 z-50 bg-black/50 px-4 pb-[86px] pt-4 sm:px-14 sm:py-8">
-      <div className="h-max overflow-auto border bg-[#121212] p-6 max-w-md mx-auto relative">
+      <div className="h-max overflow-auto border bg-[#121212] p-6 max-w-md max-h-screen mx-auto relative">
         <button
           className="absolute cursor-pointer top-3 right-3 text-gray-400 hover:text-white text-2xl"
           onClick={onClose}

@@ -93,33 +93,35 @@ const ChannelPage = () => {
         as="image"
         href="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
       />
-      <div class="h-screen overflow-y-auto bg-[#121212] text-white">
-        <div class="flex min-h-[calc(100vh-66px)] sm:min-h-[calc(100vh-82px)]">
+      <div className="h-screen no-scrollbar overflow-y-auto bg-[#121212] text-white">
+        <div className="flex min-h-[calc(100vh-66px)] sm:min-h-[calc(100vh-82px)]">
           <SideBar />
-          <section class="w-full pb-[70px] sm:ml-[70px] sm:pb-0 lg:ml-0">
+          <section className="w-full pb-[70px] sm:ml-[70px] sm:pb-0 lg:ml-0">
             {channelData && typeof channelData === "object" ? (
               <>
-                <div class="relative min-h-[150px] w-full pt-[16.28%]">
-                  <div class="absolute inset-0 overflow-hidden">
+                <div className="relative min-h-[150px] w-full pt-[16.28%]">
+                  <div className="absolute inset-0 overflow-hidden">
                     <img src={channelData?.coverImage} alt="cover-photo" />
                   </div>
                 </div>
-                <div class="px-4 pb-4">
-                  <div class="flex flex-wrap gap-4 pb-4 pt-6">
-                    <span class="relative -mt-12 inline-block h-28 w-28 shrink-0 overflow-hidden rounded-full border-2">
+                <div className="px-4 pb-4">
+                  <div className="flex flex-wrap gap-4 pb-4 pt-6">
+                    <span className="relative -mt-12 inline-block h-28 w-28 shrink-0 overflow-hidden rounded-full border-2">
                       <img
                         src={channelData?.avatar}
                         alt="Channel"
-                        class="h-full w-full"
+                        className="h-full w-full"
                       />
                     </span>
-                    <div class="mr-auto inline-block">
-                      <h1 class="font-bolg text-xl">{channelData?.fullName}</h1>
-                      <p class="text-sm text-gray-400">
+                    <div className="mr-auto inline-block">
+                      <h1 className="font-bolg text-xl">
+                        {channelData?.fullName}
+                      </h1>
+                      <p className="text-sm text-gray-400">
                         {channelData?.userName}
                       </p>
                       <div className="flex gap-3">
-                        <p class="text-sm text-gray-400">
+                        <p className="text-sm text-gray-400">
                           {channelData?.subscribersCount} Subscribers
                         </p>
                         <p className="text-sm text-gray-400">
@@ -127,8 +129,8 @@ const ChannelPage = () => {
                         </p>
                       </div>
                     </div>
-                    <div class="inline-block">
-                      <div class="inline-flex min-w-[145px] justify-end">
+                    <div className="inline-block">
+                      <div className="inline-flex min-w-[145px] justify-end">
                         <div className="block">
                           {isSubscribed ? (
                             <button
@@ -160,7 +162,7 @@ const ChannelPage = () => {
                                 dispatch(fetchSubscribedList(loggedInUserId));
                               }}
                               type="button"
-                              class="text-white hover:text-purple-700 border border-purple-800 hover:border-purple-700 bg-purple-800 hover:bg-transparent focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-purple-500 dark:text-white dark:hover:text-purple-400 dark:hover:bg-transparent dark:focus:ring-purple-900"
+                              className="text-white hover:text-purple-700 border border-purple-800 hover:border-purple-700 bg-purple-800 hover:bg-transparent focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-purple-500 dark:text-white dark:hover:text-purple-400 dark:hover:bg-transparent dark:focus:ring-purple-900"
                             >
                               Subscribe
                             </button>
@@ -170,13 +172,13 @@ const ChannelPage = () => {
                     </div>
                   </div>
                   <div>
-                    <ul class="no-scrollbar sticky top-[66px] z-[2] flex flex-row gap-x-2 overflow-auto border-b-2 border-gray-400 bg-[#121212] py-2 sm:top-[82px]">
-                      <li class="w-full">
+                    <ul className="no-scrollbar sticky top-[66px] z-[2] flex flex-row gap-x-2 overflow-auto border-b-2 border-gray-400 bg-[#121212] py-2 sm:top-[82px]">
+                      <li className="w-full">
                         <button
                           onClick={() => handleTabChange("videos")}
-                          class={`w-full border-b-2 px-3 py-1.5 transition-colors ${
+                          className={`w-full border-b-2 px-3 py-1.5 transition-colors cursor-pointer ${
                             activeTab === "videos"
-                              ? "border-[#ae7aff] bg-white text-[#ae7aff]"
+                              ? "border-[#ae7aff] bg-purple-500 text-white"
                               : "border-transparent text-gray-400 hover:text-white"
                           }`}
                         >
@@ -184,7 +186,7 @@ const ChannelPage = () => {
                         </button>
                       </li>
 
-                      <li class="w-full">
+                      <li className="w-full">
                         <button
                           onClick={async () => {
                             try {
@@ -197,9 +199,9 @@ const ChannelPage = () => {
                               dispatch(stopLoading());
                             }
                           }}
-                          class={`w-full border-b-2 px-3 py-1.5 transition-colors ${
+                          className={`w-full border-b-2 px-3 py-1.5 cursor-pointer transition-colors ${
                             activeTab === "tweets"
-                              ? "border-[#ae7aff] bg-white text-[#ae7aff]"
+                              ? "border-[#ae7aff] bg-purple-500 text-white"
                               : "border-transparent text-gray-400 hover:text-white"
                           }`}
                         >
@@ -208,31 +210,31 @@ const ChannelPage = () => {
                       </li>
                       {isMyChannel && (
                         <>
-                          <li class="w-full">
+                          <li className="w-full">
                             <button
                               onClick={() => {
                                 handleTabChange("subscriptions");
                                 dispatch(fetchSubscribedList(loggedInUserId));
                               }}
-                              class={`w-full border-b-2 px-3 py-1.5 transition-colors ${
+                              className={`w-full border-b-2 px-3 py-1.5 cursor-pointer transition-colors ${
                                 activeTab === "subscriptions"
-                                  ? "border-[#ae7aff] bg-white text-[#ae7aff]"
+                                  ? "border-[#ae7aff] bg-purple-500 text-white"
                                   : "border-transparent text-gray-400 hover:text-white"
                               }`}
                             >
                               Subscriptions
                             </button>
                           </li>
-                          <li class="w-full">
+                          <li className="w-full">
                             <button
                               // onClick={() => handleTabChange("subscribers")}
                               onClick={() => {
                                 handleTabChange("subscribers");
                                 dispatch(fetchSubscriberList(loggedInUserId));
                               }}
-                              class={`w-full border-b-2 px-3 py-1.5 transition-colors ${
+                              className={`w-full border-b-2 px-3 py-1.5  cursor-pointer transition-colors ${
                                 activeTab === "subscribers"
-                                  ? "border-[#ae7aff] bg-white text-[#ae7aff]"
+                                  ? "border-[#ae7aff] bg-purple-500 text-white"
                                   : "border-transparent text-gray-400 hover:text-white"
                               }`}
                             >

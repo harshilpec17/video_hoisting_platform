@@ -275,7 +275,7 @@ const VideoDetailPage = () => {
 
   return (
     <>
-      <div className="h-screen overflow-y-auto bg-[#121212] text-white">
+      <div className="h-screen hide-scrollbar overflow-y-auto bg-[#121212] text-white">
         <div className="flex min-h-[calc(100vh-66px)] sm:min-h-[calc(100vh-82px)]">
           <SideBar />
           <DeleteConfirmationModal
@@ -319,7 +319,7 @@ const VideoDetailPage = () => {
                   </div>
                 </div>
                 <div
-                  className="group mb-4 w-full rounded-lg border p-4 duration-200 hover:bg-white/5 focus:bg-white/5"
+                  className="group mb-4 w-full rounded-lg border border-stone-600 p-4 duration-200 hover:bg-white/5 focus:bg-white/5"
                   role="button"
                   tabIndex="0"
                 >
@@ -333,12 +333,12 @@ const VideoDetailPage = () => {
                     </div>
                     <div className="w-full md:w-1/2 lg:w-full xl:w-1/2">
                       <div className="flex items-center justify-between gap-x-4 md:justify-end lg:justify-between xl:justify-end">
-                        <div className="flex overflow-hidden rounded-lg border">
+                        <div className="flex overflow-hidden rounded-lg border border-stone-600">
                           <button
                             onClick={() => {
                               handleLike();
                             }}
-                            className="group/btn flex items-center gap-x-2 border-r border-gray-700 px-4 py-1.5 after:content-[attr(data-like)] hover:bg-white/10 focus:after:content-[attr(data-like-alt)]"
+                            className="group/btn flex items-center gap-x-2 border-r border-stone-600 px-4 py-1.5 after:content-[attr(data-like)] hover:bg-white/10 focus:after:content-[attr(data-like-alt)]"
                           >
                             <span
                               style={{ color: "white", fontSize: "1.5rem" }}
@@ -452,15 +452,15 @@ const VideoDetailPage = () => {
                       </div>
                     </div>
                   )}
-                  <hr className="my-4 border-white" />
+                  <hr className="my-4 border-stone-600 border-1" />
                   <div className="h-5 overflow-hidden group-focus:h-auto">
                     <p className="text-sm">{video?.description}</p>
                   </div>
                 </div>
-                <button className="peer w-full rounded-lg border p-4 text-left duration-200 hover:bg-white/5 focus:bg-white/5 sm:hidden">
+                <button className="peer w-full rounded-lg border p-4 border-stone-600 text-left duration-200 hover:bg-white/5 focus:bg-white/5 sm:hidden">
                   <h6 className="font-semibold">Comments</h6>
                 </button>
-                <div className="fixed inset-x-0 top-full z-[60] h-[calc(100%-69px)] overflow-auto rounded-lg border bg-[#121212] p-4 duration-200 hover:top-[67px] peer-focus:top-[67px] sm:static sm:h-auto sm:max-h-[500px] lg:max-h-none">
+                <div className="fixed inset-x-0 top-full z-[60] h-[calc(100%-69px)] overflow-auto rounded-lg border border-stone-600 bg-[#121212] p-4 duration-200 hover:top-[67px] peer-focus:top-[67px] sm:static sm:h-auto sm:max-h-[500px] lg:max-h-none">
                   <div className="block">
                     <h6 className="mb-4 font-semibold">Comments</h6>
                     <form
@@ -475,20 +475,20 @@ const VideoDetailPage = () => {
                           // onKeyDown={handleCommentSubmit}
                           autoFocus
                           required
-                          className="w-full rounded-lg border bg-transparent px-2 py-1 pr-24 placeholder-white"
+                          className="w-full rounded-lg border border-stone-400 bg-transparent px-2 py-1 pr-24 placeholder-white"
                           placeholder="Add a Comment"
                         />
                         <button
                           type="submit"
                           onClick={handleCommentSubmit}
-                          className="absolute right-0 top-1/2 border-white cursor-grab  -translate-y-1/2 rounded-lg bg-[#ae7aff] px-4 py-1 text-black"
+                          className="absolute right-0 top-1/2 border-black hover:bg-purple-500 cursor-pointer -translate-y-1/2 rounded-lg bg-purple-400 px-4 py-1 text-black"
                         >
                           Submit
                         </button>
                       </div>
                     </form>
                   </div>
-                  <hr className="my-4 border-white" />
+                  <hr className="my-4 border-stone-600 border-1" />
 
                   {comments &&
                     comments.length > 0 &&
@@ -514,7 +514,7 @@ const VideoDetailPage = () => {
                                 {editingCommentId === comment._id ? (
                                   <div className="flex items-center justify-between ">
                                     <input
-                                      className="flex-1 text-sm font-bold md:w-96 max-w-md mt-3 text-white border-0 border-b border-gray-500 focus:border-[#ae7aff] outline-none transition-all duration-150"
+                                      className="flex-1 text-sm font-bold md:w-96 max-w-md mt-3 text-white border-0 border-b border-stone-500 focus:border-[#ae7aff] outline-none transition-all duration-150"
                                       value={editingCommentText}
                                       onChange={(e) =>
                                         setEditingCommentText(e.target.value)
@@ -580,7 +580,7 @@ const VideoDetailPage = () => {
                               )}
                           </div>
                         </div>
-                        <hr className="my-4 border-white" />
+                        <hr className="my-4 border-stone-600" />
                       </>
                     ))}
                 </div>
@@ -591,7 +591,7 @@ const VideoDetailPage = () => {
                   videoList
                     .filter((video) => video._id !== videoId)
                     .map((video) => (
-                      <div className="w-full gap-x-2 border pr-2 md:flex">
+                      <div className="w-full gap-x-2 border border-stone-600 pr-2 md:flex">
                         <div className="relative mb-2 w-full md:mb-0 md:w-5/12">
                           <div className="w-full pt-[56%]">
                             <div className="absolute inset-0">
@@ -610,7 +610,7 @@ const VideoDetailPage = () => {
                                   "https://images.pexels.com/photos/18264716/pexels-photo-18264716/free-photo-of-man"
                                 }
                                 alt="JavaScript Fundamentals: Variables and Data Types"
-                                className="h-full w-full cursor-grab"
+                                className="h-full w-full cursor-pointer"
                               />
                             </div>
                             <span className="absolute bottom-1 right-1 inline-block rounded bg-black px-1.5 text-sm">
@@ -621,7 +621,10 @@ const VideoDetailPage = () => {
                         <div className="flex gap-x-2 px-2 pb-4 pt-1 md:w-7/12 md:px-0 md:py-0.5">
                           <div className="h-12 w-12 shrink-0 md:hidden">
                             <img
-                              src="https://images.pexels.com/photos/18264716/pexels-photo-18264716/free-photo-of-man-people-laptop-internet.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                              src={
+                                video?.thumbnail ||
+                                "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
+                              }
                               alt="reactpatterns"
                               className="h-full w-full rounded-full"
                             />

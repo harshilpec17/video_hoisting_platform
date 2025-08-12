@@ -99,7 +99,7 @@ const TweetHomePage = () => {
   };
 
   return (
-    <div className="h-screen overflow-y-auto bg-[#121212] text-white px-2">
+    <div className="h-screen no-scrollbar overflow-y-auto bg-[#121212] text-white px-2">
       {isLoading && <Loader />}
       <div className="flex flex-col sm:flex-row min-h-[calc(100vh-66px)] sm:min-h-[calc(100vh-82px)]">
         <SideBar />
