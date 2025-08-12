@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ColourfulText } from "../../utils/ColorfulText";
 import axios from "axios";
 import { API_BASE_URL } from "../../utils/constant";
+import { toast, ToastContainer } from "react-toastify";
 
 const ChangePassword = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,57 +16,69 @@ const ChangePassword = () => {
   const [message, setMessage] = useState("");
   const [isMessageVisible, setIsMessageVisible] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
       if (newPassword !== confirmPassword) {
         setMessage("New password and confirm password do not match.");
         setIsMessageVisible(true);
+        return;
       } else {
-        setMessage("Passwords match.");
+        setMessage("Passwords match");
         setIsMessageVisible(false);
       }
 
       if (newPassword === "" && oldPassword === "") {
         setMessage("New Password and Current Password required");
         setIsMessageVisible(true);
+        return;
       }
 
       if (newPassword === oldPassword) {
         setIsMessageVisible(true);
         setMessage("New Password and Current Password can't be the same");
+        return;
       }
 
       if (!(newPassword && oldPassword && confirmPassword)) {
         setMessage("All fields required");
         setIsMessageVisible(true);
+        return;
       }
 
-      //   const password = {
-      //     newPassword: newPassword,
-      //     oldPassword: oldPassword,
-      //   }
+      const password = {
+        newPassword: newPassword,
+        currentPassword: oldPassword,
+      };
 
-      //   const response = axios.post(`${API_BASE_URL}/change-password`, password,
-      //      {
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //         Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-      //       },
-      //     }
+      const response = await axios.post(
+        `${API_BASE_URL}/change-password`,
+        password,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        }
+      );
 
-      //    )
-    } catch (error) {}
+      if (response.status === 200) {
+        setConfirmPassword("");
+        setNewPassword("");
+        setOldPassword("");
+        setMessage("");
+        setIsMessageVisible(false);
+        toast.success("Password Change Successfully");
+      }
+      console.log(response);
+
+      return response;
+    } catch (error) {
+      const backendError = error.response.data.message;
+      setIsMessageVisible(true);
+      setMessage(backendError);
+      console.error("Error changing password:", error);
+    }
   };
-
-  //   useEffect(() => {
-  //     if (newPassword !== confirmPassword) {
-  //       setMessage("New password and confirm password do not match.");
-  //       setIsMessageVisible(true);
-  //     } else {
-  //       setMessage("Passwords match.");
-  //       setIsMessageVisible(false);
-  //     }
-  //   }, [newPassword, oldPassword]);
 
   return (
     <>
@@ -331,6 +344,7 @@ const ChangePassword = () => {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );
