@@ -33,7 +33,7 @@ const Header = () => {
   return (
     <>
       {token && (
-        <div className=" overflow-y-auto bg-[#121212] text-white">
+        <div className="overflow-y-auto bg-[#121212] text-white">
           <header className="sticky inset-x-0 top-0 z-50 w-full border-b border-white bg-[#121212] px-4">
             <nav className="mx-auto flex max-w-7xl items-center py-2">
               <div className="mr-4 w-12 shrink-0 sm:w-16">
@@ -398,6 +398,33 @@ const Header = () => {
                       </span>
                     </button>
                   </li>
+                  <li className="sm:hidden">
+                    <button
+                      onClick={() => {
+                        navigate("/userinfo");
+                        dispatch(fetchUserChannelProfile(loggedUserName));
+                      }}
+                      className="flex flex-row gap-4 cursor-pointer items-center justify-start p-3 w-full border py-2 focus:text-[#ae7aff]  sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
+                    >
+                      <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          class="icon icon-tabler icons-tabler-filled icon-tabler-user"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z" />
+                          <path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" />
+                        </svg>
+                      </span>
+                      <span className="block sm:hidden sm:group-hover:inline lg:inline">
+                        My Account
+                      </span>
+                    </button>
+                  </li>
                   <li className="hidden sm:block mt-auto">
                     <button className="flex flex-col items-center justify-center border-white py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4">
                       <span className="inline-block w-5 shrink-0 sm:group-hover:mr-4 lg:mr-4">
@@ -457,11 +484,14 @@ const Header = () => {
                     onClick={() => {
                       logoutUser();
                     }}
-                    className="w-full bg-[#383737] px-3 py-2 hover:bg-[#4f4e4e] sm:w-auto sm:bg-transparent"
+                    className="w-full cursor-pointer bg-[#383737] px-3 py-2 hover:bg-[#4f4e4e] sm:w-auto sm:bg-transparent"
                   >
                     Log Out
                   </button>
-                  <button className="mr-1 w-full bg-[#ae7aff] px-3 py-2 text-center font-bold text-black shadow-[5px_5px_0px_0px_#4f4e4e] transition-all duration-150 ease-in-out active:translate-x-[5px] active:translate-y-[5px] active:shadow-[0px_0px_0px_0px_#4f4e4e] sm:w-auto">
+                  <button
+                    onClick={() => navigate("/register")}
+                    className="mr-1 w-full bg-purple-400 px-3 py-2 text-center font-bold text-black hover:bg-purple-500 sm:w-auto"
+                  >
                     Sign up
                   </button>
                 </div>

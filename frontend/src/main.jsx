@@ -25,6 +25,8 @@ import TweetHomePage from "./components/tweet/TweetHomePage.jsx";
 import Loader from "./utils/Loader.jsx";
 import ChannelDashboard from "./components/channel/ChannelDashboard.jsx";
 import EditPersonalInfo from "./components/userAccount/EditPersonalInfo.jsx";
+import Contact from "./components/static/Contact.jsx";
+import Terms from "./components/static/Terms.jsx";
 
 const root = createRoot(document.getElementById("root"));
 // window.onbeforeunload = function () {
@@ -121,6 +123,8 @@ const router = createBrowserRouter(
             </ProtectedRoutes>
           }
         />
+        <Route path="contact" element={<Contact />} />
+        <Route path="terms" element={<Terms />} />
       </Route>
     </>
   )
