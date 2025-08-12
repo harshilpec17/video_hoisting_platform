@@ -266,7 +266,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
   const comparedPassword = await user.isPasswordCorrect(currentPassword);
 
   if (!comparedPassword) {
-    throw new ApiErrors(400, "Given password is incorrect");
+    throw new ApiErrors(400, "Current password is incorrect");
   }
 
   user.password = newPassword;
