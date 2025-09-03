@@ -135,27 +135,6 @@ const VideoDetailPage = () => {
     }
   };
 
-  // const subscriptionToggle = async (channelId) => {
-  //   try {
-  //     const response = await axios.post(
-  //       `url/ch/${channelId}`,
-  //       { loggedInUserId },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-  //         },
-  //       }
-  //     );
-  //     if (response.status === 200) {
-  //       console.log("subscribed status", response.data);
-  //       toast.success(response.data.message);
-  //       dispatch(fetchUserChannelProfile(userName));
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching comments:", error);
-  //   }
-  // };
-
   const getAllComments = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/comment/${videoId}`, {

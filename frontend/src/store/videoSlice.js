@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { API_BASE_URL } from "../utils/constant";
 
@@ -6,7 +6,7 @@ export const fetchVideoById = createAsyncThunk(
   "video/fetchVideoById",
   async (videoId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/url/video/${videoId}`, {
+      const response = await axios.get(`${API_BASE_URL}/video/${videoId}`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },

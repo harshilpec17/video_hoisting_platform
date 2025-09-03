@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE_URL } from "../utils/constant";
+import { toast } from "react-toastify";
 
 const TWEETS_LIMIT = 10;
 
@@ -9,7 +11,7 @@ export const fetchAllTweets = createAsyncThunk(
   async ({ page = 1, limit = TWEETS_LIMIT }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `url/tweets?page=${page}&limit=${limit}`,
+        `${API_BASE_URL}/tweets?page=${page}&limit=${limit}`,
         {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
@@ -30,11 +32,14 @@ export const fetchUserTweets = createAsyncThunk(
   "tweets/fetchUserTweets",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/url/tweets/user/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-        },
-      });
+      const response = await axios.get(
+        `${API_BASE_URL}/tweets/user/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        }
+      );
       console.log("Fetched user tweets:", response.data.data);
 
       return response.data.data;
@@ -50,7 +55,7 @@ export const createTweet = createAsyncThunk(
   async (tweetText, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "url/tweets/create",
+        `${API_BASE_URL}/tweets/create`,
         { tweetText },
         {
           headers: {
@@ -73,7 +78,7 @@ export const updateTweet = createAsyncThunk(
   async ({ tweetId, newTweet }, { rejectWithValue }) => {
     try {
       const response = await axios.patch(
-        `/url/tweets/${tweetId}`,
+        `${API_BASE_URL}/tweets/${tweetId}`,
         { newTweet },
         {
           headers: {
@@ -93,7 +98,7 @@ export const deleteTweet = createAsyncThunk(
   "tweets/deleteTweet",
   async (tweetId, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`url/tweets/${tweetId}`, {
+      const response = await axios.delete(`${API_BASE_URL}/tweets/${tweetId}`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
@@ -110,7 +115,7 @@ export const handleLikeTweet = createAsyncThunk(
   async (tweetId, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `/url/like/toggle/t/${tweetId}`,
+        `${API_BASE_URL}/like/toggle/t/${tweetId}`,
         {
           reactionType: "like",
         },
@@ -134,7 +139,7 @@ export const handleDislikeTweet = createAsyncThunk(
   async (tweetId, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `/url/like/toggle/t/${tweetId}`,
+        `${API_BASE_URL}/like/toggle/t/${tweetId}`,
         {
           reactionType: "dislike",
         },

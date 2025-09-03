@@ -1,16 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE_URL } from "../utils/constant";
 
 // Fetch all playlists for a user
 export const fetchPlaylists = createAsyncThunk(
   "playlist/fetchPlaylists",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/url/playlist/get-playlist/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-        },
-      });
+      const response = await axios.get(
+        `${API_BASE_URL}/playlist/get-playlist/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        }
+      );
       console.log(response.data.data);
       return response.data.data || [];
     } catch (error) {
@@ -25,7 +29,7 @@ export const addPlaylist = createAsyncThunk(
   async ({ name, description }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "/url/playlist",
+        `${API_BASE_URL}/playlist`,
         { name, description },
         {
           headers: {
@@ -45,7 +49,7 @@ export const deletePlaylist = createAsyncThunk(
   "playlist/deletePlaylist",
   async (playlistId, { rejectWithValue }) => {
     try {
-      await axios.delete(`/url/playlist/${playlistId}`, {
+      await axios.delete(`${API_BASE_URL}/playlist/${playlistId}`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
@@ -63,7 +67,7 @@ export const updatePlaylist = createAsyncThunk(
   async ({ playlistId, name, description }, { rejectWithValue }) => {
     try {
       const response = await axios.patch(
-        `/url/playlist/${playlistId}`,
+        `${API_BASE_URL}/playlist/${playlistId}`,
         { name, description },
         {
           headers: {

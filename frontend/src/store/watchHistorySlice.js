@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE_URL } from "../utils/constant";
 
 export const fetchWatchHistory = createAsyncThunk(
   "watchHistory/fetchWatchHistory",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/url/history/${userId}`, {
+      const response = await axios.get(`/${API_BASE_URL}/history/${userId}`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },

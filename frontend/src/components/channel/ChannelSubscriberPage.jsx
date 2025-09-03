@@ -17,28 +17,6 @@ const ChannelSubscriberPage = () => {
   const userName = loggedInUser?.user?.userName;
   const loggedInUserId = loggedInUser?.user?._id;
 
-  // const subscriptionToggle = async (channelId) => {
-  //   try {
-  //     const response = await axios.post(
-  //       `url/ch/${channelId}`,
-  //       { loggedInUserId },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-  //         },
-  //       }
-  //     );
-  //     if (response.status === 200) {
-  //       console.log("subscribed status", response.data);
-
-  //       dispatch(fetchSubscriberList(loggedInUserId));
-  //       dispatch(fetchUserChannelProfile(userName));
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching comments:", error);
-  //   }
-  // };
-
   console.log(subscriber);
 
   return (

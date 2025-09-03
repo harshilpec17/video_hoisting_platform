@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { fetchUserChannelProfile } from "./channelSlice";
+import { API_BASE_URL } from "../utils/constant";
 
 export const subscriptionToggle = createAsyncThunk(
   "subscribers/subscriptionToggle",
@@ -11,7 +12,7 @@ export const subscriptionToggle = createAsyncThunk(
   ) => {
     try {
       const response = await axios.post(
-        `url/ch/${channelId}`,
+        `${API_BASE_URL}/ch/${channelId}`,
         { loggedInUserId },
         {
           headers: {
@@ -37,7 +38,7 @@ export const fetchSubscriberList = createAsyncThunk(
   "subscribers/fetchSubscriberList",
   async (channelId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/url/u/${channelId}`, {
+      const response = await axios.get(`${API_BASE_URL}/u/${channelId}`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
@@ -54,7 +55,7 @@ export const fetchSubscribedList = createAsyncThunk(
   "subscribers/fetchSubscribedList",
   async (channelId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/url/ch/${channelId}`, {
+      const response = await axios.get(`${API_BASE_URL}/ch/${channelId}`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },

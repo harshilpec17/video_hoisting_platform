@@ -16,6 +16,7 @@ import { duration } from "../../utils/duration";
 import { fetchUserChannelProfile } from "../../store/channelSlice";
 import { fetchPlaylists } from "../../store/playlistSlice";
 import Loader from "../../utils/Loader.jsx";
+import { API_BASE_URL } from "../../utils/constant.js";
 
 const VideoListingPage = () => {
   const [videoData, setVideoData] = useState(null);
@@ -28,7 +29,7 @@ const VideoListingPage = () => {
     const videoData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/url/video", {
+        const response = await axios.get(`${API_BASE_URL}/video`, {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
           },
