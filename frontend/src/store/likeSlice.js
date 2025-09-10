@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE_URL } from "../utils/constant";
 
 export const fetchLikedVideos = createAsyncThunk(
   "like/fetchLikedVideos",
   async ({ userId, reaction }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `/url/like/videos/${reaction}/${userId}`,
+        `${API_BASE_URL}/like/videos/${reaction}/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,

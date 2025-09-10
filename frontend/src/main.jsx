@@ -27,6 +27,7 @@ import ChannelDashboard from "./components/channel/ChannelDashboard.jsx";
 import EditPersonalInfo from "./components/userAccount/EditPersonalInfo.jsx";
 import Contact from "./components/static/Contact.jsx";
 import Terms from "./components/static/Terms.jsx";
+import Home from "./components/layout/Home.jsx";
 
 const root = createRoot(document.getElementById("root"));
 // window.onbeforeunload = function () {
@@ -40,6 +41,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<App />}>
+        <Route index element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         // Protected Route
