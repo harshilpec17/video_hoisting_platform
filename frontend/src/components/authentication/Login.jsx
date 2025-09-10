@@ -1,4 +1,4 @@
-import React, { use, useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer, Zoom } from "react-toastify";
@@ -37,6 +37,8 @@ const Login = () => {
             password: passwordRef.current.value,
           })
           .then((response) => {
+            console.log(response);
+
             if (response.status === 200) {
               localStorage.setItem(
                 "refreshToken",
@@ -245,6 +247,7 @@ const Login = () => {
             >
               Sign in with Email
             </button>
+
             <h3 className=" px-4 py-3 w-full text-white text-right">
               Don't have an account?
               <span
@@ -257,6 +260,15 @@ const Login = () => {
                 Sign Up
               </span>
             </h3>
+            <p
+              onClick={async () => {
+                emailRef.current.value = "thor";
+                passwordRef.current.value = "12345678";
+              }}
+              className="bg-orange-400 text-center text-black font-bold p-1 w-full mt-4 cursor-pointer  hover:bg-orange-500"
+            >
+              Login Without Id and Password (For Demo)
+            </p>
           </div>
         </div>
         <ToastContainer />

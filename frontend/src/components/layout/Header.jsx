@@ -18,7 +18,7 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const token = localStorage.getItem("refreshToken");
+  const token = sessionStorage.getItem("accessToken");
   const logoutUser = () => {
     localStorage.clear();
     sessionStorage.clear();

@@ -28,6 +28,8 @@ import EditPersonalInfo from "./components/userAccount/EditPersonalInfo.jsx";
 import Contact from "./components/static/Contact.jsx";
 import Terms from "./components/static/Terms.jsx";
 import Home from "./components/layout/Home.jsx";
+import { Public } from "./components/protectedRoutes/AuthGuard.jsx";
+import { Protected } from "./components/protectedRoutes/AuthGuard.jsx";
 
 const root = createRoot(document.getElementById("root"));
 // window.onbeforeunload = function () {
@@ -42,89 +44,95 @@ const router = createBrowserRouter(
     <>
       <Route path="/" element={<App />}>
         <Route index element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        // Protected Route
-        <Route
-          path="videolistingpage"
-          element={
-            <ProtectedRoutes>
-              <VideoListingPage />
-            </ProtectedRoutes>
-          }
-        />
-        <Route
-          path="video"
-          element={
-            <ProtectedRoutes>
-              <VideoDetailPage />
-            </ProtectedRoutes>
-          }
-        />
-        <Route
-          path="video/likedVideos"
-          element={
-            <ProtectedRoutes>
-              <LikedVideoPage />
-            </ProtectedRoutes>
-          }
-        />
-        <Route
-          path="video/watchHistory"
-          element={
-            <ProtectedRoutes>
-              <WatchHistory />
-            </ProtectedRoutes>
-          }
-        />
-        <Route
-          path="channel/channelVideos"
-          element={
-            <ProtectedRoutes>
-              <ChannelVideo />
-            </ProtectedRoutes>
-          }
-        />
-        <Route
-          path="channel"
-          element={
-            <ProtectedRoutes>
-              <ChannelPage />
-            </ProtectedRoutes>
-          }
-        />
-        <Route
-          path="tweet"
-          element={
-            <ProtectedRoutes>
-              <TweetHomePage />
-            </ProtectedRoutes>
-          }
-        />
-        <Route
-          path="loader"
-          element={
-            <ProtectedRoutes>
-              <Loader />
-            </ProtectedRoutes>
-          }
-        />
-        <Route
-          path="channel/dashboard"
-          element={
-            <ProtectedRoutes>
-              <ChannelDashboard />
-            </ProtectedRoutes>
-          }
-        />
-        <Route
-          path="userinfo"
-          element={
-            <ProtectedRoutes>
-              <EditPersonalInfo />
-            </ProtectedRoutes>
-          }
-        />
+
+        <Route element={<Public />}>
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+        </Route>
+
+        <Route element={<Protected />}>
+          // Protected Route
+          <Route
+            path="videolistingpage"
+            element={
+              <ProtectedRoutes>
+                <VideoListingPage />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="video"
+            element={
+              <ProtectedRoutes>
+                <VideoDetailPage />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="video/likedVideos"
+            element={
+              <ProtectedRoutes>
+                <LikedVideoPage />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="video/watchHistory"
+            element={
+              <ProtectedRoutes>
+                <WatchHistory />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="channel/channelVideos"
+            element={
+              <ProtectedRoutes>
+                <ChannelVideo />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="channel"
+            element={
+              <ProtectedRoutes>
+                <ChannelPage />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="tweet"
+            element={
+              <ProtectedRoutes>
+                <TweetHomePage />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="loader"
+            element={
+              <ProtectedRoutes>
+                <Loader />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="channel/dashboard"
+            element={
+              <ProtectedRoutes>
+                <ChannelDashboard />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="userinfo"
+            element={
+              <ProtectedRoutes>
+                <EditPersonalInfo />
+              </ProtectedRoutes>
+            }
+          />
+        </Route>
         <Route path="contact" element={<Contact />} />
         <Route path="terms" element={<Terms />} />
       </Route>
