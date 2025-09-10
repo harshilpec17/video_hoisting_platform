@@ -9,10 +9,10 @@ export default defineConfig({
   server: {
     proxy: {
       "/url": {
-        target: "https://youtubebackend-production-ec73.up.railway.app/users",
+        target: "https://youtubebackend-production-ec73.up.railway.app",
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/url/, ""),
+        rewrite: (path) => path.replace(/^\/url/, "/api/v1/users"),
       },
     },
   },
