@@ -103,6 +103,10 @@ const registerUser = asyncHandler(async (req, res) => {
     userName: userName.toLowerCase(),
   });
 
+  const { refreshToken, accessToken } = await generateAccessAndRefreshToken(
+    newUser._id
+  );
+
   const createdUser = await User.findById(newUser._id).select(
     "-password -refreshToken"
   );
@@ -111,9 +115,25 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiErrors(500, "something went wrong while creating new user");
   }
 
+  createdUser.accessToken = accessToken;
+  createdUser.refreshToken = refreshToken;
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
   return res
     .status(201)
-    .json(new ApiResponse(200, createdUser, "user registered successfully"));
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        { user: createdUser, accessToken, refreshToken },
+        "user registered successfully"
+      )
+    );
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -151,8 +171,6 @@ const loginUser = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     user._id
   );
-
-  console.log(refreshToken);
 
   // at this above point we have access from the user which is in this scope, which does not have and refresh token
   // as we didn`t generated token until now. So you have two option either you can inject the token inside the object

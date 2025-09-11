@@ -1,11 +1,14 @@
+// ...existing code...
 import { Form, useNavigate } from "react-router";
 import React, { useState, useEffect } from "react";
 import { toast, ToastContainer, Zoom } from "react-toastify";
 import axios from "axios";
+import { API_BASE_URL } from "../../utils/constant";
 
 const Register = () => {
   const navigate = useNavigate();
 
+  // ...existing code...
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
@@ -17,6 +20,7 @@ const Register = () => {
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
   const [error, setError] = useState(null);
 
+  // ...existing code...
   const handleValidation = () => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (fullName.trim().length < 3) {
@@ -54,6 +58,8 @@ const Register = () => {
         })
         .then((response) => {
           if (response.status === 201) {
+            console.log(response);
+
             localStorage.setItem(
               "refreshToken",
               response.data.data.refreshToken
@@ -66,20 +72,20 @@ const Register = () => {
 
             navigate("/videolistingpage");
           }
+          if (response.status === 409) {
+            console.error(response.message);
+
+            toast.error(response.data.message);
+            navigate("/login");
+          }
         })
         .catch((error) => {
           console.error(error);
-
-          if (error.response && error.response.data === 409) {
-            setError(error.response.data.message);
-            navigate("/login");
-          } else {
-            setError("An error occurred. Please try again later.");
-          }
         });
     }
   };
 
+  // ...existing code...
   useEffect(() => {
     if (error) {
       toast.error(error, {
@@ -99,228 +105,327 @@ const Register = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-[#121212]">
-        <div className="mx-auto flex w-full items-stretch justify-between gap-10">
-          <div className="mt-20 flex w-full flex-col items-start justify-start p-6 md:w-1/2 lg:px-10">
-            <div className="w-full">
-              <h1 className="mb-2 text-5xl font-extrabold text-white">
-                Register
+      {/* Styles for custom animation (shuttle + stars) */}
+      <style>{`
+        .bg-grid {
+          background-image:
+            radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0),
+            radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0);
+          background-size: 40px 40px, 80px 80px;
+        }
+        @keyframes shuttle-flight {
+          0% { transform: translate3d(-10%, -10%, 0) rotate(8deg) scale(0.9); opacity: 0; }
+          10% { opacity: 0.8; }
+          50% { transform: translate3d(50vw, 10vh, 0) rotate(2deg) scale(1); opacity: 0.9; }
+          100% { transform: translate3d(110vw, -5vh, 0) rotate(-6deg) scale(0.95); opacity: 0; }
+        }
+        .shuttle-wrapper {
+          animation: shuttle-flight 28s linear infinite;
+          filter: drop-shadow(0 0 6px rgba(0,255,200,0.35));
+        }
+        .glass {
+          backdrop-filter: blur(18px) saturate(140%);
+          background: linear-gradient(135deg, rgba(30,41,59,0.75), rgba(15,23,42,0.6) 60%, rgba(0,0,0,0.55));
+          border: 1px solid rgba(255,255,255,0.09);
+        }
+        .input-base {
+          transition: border-color .25s, background .25s, box-shadow .25s;
+        }
+        .input-base:focus {
+          outline: none;
+          border-color: #0ea5e9;
+          box-shadow: 0 0 0 3px rgba(14,165,233,0.25);
+          background: rgba(0,0,0,0.55);
+        }
+        .btn-primary {
+          background: linear-gradient(90deg,#0d9488,#0ea5e9 55%,#06b6d4);
+          color: #0f172a;
+        }
+        .btn-primary:hover {
+          filter: brightness(1.08);
+        }
+        .btn-primary:active {
+          transform: translateY(2px);
+          filter: brightness(.95);
+        }
+        .file-input::-webkit-file-upload-button {
+          cursor: pointer;
+        }
+        .file-input::file-selector-button {
+          background: #0d9488;
+          color: #f8fafc;
+          border: none;
+          padding: 0.5rem 0.9rem;
+          margin-right: 0.75rem;
+          border-radius: 0.5rem;
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: .05em;
+          transition: background .25s, transform .25s;
+        }
+        .file-input::file-selector-button:hover {
+          background: #0f766e;
+        }
+        .file-input::file-selector-button:active {
+          background: #115e59;
+          transform: translateY(1px);
+        }
+      `}</style>
+
+      <div className="relative min-h-screen overflow-hidden bg-[#0b0f17] text-white">
+        {/* Animated gradient aura */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-1/3 -left-1/3 h-[70vh] w-[70vh] rounded-full bg-cyan-600/10 blur-[140px]" />
+          <div className="absolute bottom-0 right-0 h-[60vh] w-[60vh] rounded-full bg-teal-500/10 blur-[120px]" />
+        </div>
+
+        {/* Subtle grid */}
+        <div className="absolute inset-0 bg-grid opacity-40" />
+
+        {/* Shuttle animation layer */}
+        <div className="pointer-events-none absolute top-10 left-0 z-0 shuttle-wrapper">
+          <svg
+            width="140"
+            height="140"
+            viewBox="0 0 256 256"
+            fill="none"
+            className="opacity-90"
+          >
+            <defs>
+              <linearGradient id="body" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0%" stopColor="#0ea5e9" />
+                <stop offset="100%" stopColor="#0d9488" />
+              </linearGradient>
+              <linearGradient id="flame" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="#fbbf24" />
+                <stop offset="60%" stopColor="#ea580c" />
+                <stop offset="100%" stopColor="#991b1b" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M128 20c38 34 60 78 60 122 0 22-8 44-24 64l-72 0c-16-20-24-42-24-64 0-44 22-88 60-122z"
+              fill="url(#body)"
+              stroke="#0f172a"
+              strokeWidth="6"
+              strokeLinejoin="round"
+            />
+            <circle
+              cx="128"
+              cy="126"
+              r="28"
+              fill="#0f172a"
+              stroke="#38bdf8"
+              strokeWidth="6"
+            />
+            <path
+              d="M98 206h60c4 0 6 4 4 7l-16 26c-2 3-6 5-10 5h-16c-4 0-8-2-10-5l-16-26c-2-3 0-7 4-7z"
+              fill="#1e293b"
+              stroke="#0ea5e9"
+              strokeWidth="5"
+            />
+            <path
+              d="M128 237c0 14-6 24-18 34-2 2-6 0-6-3 0-14 6-24 18-34 2-2 6 0 6 3z"
+              fill="url(#flame)"
+              opacity=".85"
+            />
+          </svg>
+        </div>
+
+        {/* Content wrapper */}
+        <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-10">
+          <div className="w-full max-w-xl rounded-2xl glass p-8 shadow-2xl shadow-black/60">
+            <div className="mb-10">
+              <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 to-teal-300 bg-clip-text text-transparent">
+                Create Account
               </h1>
-              <p className="text-xs text-slate-400">
-                Before we start, please create your account
+              <p className="mt-2 text-sm text-slate-300">
+                Join the platform. Complete the form below.
               </p>
             </div>
 
-            <div className="my-14 flex w-full flex-col items-start justify-start gap-4">
-              <div className="flex w-full flex-col items-start justify-start gap-2">
-                <label className="text-xs text-slate-200">Full Name *</label>
+            <div className="flex flex-col gap-6">
+              {/* Full Name */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium uppercase tracking-wide text-slate-300">
+                  Full Name *
+                </label>
                 <input
-                  placeholder="Enter a Full name"
-                  autoComplete="false"
+                  placeholder="Jane Doe"
+                  autoComplete="off"
                   min={3}
                   max={50}
                   type="text"
                   onChange={(e) => setFullName(e.target.value)}
                   value={fullName}
-                  className="w-full border-[1px] border-white bg-black p-4 text-white placeholder:text-gray-500"
+                  className="input-base w-full rounded-lg border border-slate-600/60 bg-slate-900/60 px-4 py-3 text-sm text-white placeholder:text-slate-500"
                 />
               </div>
-              <div className="flex w-full flex-col items-start justify-start gap-2">
-                <label className="text-xs text-slate-200">Username *</label>
+
+              {/* Username */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium uppercase tracking-wide text-slate-300">
+                  Username *
+                </label>
                 <input
-                  placeholder="Enter a userName"
-                  autoComplete="false"
+                  placeholder="jane_doe"
+                  autoComplete="off"
                   min={3}
                   max={20}
                   type="text"
                   onChange={(e) => setUserName(e.target.value)}
                   value={userName}
-                  className="w-full border-[1px] border-white bg-black p-4 text-white placeholder:text-gray-500"
+                  className="input-base w-full rounded-lg border border-slate-600/60 bg-slate-900/60 px-4 py-3 text-sm text-white placeholder:text-slate-500"
                 />
               </div>
 
-              <div className="flex w-full flex-col items-start justify-start gap-2">
-                <label className="text-xs text-slate-200">Email *</label>
+              {/* Email */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium uppercase tracking-wide text-slate-300">
+                  Email *
+                </label>
                 <input
-                  placeholder="Enter an email"
-                  autoComplete="false"
+                  placeholder="you@example.com"
+                  autoComplete="off"
                   type="email"
                   onChange={(e) => setEmail(e.target.value)}
                   value={email}
-                  className="w-full border-[1px] border-white bg-black p-4 text-white placeholder:text-gray-500"
+                  className="input-base w-full rounded-lg border border-slate-600/60 bg-slate-900/60 px-4 py-3 text-sm text-white placeholder:text-slate-500"
                 />
               </div>
 
-              <div className="flex w-full flex-col items-start justify-start gap-2">
-                <label className="text-xs text-slate-200">Password *</label>
-                <div className="relative w-full">
+              {/* Password */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium uppercase tracking-wide text-slate-300">
+                  Password *
+                </label>
+                <div className="relative">
                   <input
-                    placeholder="Enter a password"
-                    autoComplete="false"
+                    placeholder="********"
+                    autoComplete="off"
                     type={showPassword ? "text" : "password"}
                     onChange={(e) => setPassword(e.target.value)}
                     value={password}
                     min={6}
                     max={20}
-                    className="w-full border-[1px] border-white bg-black p-4 text-white placeholder:text-gray-500"
+                    className="input-base w-full rounded-lg border border-slate-600/60 bg-slate-900/60 px-4 py-3 pr-14 text-sm text-white placeholder:text-slate-500"
                   />
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="showPasswordCheckbox"
-                    checked={showPassword}
-                    onChange={() => setShowPassword(!showPassword)}
-                    className="mr-2 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  />
-                  <label
-                    htmlFor="showPasswordCheckbox"
-                    className="text-xs text-slate-200"
-                  >
-                    Show Password
-                  </label>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                    <label className="flex cursor-pointer select-none items-center gap-2 text-[10px] font-medium text-slate-300">
+                      <input
+                        type="checkbox"
+                        checked={showPassword}
+                        onChange={() => setShowPassword(!showPassword)}
+                        className="h-4 w-4 cursor-pointer accent-teal-500"
+                      />
+                      Show
+                    </label>
+                  </div>
                 </div>
               </div>
-              <label className="text-xs text-slate-200">Avatar *</label>
 
-              <div className="flex w-full flex-col items-start justify-start gap-2">
+              {/* Avatar */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium uppercase tracking-wide text-slate-300">
+                  Avatar *
+                </label>
                 <input
                   type="file"
-                  id="profile_pic"
                   accept=".jpg, .jpeg, .png"
-                  name="profile_pic"
                   onChange={(e) => {
                     const file = e.target.files[0];
-                    if (file.size > 2 * 1024 * 1024) {
+                    if (file && file.size > 2 * 1024 * 1024) {
                       setError("File size exceeds 2MB");
                     }
                     setAvatar(file);
                   }}
-                  className="p-3 w-full cursor-pointer rounded-lg border border-gray-500 bg-gray-800 text-white file:mr-4 file:rounded-lg file:border-0 file:bg-purple-600 file:py-2 file:px-4 file:text-white hover:file:bg-purple-700"
+                  className="file-input input-base w-full rounded-lg border border-slate-600/60 bg-slate-900/60 px-3 py-2 text-sm text-slate-200"
                 />
               </div>
 
-              <label className="text-xs text-slate-200">Cover Image</label>
-
-              <div className="flex w-full flex-col items-start justify-start gap-2">
+              {/* Cover Image */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium uppercase tracking-wide text-slate-300">
+                  Cover Image
+                </label>
                 <input
                   type="file"
-                  id="profile_pic"
-                  name="profile_pic"
                   accept=".jpg, .jpeg, .png"
                   onChange={(e) => {
                     const file = e.target.files[0];
-                    if (file.size > 2 * 1024 * 1024) {
+                    if (file && file.size > 2 * 1024 * 1024) {
                       setError("File size exceeds 2MB");
                     }
                     setCoverImage(file);
                   }}
-                  className="p-3 w-full cursor-pointer rounded-lg border border-gray-500 bg-gray-800 text-white file:mr-4 file:rounded-lg file:border-0 file:bg-purple-600 file:py-2 file:px-4 file:text-white hover:file:bg-purple-700"
+                  className="file-input input-base w-full rounded-lg border border-slate-600/60 bg-slate-900/60 px-3 py-2 text-sm text-slate-200"
                 />
               </div>
 
-              <div className="mr-4 flex items-center">
+              {/* Newsletter */}
+              <div className="flex items-start gap-3">
                 <input
                   type="checkbox"
                   id="checkbox-1"
-                  name="checkbox-1"
                   onChange={(e) => {
                     setNewsletterSubscribed(e.target.checked);
                   }}
                   checked={newsletterSubscribed}
-                  className="absolute h-6 w-6 cursor-pointer opacity-0 [&:checked+div]:bg-green-500 [&:checked+div_svg]:block"
+                  className="mt-0.5 h-5 w-5 cursor-pointer rounded border border-slate-500 bg-slate-800 text-teal-500 accent-teal-500"
                 />
-                <div className="mr-2 flex h-6 w-6 flex-shrink-0 items-center justify-center border-[1px] border-white bg-transparent focus-within:border-white">
-                  <svg
-                    className="pointer-events-none hidden h-3 w-3 fill-current text-white"
-                    version="1.1"
-                    viewBox="0 0 17 12"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g fill="none" fillRule="evenodd">
-                      <g
-                        transform="translate(-9 -11)"
-                        fill="#000000"
-                        fillRule="nonzero"
-                      >
-                        <path d="m25.576 11.414c0.56558 0.55188 0.56558 1.4439 0 1.9961l-9.404 9.176c-0.28213 0.27529-0.65247 0.41385-1.0228 0.41385-0.37034 0-0.74068-0.13855-1.0228-0.41385l-4.7019-4.588c-0.56584-0.55188-0.56584-1.4442 0-1.9961 0.56558-0.55214 1.4798-0.55214 2.0456 0l3.679 3.5899 8.3812-8.1779c0.56558-0.55214 1.4798-0.55214 2.0456 0z" />
-                      </g>
-                    </g>
-                  </svg>
-                </div>
-                <div className="ml-3 text-sm leading-6">
-                  <label
-                    htmlFor="checkbox-1"
-                    className="text-sm font-medium text-white"
-                  >
-                    You will get emails on new features and releases
-                  </label>
-                </div>
+                <label
+                  htmlFor="checkbox-1"
+                  className="cursor-pointer text-sm text-slate-300"
+                >
+                  You will get emails on new features and releases
+                </label>
               </div>
 
-              <div className="mr-4 flex items-center">
+              {/* Terms */}
+              <div className="flex items-start gap-3">
                 <input
                   type="checkbox"
                   id="checkbox-2"
-                  name="checkbox-2"
                   onChange={(e) => {
                     setTermsAccepted(e.target.checked);
                   }}
                   checked={termsAccepted}
-                  className="absolute h-6 w-6 cursor-pointer opacity-0 [&:checked+div]:bg-green-500 [&:checked+div_svg]:block"
+                  className="mt-0.5 h-5 w-5 cursor-pointer rounded border border-slate-500 bg-slate-800 text-teal-500 accent-teal-500"
                 />
-                <div className="mr-2 flex h-6 w-6 flex-shrink-0 items-center justify-center border-[1px] border-white bg-transparent focus-within:border-white">
-                  <svg
-                    className="pointer-events-none hidden h-3 w-3 fill-current text-white"
-                    version="1.1"
-                    viewBox="0 0 17 12"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g fill="none" fillRule="evenodd">
-                      <g
-                        transform="translate(-9 -11)"
-                        fill="#000000"
-                        fillRule="nonzero"
-                      >
-                        <path d="m25.576 11.414c0.56558 0.55188 0.56558 1.4439 0 1.9961l-9.404 9.176c-0.28213 0.27529-0.65247 0.41385-1.0228 0.41385-0.37034 0-0.74068-0.13855-1.0228-0.41385l-4.7019-4.588c-0.56584-0.55188-0.56584-1.4442 0-1.9961 0.56558-0.55214 1.4798-0.55214 2.0456 0l3.679 3.5899 8.3812-8.1779c0.56558-0.55214 1.4798-0.55214 2.0456 0z" />
-                      </g>
-                    </g>
-                  </svg>
-                </div>
-                <div className="ml-3 text-sm leading-6">
-                  <label
-                    htmlFor="checkbox-2"
-                    className="text-sm font-medium text-white"
-                  >
-                    I agree to the terms and conditions
-                  </label>
-                </div>
+                <label
+                  htmlFor="checkbox-2"
+                  className="cursor-pointer text-sm text-slate-300"
+                >
+                  I agree to the terms and conditions
+                </label>
               </div>
+
+              {/* Submit */}
               <button
                 onClick={() => {
                   handleValidation();
                 }}
-                className="w-full bg-[#ae7aff] p-3 text-center font-bold text-black shadow-[5px_5px_0px_0px_#4f4e4e] transition-all duration-150 ease-in-out active:translate-x-[5px] active:translate-y-[5px] active:shadow-[0px_0px_0px_0px_#4f4e4e]"
+                className="btn-primary group cursor-pointer relative mt-2 w-full rounded-lg px-6 py-3 text-sm font-bold tracking-wide shadow-[0_0_0_0_rgba(0,0,0,0.3)] transition-all duration-300 hover:shadow-[0_8px_25px_-5px_rgba(6,182,212,0.35)]"
               >
-                Create Account
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  <span>Create Account</span>
+                  <span className="inline-block translate-x-0 transition-transform duration-300 group-hover:translate-x-1">
+                    🚀
+                  </span>
+                </span>
+                <span className="absolute inset-0 rounded-lg bg-gradient-to-r from-teal-400/0 via-cyan-300/10 to-teal-400/0 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100" />
               </button>
-              <p className="my-14 text-sm font-light text-white">
+
+              {/* Login link */}
+              <p className="pt-4 text-center text-sm text-slate-400">
                 Already registered?{" "}
                 <span
-                  className="cursor-pointer font-bold hover:underline"
+                  className="cursor-pointer font-semibold text-teal-400 hover:underline"
                   onClick={() => navigate("/login")}
                 >
-                  Sign in to your account
+                  Sign in
                 </span>
               </p>
             </div>
-          </div>
-          <div className="fixed right-0 z-20 hidden h-screen w-1/2 md:block">
-            <img
-              className="h-full w-full object-cover"
-              src="https://images.pexels.com/photos/1144275/pexels-photo-1144275.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-              alt="register_image"
-            />
           </div>
         </div>
         <ToastContainer />
