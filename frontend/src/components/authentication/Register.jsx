@@ -42,13 +42,14 @@ const Register = () => {
           this.userName = userName;
           this.email = email;
           this.password = password;
-          this.avatar = avatar;
+          this.avatar = avatar[0];
           this.coverImage = coverImage ? coverImage : null;
         }
       }
-      console.log(coverImage);
 
       const formData = new form();
+
+      console.log(formData);
 
       axios
         .post(`${API_BASE_URL}/register`, formData, {
@@ -333,6 +334,8 @@ const Register = () => {
                   accept=".jpg, .jpeg, .png"
                   onChange={(e) => {
                     const file = e.target.files[0];
+                    console.log(file);
+
                     if (file && file.size > 2 * 1024 * 1024) {
                       setError("File size exceeds 2MB");
                     }
