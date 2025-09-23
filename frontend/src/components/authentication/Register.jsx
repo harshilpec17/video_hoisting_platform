@@ -42,21 +42,26 @@ const Register = () => {
       setError("Please accept the terms and conditions");
       return;
     } else {
-      const formData = new FormData();
-      formData.append("fullName", fullName);
-      formData.append("userName", userName);
-      formData.append("email", email);
-      formData.append("password", password);
-      formData.append("avatar", avatar); // use the File directly (not avatar[0])
-      if (coverImage) formData.append("coverImage", coverImage);
-      formData.append("newsletterSubscribed", String(newsletterSubscribed));
+      class FormData {
+        constructor() {
+          this.fullName = fullName;
+          this.userName = userName;
+          this.email = email;
+          this.password = password;
+          this.avatar = avatar;
+          this.coverImage = coverImage;
+          this.newsletterSubscribed = newsletterSubscribed;
+        }
+      }
 
-      console.log(formData);
+      const newFormData = new FormData();
+
+      console.log(newFormData);
 
       try {
         const response = await axios.post(
           `${API_BASE_URL}/register`,
-          formData,
+          newFormData,
           {
             headers: { "Content-Type": "multipart/form-data" },
           }

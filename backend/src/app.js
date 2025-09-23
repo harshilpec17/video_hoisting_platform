@@ -9,7 +9,11 @@ const envOrigins = (process.env.CORS_ORIGIN || "")
   .map((s) => s.trim())
   .filter(Boolean);
 
-const allowList = ["https://videoplatform-fullstack.vercel.app", ...envOrigins];
+const allowList = [
+  "https://videoplatform-fullstack.vercel.app",
+  "http://localhost:5173",
+  ...envOrigins,
+];
 
 const corsOptions = {
   origin: (origin, cb) => {
