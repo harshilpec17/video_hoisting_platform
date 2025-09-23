@@ -21,68 +21,72 @@ const Register = () => {
   const [error, setError] = useState(null);
 
   // ...existing code...
-  const handleValidation = () => {
+  const handleValidation = async () => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (fullName.trim().length < 3) {
       setError("Full name must be at least 3 characters long");
+      return;
     } else if (userName.trim().length < 3) {
       setError("Username must be at least 3 characters long");
+      return;
     } else if (!email.match(emailPattern)) {
       setError("Email must be valid");
+      return;
     } else if (password.trim().length < 6) {
       setError("Password must be at least 6 characters long");
+      return;
     } else if (!avatar) {
       setError("Please upload an avatar Image");
+      return;
     } else if (!termsAccepted) {
       setError("Please accept the terms and conditions");
+      return;
     } else {
-      class form {
-        constructor() {
-          this.fullName = fullName;
-          this.userName = userName;
-          this.email = email;
-          this.password = password;
-          this.avatar = avatar[0];
-          this.coverImage = coverImage ? coverImage : null;
-        }
-      }
-
-      const formData = new form();
+      const formData = new FormData();
+      formData.append("fullName", fullName);
+      formData.append("userName", userName);
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("avatar", avatar); // use the File directly (not avatar[0])
+      if (coverImage) formData.append("coverImage", coverImage);
+      formData.append("newsletterSubscribed", String(newsletterSubscribed));
 
       console.log(formData);
 
-      axios
-        .post(`${API_BASE_URL}/register`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          if (response.status === 201) {
-            console.log(response);
-
-            localStorage.setItem(
-              "refreshToken",
-              response.data.data.refreshToken
-            );
-            localStorage.setItem("user", JSON.stringify(response.data.data));
-            sessionStorage.setItem(
-              "accessToken",
-              response.data.data.accessToken
-            );
-
-            navigate("/videolistingpage");
+      try {
+        const response = await axios.post(
+          `${API_BASE_URL}/register`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
           }
-          if (response.status === 409) {
-            console.error(response.message);
+        );
 
-            toast.error(response.data.message);
-            navigate("/login");
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+        if (response.status === 201) {
+          console.log(response);
+
+          localStorage.setItem("refreshToken", response.data.data.refreshToken);
+          localStorage.setItem("user", JSON.stringify(response.data.data));
+          sessionStorage.setItem("accessToken", response.data.data.accessToken);
+
+          navigate("/videolistingpage");
+        }
+      } catch (err) {
+        const status = err.response ? err.response.status : 500;
+        if (status === 400) {
+          setError(
+            err.response.data.message || "An error occurred. Please try again."
+          );
+          navigate("/login");
+        }
+        if (status === 409) {
+          setError("User already exists. Please login.");
+          navigate("/login");
+        } else {
+          toast.error("Registration failed. Please try again.");
+          // optional: console.error(err);
+        }
+      }
     }
   };
 
@@ -333,11 +337,13 @@ const Register = () => {
                   type="file"
                   accept=".jpg, .jpeg, .png"
                   onChange={(e) => {
-                    const file = e.target.files[0];
+                    const file = e.target.files?.[0];
                     console.log(file);
 
                     if (file && file.size > 2 * 1024 * 1024) {
                       setError("File size exceeds 2MB");
+                      setAvatar(null);
+                      return;
                     }
                     setAvatar(file);
                   }}

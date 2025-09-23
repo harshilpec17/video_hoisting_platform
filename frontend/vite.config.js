@@ -20,3 +20,6 @@ export default defineConfig({
     },
   },
 });
+
+// target: "https://youtubebackend-production-ec73.up.railway.app",
+//  target: "http://localhost:5173",
