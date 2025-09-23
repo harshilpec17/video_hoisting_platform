@@ -4,12 +4,36 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 
-app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN,
-    credentials: true,
-  })
-);
+const envOrigins = (process.env.CORS_ORIGIN || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+const allowList = ["https://videoplatform-fullstack.vercel.app", ...envOrigins];
+
+const corsOptions = {
+  origin: (origin, cb) => {
+    // allow server-to-server/no-origin (curl, health checks)
+    if (!origin) return cb(null, true);
+    try {
+      const host = new URL(origin).hostname;
+      const isVercelPreview = /\.vercel\.app$/.test(host);
+      if (allowList.includes(origin) || isVercelPreview) return cb(null, true);
+    } catch {}
+    return cb(new Error(`Origin ${origin} not allowed by CORS`));
+  },
+  credentials: true,
+  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  optionsSuccessStatus: 204,
+  maxAge: 86400,
+};
+
+// CORS must be before routes and auth
+app.use(cors(corsOptions));
+// Handle preflight for all routes
+app.options("*", cors(corsOptions));
+
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
