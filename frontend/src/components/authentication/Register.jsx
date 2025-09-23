@@ -52,7 +52,6 @@ const Register = () => {
           if (coverImage) {
             this.coverImage = coverImage;
           }
-          this.newsletterSubscribed = newsletterSubscribed;
         }
       }
 
