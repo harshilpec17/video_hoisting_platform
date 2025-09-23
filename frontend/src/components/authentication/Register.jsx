@@ -49,7 +49,9 @@ const Register = () => {
           this.email = email;
           this.password = password;
           this.avatar = avatar;
-          this.coverImage = coverImage;
+          if (coverImage) {
+            this.coverImage = coverImage;
+          }
           this.newsletterSubscribed = newsletterSubscribed;
         }
       }
