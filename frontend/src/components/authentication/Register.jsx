@@ -42,6 +42,8 @@ const Register = () => {
       setError("Please accept the terms and conditions");
       return;
     } else {
+      console.log(avatar);
+
       class FormData {
         constructor() {
           this.fullName = fullName;
@@ -367,6 +369,8 @@ const Register = () => {
                   accept=".jpg, .jpeg, .png"
                   onChange={(e) => {
                     const file = e.target.files[0];
+                    console.log(file);
+
                     if (file && file.size > 2 * 1024 * 1024) {
                       setError("File size exceeds 2MB");
                     }

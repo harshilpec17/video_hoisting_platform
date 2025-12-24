@@ -88,9 +88,13 @@ const SideBar = () => {
           </li>
           <li className="sm:block hidden">
             <button
-              onClick={() => {
-                navigate("/video/watchHistory");
-                dispatch(fetchWatchHistory(loggedInUserId));
+              onClick={async () => {
+                try {
+                  await dispatch(fetchWatchHistory(loggedInUserId));
+                  await navigate("/video/watchHistory");
+                } catch {
+                  console.error("failed to fetch");
+                }
               }}
               className="flex flex-col cursor-pointer items-center justify-center border-neutral-600 py-1 focus:text-[#ae7aff] sm:w-full sm:flex-row sm:border sm:p-1.5 sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
             >
