@@ -11,9 +11,9 @@ export const fetchWatchHistory = createAsyncThunk(
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
       });
-      console.log("Watch history fetched successfully:", response);
+      console.log("Watch history fetched successfully:");
 
-      return response;
+      return response.data.data.watchHistory;
     } catch (error) {
       console.error("Error fetch the watch History", error);
       return rejectWithValue(error.message);
