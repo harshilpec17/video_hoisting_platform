@@ -15,6 +15,7 @@ export const fetchWatchHistory = createAsyncThunk(
 
       return response.data.data;
     } catch (error) {
+      console.error("Error fetch the watch History", error);
       return rejectWithValue(error.message);
     }
   }
