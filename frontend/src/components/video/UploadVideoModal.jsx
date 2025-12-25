@@ -48,7 +48,7 @@ const UploadVideoModal = ({ open, onClose }) => {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
       });
-      console.log("Video uploaded successfully:", response.data);
+
       setTitle("");
       setDescription("");
       setVideoFile(null);

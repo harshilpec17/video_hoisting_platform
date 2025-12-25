@@ -287,8 +287,6 @@ const getLikedVideos = asyncHandler(async (req, res) => {
     throw new ApiErrors(404, `User does not ${videoType} any Video`);
   }
 
-  console.log(userLikedVideo);
-
   res
     .status(200)
     .json(

@@ -147,7 +147,6 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
   const videoObjectIds = filteredVideo.map(
     (id) => new mongoose.Types.ObjectId(id)
   );
-  console.log(filteredVideo);
 
   const deleteVideoFromPlaylist = await Playlist.findByIdAndUpdate(
     playlistId,

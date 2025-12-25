@@ -21,7 +21,6 @@ const uploadOnCloudinary = async (localFilePath) => {
     });
 
     fs.unlinkSync(localFilePath);
-    // console.log("file uploaded successfully", response.url());
 
     let oldPublicId = response.public_id;
 
@@ -39,7 +38,7 @@ const deleteFromCloudinary = async (url, resourceType = "image") => {
       resource_type: resourceType,
     });
   } catch (error) {
-    console.log(
+    console.error(
       `The following error occurred during deleting the file from cloudinary : ${error}`
     );
   }

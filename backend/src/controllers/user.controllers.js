@@ -242,8 +242,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     const user = await User.findById(decodedToken?._id);
 
-    console.log(user);
-
     if (!user) {
       throw new ApiErrors(401, "Invalid refresh token");
     }
@@ -401,8 +399,6 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
       new: true,
     }
   ).select("-password -refreshToken");
-
-  console.log(newUser);
 
   if (newUser && oldCoverImageUrl) {
     await deleteFromCloudinary(oldCoverImageUrl);

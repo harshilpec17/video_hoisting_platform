@@ -65,8 +65,6 @@ const getVideoComments = asyncHandler(async (req, res) => {
     ],
   ]);
 
-  console.log(comment);
-
   res
     .status(200)
     .json(
@@ -85,8 +83,6 @@ const addComment = asyncHandler(async (req, res) => {
 
   const { commentText } = req.body;
 
-  console.log(commentText);
-
   if (commentText.trim === "") {
     throw new ApiErrors(400, "please add some text");
   }
@@ -94,8 +90,6 @@ const addComment = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user?._id).select("_id userName avatar");
 
   const currentVideo = await Video.findById(videoId).select("_id");
-
-  console.log(currentVideo);
 
   const newComment = await Comment.create({
     content: commentText,
@@ -151,8 +145,6 @@ const deleteComment = asyncHandler(async (req, res) => {
   if (deleteComment === null) {
     throw new ApiErrors(400, "There is no comment to be delete");
   }
-
-  console.log(deleteComment);
 
   res
     .status(200)

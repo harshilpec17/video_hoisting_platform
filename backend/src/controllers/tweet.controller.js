@@ -166,8 +166,6 @@ const getUserTweets = asyncHandler(async (req, res) => {
     throw new ApiErrors(404, "userTweet does not exist");
   }
 
-  console.log(userTweet);
-
   res
     .status(200)
     .json(new ApiResponse(200, userTweet, "User tweet fetched successfully"));

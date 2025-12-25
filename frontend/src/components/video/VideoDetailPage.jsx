@@ -56,8 +56,6 @@ const VideoDetailPage = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
 
-  console.log("channelData", channelData);
-
   const [comments, setComments] = useState(null);
   const [commentText, setCommentText] = useState("");
   const [commentId, setCommentId] = useState(null);
@@ -143,7 +141,6 @@ const VideoDetailPage = () => {
         },
       });
       if (response.status === 200) {
-        console.log("Comments fetched successfully:", response.data);
         setComments(response.data.data);
       }
     } catch (error) {
@@ -170,7 +167,6 @@ const VideoDetailPage = () => {
 
       if (response.status === 200) {
         toast.success("Comment added successfully");
-        console.log("Comment added:", response.data);
 
         getAllComments();
       } else {
@@ -201,7 +197,7 @@ const VideoDetailPage = () => {
 
       if (response.status === 200) {
         toast.success("Comment updated successfully");
-        console.log("Comment updated:", response.data);
+
         setEditingCommentId(null);
         getAllComments();
       } else {
@@ -214,8 +210,6 @@ const VideoDetailPage = () => {
   };
 
   const handleDeleteComment = async (commentId) => {
-    console.log("Deleting comment with ID:", commentId);
-
     try {
       const response = await axios.delete(
         `${API_BASE_URL}/comment/${commentId}`,
@@ -231,7 +225,7 @@ const VideoDetailPage = () => {
 
       if (response.status === 200) {
         toast.success("Comment deleted successfully");
-        console.log("Comment deleted:", response.data);
+
         getAllComments();
       }
     } catch (error) {

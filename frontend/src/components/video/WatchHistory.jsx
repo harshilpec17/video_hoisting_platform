@@ -30,7 +30,6 @@ const WatchHistory = () => {
                             window.scrollTo(0, 0);
                             dispatch(fetchVideoById(watch?._id));
                             dispatch(setVideoId(watch?._id));
-                            console.log("Video ID:", watch?._id);
                           }}
                           src={watch?.thumbnail}
                           alt="JavaScript Fundamentals: Variables and Data Types"

@@ -34,7 +34,7 @@ const ChannelSubscribedPage = () => {
   //       }
   //     );
   //     if (response.status === 200) {
-  //       console.log("subscribed status", response.data);
+
   //       toast.success(response.data.message);
   //       dispatch(fetchSubscribedList(loggedInUserId));
   //       dispatch(fetchUserChannelProfile(userName));
@@ -43,8 +43,6 @@ const ChannelSubscribedPage = () => {
   //     console.error("Error fetching comments:", error);
   //   }
   // };
-
-  console.log(subscribedList);
 
   return (
     <>

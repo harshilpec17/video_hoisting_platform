@@ -38,8 +38,6 @@ const Login = () => {
             password: passwordRef.current.value,
           })
           .then((response) => {
-            console.log(response);
-
             if (response.status === 200) {
               localStorage.setItem(
                 "refreshToken",
@@ -135,7 +133,7 @@ const Login = () => {
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       dispatch(stopLoading());
     }

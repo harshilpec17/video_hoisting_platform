@@ -69,7 +69,6 @@ const ChangePassword = () => {
         setIsMessageVisible(false);
         toast.success("Password Change Successfully");
       }
-      console.log(response);
 
       return response;
     } catch (error) {

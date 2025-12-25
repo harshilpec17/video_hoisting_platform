@@ -82,7 +82,6 @@ const EditVideoModal = ({
         }
       );
 
-      console.log(response.data);
       setTitle("");
       setDescription("");
       setThumbnail(null);

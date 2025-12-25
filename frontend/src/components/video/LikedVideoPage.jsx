@@ -15,10 +15,6 @@ const LikedVideoPage = () => {
 
   const likedVideos = useSelector((state) => state.like.likedVideo);
 
-  console.log("Liked Videos:", likedVideos);
-
-  console.log(loggedInUserId);
-
   return (
     <>
       <div class="h-screen overflow-y-auto bg-[#121212] text-white">

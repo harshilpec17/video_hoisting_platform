@@ -17,8 +17,6 @@ const ChannelSubscriberPage = () => {
   const userName = loggedInUser?.user?.userName;
   const loggedInUserId = loggedInUser?.user?._id;
 
-  console.log(subscriber);
-
   return (
     <>
       {subscriber && subscriber.length !== 0 ? (

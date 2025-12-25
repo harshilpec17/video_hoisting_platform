@@ -62,8 +62,6 @@ const ChangeAvatar = ({
 
       // Optional callback for parent to refresh state
 
-      console.log(response.data);
-
       onSuccess?.(response.data?.data ?? response.data);
 
       dispatch(fetchUserChannelProfile(loggedUserName));

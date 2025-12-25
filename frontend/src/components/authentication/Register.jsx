@@ -42,8 +42,6 @@ const Register = () => {
       setError("Please accept the terms and conditions");
       return;
     } else {
-      console.log(avatar);
-
       class FormData {
         constructor() {
           this.fullName = fullName;
@@ -59,8 +57,6 @@ const Register = () => {
 
       const newFormData = new FormData();
 
-      console.log(newFormData);
-
       try {
         const response = await axios.post(
           `${API_BASE_URL}/register`,
@@ -71,8 +67,6 @@ const Register = () => {
         );
 
         if (response.status === 201) {
-          console.log(response);
-
           localStorage.setItem("refreshToken", response.data.data.refreshToken);
           localStorage.setItem("user", JSON.stringify(response.data.data));
           sessionStorage.setItem("accessToken", response.data.data.accessToken);
@@ -346,7 +340,6 @@ const Register = () => {
                   accept=".jpg, .jpeg, .png"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    console.log(file);
 
                     if (file && file.size > 2 * 1024 * 1024) {
                       setError("File size exceeds 2MB");
@@ -369,7 +362,6 @@ const Register = () => {
                   accept=".jpg, .jpeg, .png"
                   onChange={(e) => {
                     const file = e.target.files[0];
-                    console.log(file);
 
                     if (file && file.size > 2 * 1024 * 1024) {
                       setError("File size exceeds 2MB");

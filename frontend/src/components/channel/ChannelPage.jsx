@@ -52,7 +52,7 @@ const ChannelPage = () => {
   //       }
   //     );
   //     if (response.status === 200) {
-  //       console.log("subscribers status", response.data);
+
   //       toast.success(response.data.message);
   //       dispatch(fetchUserChannelProfile(userName));
   //     }

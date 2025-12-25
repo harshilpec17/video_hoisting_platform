@@ -15,8 +15,6 @@ export const fetchLikedVideos = createAsyncThunk(
         }
       );
 
-      console.log("Fetched liked videos:", response.data.data[0]);
-
       return response.data.data;
     } catch (error) {
       console.error("Error fetching liked videos:", error);

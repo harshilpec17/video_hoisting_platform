@@ -112,8 +112,6 @@ const publishAVideo = asyncHandler(async (req, res) => {
     views: 0,
   });
 
-  console.log(video);
-
   return res
     .status(200)
     .json(new ApiResponse(200, newVideo, "Video uploaded successfully"));
@@ -324,8 +322,6 @@ const getVideoById = asyncHandler(async (req, res) => {
     }
   ).select("watchHistory");
 
-  console.log(watch);
-
   res
     .status(200)
     .json(new ApiResponse(200, video, "Video has been found successfully"));
@@ -434,8 +430,6 @@ const deleteVideo = asyncHandler(async (req, res) => {
   if (deleteVideo === null) {
     throw new ApiErrors(400, "No video found to be deleted");
   }
-
-  console.log(deleteVideo);
 
   return res
     .status(200)

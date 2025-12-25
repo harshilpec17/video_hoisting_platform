@@ -18,7 +18,6 @@ export const fetchAllTweets = createAsyncThunk(
           },
         }
       );
-      console.log("Fetched tweets:", response.data.data);
 
       return response.data.data;
     } catch (error) {
@@ -40,7 +39,6 @@ export const fetchUserTweets = createAsyncThunk(
           },
         }
       );
-      console.log("Fetched user tweets:", response.data.data);
 
       return response.data.data;
     } catch (error) {
@@ -63,7 +61,6 @@ export const createTweet = createAsyncThunk(
           },
         }
       );
-      console.log("Created tweet:", response.data.data);
 
       return response.data.data;
     } catch (error) {
@@ -125,7 +122,7 @@ export const handleLikeTweet = createAsyncThunk(
           },
         }
       );
-      console.log("Liked tweet:", response.data.data);
+
       toast.success("Tweet liked successfully!");
 
       return response.data.data;
@@ -149,7 +146,6 @@ export const handleDislikeTweet = createAsyncThunk(
           },
         }
       );
-      console.log("Disliked tweet:", response.data.data);
 
       return response.data.data;
     } catch (error) {

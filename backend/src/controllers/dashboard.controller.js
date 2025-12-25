@@ -73,7 +73,6 @@ const getChannelStats = asyncHandler(async (req, res) => {
   if (!channelStats.length) {
     throw new ApiErrors(400, "No videos found for this channel");
   }
-  console.log(channelStats);
 
   return res
     .status(200)

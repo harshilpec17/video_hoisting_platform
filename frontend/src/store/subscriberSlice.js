@@ -21,7 +21,6 @@ export const subscriptionToggle = createAsyncThunk(
         }
       );
       if (response.status === 200) {
-        console.log("subscribed status", response.data);
         toast.success(response.data.message);
         await dispatch(fetchUserChannelProfile(userName));
         return response.data;
@@ -43,7 +42,7 @@ export const fetchSubscriberList = createAsyncThunk(
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
       });
-      console.log("subscriberList", response.data.data);
+
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -60,7 +59,7 @@ export const fetchSubscribedList = createAsyncThunk(
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
       });
-      console.log("subscribedList", response.data.data);
+
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.message);
