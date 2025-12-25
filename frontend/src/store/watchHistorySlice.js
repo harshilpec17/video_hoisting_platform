@@ -6,14 +6,13 @@ export const fetchWatchHistory = createAsyncThunk(
   "watchHistory/fetchWatchHistory",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/${API_BASE_URL}/history/${userId}`, {
+      const response = await axios.get(`${API_BASE_URL}/history/${userId}`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
       });
-      console.log("Watch history fetched successfully:");
 
-      return response.data.data.watchHistory;
+      return response.data.data[0].watchHistory;
     } catch (error) {
       console.error("Error fetch the watch History", error);
       return rejectWithValue(error.message);
