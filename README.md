@@ -109,8 +109,8 @@ npm run dev
 
 ## 👤 Author
 
-- [Your Name]
-- [LinkedIn/GitHub Profile]
+- Harshil
+- [Github](https://github.com/harshilpec17)
 
 ---
 
