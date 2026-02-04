@@ -50,7 +50,7 @@ const VideoDetailPage = () => {
   const channelData = useSelector((state) => state.channel.channelProfile);
 
   const isSubscribed = useSelector(
-    (state) => state.channel.channelProfile?.isSubscribed
+    (state) => state.channel.channelProfile?.isSubscribed,
   );
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -90,7 +90,7 @@ const VideoDetailPage = () => {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
-      }
+      },
     );
 
     if (response.status !== 200) {
@@ -124,7 +124,7 @@ const VideoDetailPage = () => {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
-      }
+      },
     );
     if (response.status === 200) {
       toast.success(response.data.data);
@@ -162,7 +162,7 @@ const VideoDetailPage = () => {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
           },
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -187,12 +187,12 @@ const VideoDetailPage = () => {
 
       const response = await axios.patch(
         `${API_BASE_URL}/comment/${commentId}`,
-        { newCommentText: updatedText },
+        { updatedText },
         {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
           },
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -220,7 +220,7 @@ const VideoDetailPage = () => {
         },
         {
           commentId: commentId,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -301,7 +301,9 @@ const VideoDetailPage = () => {
                       <h1 className="text-lg font-bold">{video?.title}</h1>
                       <p className="flex text-sm text-gray-200">
                         {video?.views} Views ·{" "}
-                        {video?.createdAt ? timeAgo(video.createdAt) : null}{" "}
+                        {video?.createdAt
+                          ? timeAgo(video.createdAt)
+                          : null}{" "}
                       </p>
                     </div>
                     <div className="w-full md:w-1/2 lg:w-full xl:w-1/2">
@@ -349,7 +351,7 @@ const VideoDetailPage = () => {
                           <img
                             onClick={() => {
                               dispatch(
-                                fetchUserChannelProfile(channelData?.userName)
+                                fetchUserChannelProfile(channelData?.userName),
                               );
                               dispatch(fetchChannelVideo(channelData?._id));
                               navigate("/channel", {
@@ -371,7 +373,7 @@ const VideoDetailPage = () => {
                         <div
                           onClick={() => {
                             dispatch(
-                              fetchUserChannelProfile(channelData?.userName)
+                              fetchUserChannelProfile(channelData?.userName),
                             );
                             dispatch(fetchChannelVideo(channelData?._id));
                             navigate("/channel", {
@@ -397,7 +399,7 @@ const VideoDetailPage = () => {
                                   loggedInUserId: loggedInUserId,
                                   channelId: channelData?._id,
                                   userName: channelData?.userName,
-                                })
+                                }),
                               );
                             }}
                             type="button"
@@ -413,7 +415,7 @@ const VideoDetailPage = () => {
                                   loggedInUserId: loggedInUserId,
                                   channelId: channelData?._id,
                                   userName: channelData?.userName,
-                                })
+                                }),
                               );
                             }}
                             type="button"
@@ -537,7 +539,7 @@ const VideoDetailPage = () => {
                                     onClick={() =>
                                       updateComment(
                                         comment._id,
-                                        editingCommentText
+                                        editingCommentText,
                                       )
                                     }
                                   >
@@ -573,8 +575,8 @@ const VideoDetailPage = () => {
                                   dispatch(setVideoId(video._id));
                                   dispatch(
                                     fetchUserChannelProfile(
-                                      video?.owner?.userName
-                                    )
+                                      video?.owner?.userName,
+                                    ),
                                   );
                                   dispatch(fetchVideoById(video._id));
                                 }}
