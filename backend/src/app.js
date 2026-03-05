@@ -33,10 +33,10 @@ const corsOptions = {
   maxAge: 86400,
 };
 
+// Handle preflight for all routes (must be before everything)
+app.options("*", cors(corsOptions));
 // CORS must be before routes and auth
 app.use(cors(corsOptions));
-// Handle preflight for all routes
-app.options("*", cors(corsOptions));
 
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
