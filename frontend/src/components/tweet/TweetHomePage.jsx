@@ -288,7 +288,6 @@ const TweetHomePage = () => {
           </div>
         </section>
       </div>
-      <ToastContainer />
     </div>
   );
 };

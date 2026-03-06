@@ -101,7 +101,6 @@ const ChannelTweetPage = () => {
 
   return (
     <>
-      <ToastContainer />
       <section className="w-full pb-[70px] pt-4">
         <div className="max-w-xl mx-auto px-2 sm:px-0">
           <DeleteConfirmationModal

@@ -196,8 +196,6 @@ const EditAccountDetail = () => {
           </form>
         </div>
       </div>
-
-      <ToastContainer />
     </div>
   );
 };

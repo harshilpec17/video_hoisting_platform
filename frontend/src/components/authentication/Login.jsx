@@ -143,7 +143,6 @@ const Login = () => {
     <>
       {errorMessage && <ErrorPage message={errorMessage} />}
       {isLoading && <Loader />}
-      <ToastContainer />
 
       <div className="relative h-screen w-full overflow-hidden bg-[#070D17] text-white selection:bg-cyan-500/30 selection:text-cyan-200">
         {/* Animated Background Layers */}
@@ -300,8 +299,6 @@ const Login = () => {
             </p>
           </div>
         </div>
-
-        <ToastContainer />
       </div>
     </>
   );
