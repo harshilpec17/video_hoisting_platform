@@ -35,7 +35,12 @@ const Header = () => {
         <div className="overflow-y-auto bg-[#121212] text-white">
           <header className="sticky inset-x-0 top-0 z-50 w-full border-b border-white bg-[#121212] px-4">
             <nav className="mx-auto flex max-w-7xl items-center py-2">
-              <div className="mr-4 w-12 shrink-0 sm:w-16">
+              <div
+                onClick={() => {
+                  navigate("/videoListingPage");
+                }}
+                className="mr-4 w-12 shrink-0 sm:w-16 cursor-pointer"
+              >
                 <svg
                   style={{ width: "100%" }}
                   viewBox="0 0 63 64"
@@ -246,7 +251,7 @@ const Header = () => {
                           fetchLikedVideos({
                             userId: loggedInUserId,
                             reaction: "like",
-                          })
+                          }),
                         );
                       }}
                       className="flex flex-row cursor-pointer items-center justify-start p-3 w-full border py-2 focus:text-[#ae7aff]  sm:hover:bg-[#ae7aff] sm:hover:text-black sm:focus:border-[#ae7aff] sm:focus:bg-[#ae7aff] sm:focus:text-black sm:group-hover:justify-start sm:group-hover:px-4 lg:justify-start lg:px-4"
@@ -309,7 +314,7 @@ const Header = () => {
                           await navigate("/channel");
                           await dispatch(fetchChannelVideo(loggedInUserId));
                           await dispatch(
-                            fetchUserChannelProfile(loggedUserName)
+                            fetchUserChannelProfile(loggedUserName),
                           );
                           await dispatch(fetchSubscriberList(loggedInUserId));
                           await dispatch(fetchSubscribedList(loggedInUserId));
@@ -358,7 +363,7 @@ const Header = () => {
                           dispatch(startLoading());
                           navigate("/tweet");
                           await dispatch(
-                            fetchAllTweets({ page: 1, limit: 10 })
+                            fetchAllTweets({ page: 1, limit: 10 }),
                           );
                         } catch (error) {
                           console.error("Error fetching tweets:", error);
@@ -478,7 +483,7 @@ const Header = () => {
                     </button>
                   </li>
                 </ul>
-                <div className="mb-8 mt-auto flex w-full flex-wrap gap-4 px-4 sm:mb-0 sm:mt-0 sm:items-center sm:px-0">
+                <div className="mb-8 mt-auto flex w-full flex-wrap gap-4 px-4 sm:mb-0 sm:mt-0 sm:items-center sm:px-0 cursor-pointer">
                   <button
                     onClick={() => {
                       logoutUser();
@@ -489,7 +494,7 @@ const Header = () => {
                   </button>
                   <button
                     onClick={() => navigate("/register")}
-                    className="mr-1 w-full bg-purple-400 px-3 py-2 text-center font-bold text-black hover:bg-purple-500 sm:w-auto"
+                    className="mr-1 w-full cursor-pointer bg-purple-400 px-3 py-2 text-center font-bold text-black hover:bg-purple-500 sm:w-auto"
                   >
                     Sign up
                   </button>
