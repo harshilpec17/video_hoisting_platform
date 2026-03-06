@@ -5,7 +5,6 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import { ToastContainer } from "react-toastify";
 import { BiDislike, BiSolidLike } from "react-icons/bi";
 import { BiSolidDislike } from "react-icons/bi";
 import { BiLike } from "react-icons/bi";
@@ -57,6 +56,8 @@ const VideoDetailPage = () => {
   const [commentToDelete, setCommentToDelete] = useState(null);
 
   const [comments, setComments] = useState(null);
+  console.log(comments);
+
   const [commentText, setCommentText] = useState("");
   const [commentId, setCommentId] = useState(null);
   const [editingCommentText, setEditingCommentText] = useState("");
@@ -197,7 +198,6 @@ const VideoDetailPage = () => {
 
       if (response.status === 200) {
         toast.success("Comment updated successfully");
-
         setEditingCommentId(null);
         getAllComments();
       } else {
@@ -218,19 +218,14 @@ const VideoDetailPage = () => {
             Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
           },
         },
-        {
-          commentId: commentId,
-        },
       );
+      console.log(response);
 
-      if (response.status === 200) {
-        toast.success("Comment deleted successfully");
-
-        getAllComments();
-      }
+      toast.success("Comment deleted successfully");
+      getAllComments();
     } catch (error) {
       console.error("Error deleting comment:", error);
-      toast.error("Failed to delete comment");
+      toast.error(error.response?.data?.message || "Failed to delete comment");
     }
   };
 
@@ -624,7 +619,6 @@ const VideoDetailPage = () => {
           </section>
         </div>
       </div>
-      <ToastContainer />
     </>
   );
 };

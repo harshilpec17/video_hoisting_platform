@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import { toast, ToastContainer, Zoom } from "react-toastify";
+import { toast, Zoom } from "react-toastify";
 import ErrorPage from "../../utils/ErrorPage";
 import { API_BASE_URL } from "../../utils/constant";
 import { startLoading, stopLoading } from "../../store/loaderSlice";
@@ -41,12 +41,12 @@ const Login = () => {
             if (response.status === 200) {
               localStorage.setItem(
                 "refreshToken",
-                response.data.data.refreshToken
+                response.data.data.refreshToken,
               );
               localStorage.setItem("user", JSON.stringify(response.data.data));
               sessionStorage.setItem(
                 "accessToken",
-                response.data.data.accessToken
+                response.data.data.accessToken,
               );
               navigate("/videolistingpage");
             }
@@ -54,7 +54,7 @@ const Login = () => {
           .catch((error) => {
             if (!error.response) {
               setErrorMessage(
-                "Unable to connect to server. Please try again later."
+                "Unable to connect to server. Please try again later.",
               );
               toast.error(
                 "Unable to connect to server. Please try again later.",
@@ -68,7 +68,7 @@ const Login = () => {
                   progress: undefined,
                   theme: "colored",
                   transition: Zoom,
-                }
+                },
               );
               return;
             }

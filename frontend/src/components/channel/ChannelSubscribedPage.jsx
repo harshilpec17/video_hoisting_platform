@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import axios from "axios";
 import {
   fetchSubscribedList,
@@ -17,7 +17,7 @@ const ChannelSubscribedPage = () => {
   const loggedInUserId = loggedInUser?.user?._id;
 
   const subscribedList = useSelector(
-    (state) => state.subscriber.subscribedList
+    (state) => state.subscriber.subscribedList,
   );
 
   const [isSubscribed, setIsSubscribed] = useState(null);
@@ -83,7 +83,7 @@ const ChannelSubscribedPage = () => {
                             loggedInUserId: loggedInUserId,
                             channelId: sub?.subscribedChannel?._id,
                             userName: userName,
-                          })
+                          }),
                         );
 
                         dispatch(fetchSubscribedList(loggedInUserId));

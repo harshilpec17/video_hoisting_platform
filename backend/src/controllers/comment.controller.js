@@ -83,7 +83,7 @@ const addComment = asyncHandler(async (req, res) => {
 
   const { commentText } = req.body;
 
-  if (commentText.trim === "") {
+  if (!commentText || commentText.trim() === "") {
     throw new ApiErrors(400, "please add some text");
   }
 
@@ -109,21 +109,40 @@ const updateComment = asyncHandler(async (req, res) => {
 
   const { commentId } = req.params;
 
-  const { newCommentText } = req.body;
+  const { updatedText } = req.body;
 
+  // Validate input
+  if (!updatedText || updatedText.trim() === "") {
+    throw new ApiErrors(400, "Comment text cannot be empty");
+  }
+
+  // Check if comment ID is valid
+  if (!mongoose.isValidObjectId(commentId)) {
+    throw new ApiErrors(400, "Invalid comment ID");
+  }
+
+  // Find the comment first
+  const comment = await Comment.findById(commentId);
+
+  if (!comment) {
+    throw new ApiErrors(404, "Comment not found");
+  }
+
+  // Check if the user owns the comment (authorization)
+  if (comment.owner.toString() !== req.user?._id.toString()) {
+    throw new ApiErrors(403, "You are not authorized to update this comment");
+  }
+
+  // Update the comment
   const updatedComment = await Comment.findByIdAndUpdate(
     commentId,
     {
-      $set: { content: newCommentText },
+      $set: { content: updatedText },
     },
     {
       new: true,
     },
   );
-
-  if (updatedComment === null) {
-    throw new ApiErrors(400, "Something went wrong");
-  }
 
   return res
     .status(200)

@@ -1,5 +1,4 @@
 import React from "react";
-import { ToastContainer } from "react-toastify";
 
 const DeleteConfirmationModal = ({ open, onClose, onDelete, item }) => {
   if (!open) return null;
@@ -28,7 +27,6 @@ const DeleteConfirmationModal = ({ open, onClose, onDelete, item }) => {
           </button>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

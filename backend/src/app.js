@@ -6,10 +6,19 @@ const app = express();
 // Custom CORS middleware with explicit method handling
 const customCorsMiddleware = (req, res, next) => {
   const origin = req.headers.origin;
-  const allowedOrigin = "https://videoplatform-fullstack.vercel.app";
+  const allowedOrigins = [
+    "http://localhost:5173", // Vite dev server
+    "http://localhost:3000", // Alternative dev port
+    "https://videoplatform-fullstack.vercel.app", // Production
+  ];
 
   if (req.path.startsWith("/api/v1/")) {
-    res.header("Access-Control-Allow-Origin", allowedOrigin);
+    // Check if origin is allowed
+    if (allowedOrigins.includes(origin)) {
+      res.header("Access-Control-Allow-Origin", origin);
+    } else {
+      res.header("Access-Control-Allow-Origin", allowedOrigins[2]); // Default to production
+    }
     res.header(
       "Access-Control-Allow-Methods",
       "GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS",

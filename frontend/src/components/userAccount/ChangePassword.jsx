@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ColourfulText } from "../../utils/ColorfulText";
 import axios from "axios";
 import { API_BASE_URL } from "../../utils/constant";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 const ChangePassword = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -58,7 +58,7 @@ const ChangePassword = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
           },
-        }
+        },
       );
 
       if (response.status === 200) {

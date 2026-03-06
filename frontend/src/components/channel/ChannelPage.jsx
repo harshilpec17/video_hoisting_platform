@@ -3,7 +3,7 @@ import SideBar from "../layout/SideBar";
 import { useDispatch, useSelector } from "react-redux";
 import ChannelVideo from "./ChannelVideo";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { fetchUserChannelProfile } from "../../store/channelSlice";
 import ChannelSubscribedPage from "./ChannelSubscribedPage";
 import ChannelSubscriberPage from "./ChannelSubscriberPage";
@@ -25,7 +25,7 @@ const ChannelPage = () => {
   const channelData = useSelector((state) => state.channel.channelProfile);
 
   const isSubscribed = useSelector(
-    (state) => state.channel.channelProfile?.isSubscribed
+    (state) => state.channel.channelProfile?.isSubscribed,
   );
 
   const loggedInUser = JSON.parse(localStorage.getItem("user"));
@@ -140,7 +140,7 @@ const ChannelPage = () => {
                                     loggedInUserId: loggedInUserId,
                                     channelId: channelData._id,
                                     userName: loggedInUserName,
-                                  })
+                                  }),
                                 );
                                 dispatch(fetchSubscribedList(loggedInUserId));
                               }}
@@ -157,7 +157,7 @@ const ChannelPage = () => {
                                     loggedInUserId: loggedInUserId,
                                     channelId: channelData._id,
                                     userName: loggedInUserName,
-                                  })
+                                  }),
                                 );
                                 dispatch(fetchSubscribedList(loggedInUserId));
                               }}

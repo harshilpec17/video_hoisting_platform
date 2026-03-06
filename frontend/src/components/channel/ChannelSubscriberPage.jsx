@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import {
   fetchSubscribedList,
   fetchSubscriberList,
@@ -48,7 +48,7 @@ const ChannelSubscriberPage = () => {
                             loggedInUserId: loggedInUserId,
                             channelId: sub?._id,
                             userName: userName,
-                          })
+                          }),
                         );
                         dispatch(fetchSubscriberList(loggedInUserId));
                         dispatch(fetchSubscribedList(loggedInUserId));
@@ -66,7 +66,7 @@ const ChannelSubscriberPage = () => {
                             loggedInUserId: loggedInUserId,
                             channelId: sub?._id,
                             userName: loggedInUser?.user?.userName,
-                          })
+                          }),
                         );
                         dispatch(fetchSubscriberList(loggedInUserId));
                         dispatch(fetchSubscribedList(loggedInUserId));

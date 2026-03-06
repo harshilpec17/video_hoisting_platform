@@ -5,7 +5,7 @@ import axios from "axios";
 import { motion } from "motion/react";
 import { fetchUserChannelProfile } from "../../store/channelSlice";
 import { useDispatch } from "react-redux";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 const EditAccountDetail = () => {
   const dispatch = useDispatch();
@@ -15,10 +15,10 @@ const EditAccountDetail = () => {
   const loggedInUserName = loggedInUser?.user?.userName;
 
   const [editFullName, setEditFullName] = useState(
-    loggedInUser.user.fullName || ""
+    loggedInUser.user.fullName || "",
   );
   const [editUserName, setEditUserName] = useState(
-    loggedInUser.user.userName || ""
+    loggedInUser.user.userName || "",
   );
 
   const [editEmail, setEditEmail] = useState(loggedInUser.user.email || "");
@@ -55,7 +55,7 @@ const EditAccountDetail = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
           },
-        }
+        },
       );
       setEditEmail("");
       setEditFullName("");

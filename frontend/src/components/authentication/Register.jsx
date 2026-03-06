@@ -1,7 +1,7 @@
 // ...existing code...
 import { Form, useNavigate } from "react-router";
 import React, { useState, useEffect } from "react";
-import { toast, ToastContainer, Zoom } from "react-toastify";
+import { toast, Zoom } from "react-toastify";
 import axios from "axios";
 import { API_BASE_URL } from "../../utils/constant";
 
@@ -63,7 +63,7 @@ const Register = () => {
           newFormData,
           {
             headers: { "Content-Type": "multipart/form-data" },
-          }
+          },
         );
 
         if (response.status === 201) {
@@ -77,7 +77,7 @@ const Register = () => {
         const status = err.response ? err.response.status : 500;
         if (status === 400) {
           setError(
-            err.response.data.message || "An error occurred. Please try again."
+            err.response.data.message || "An error occurred. Please try again.",
           );
           navigate("/login");
         }

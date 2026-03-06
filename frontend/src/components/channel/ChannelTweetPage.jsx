@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { timeAgo } from "../../utils/timeAgo";
 import SideBar from "../layout/SideBar";
 import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
@@ -207,7 +207,7 @@ const ChannelTweetPage = () => {
                               updateTweet({
                                 tweetId: tweet._id,
                                 newTweet: editingTweetText,
-                              })
+                              }),
                             );
                             toast.success("Tweet updated successfully!");
                             await dispatch(fetchUserTweets(loggedInUserId));
