@@ -4,24 +4,32 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 
-var dynamicCorsOptions = function (req, callback) {
-  var corsOptions;
+// Custom CORS middleware with explicit method handling
+const customCorsMiddleware = (req, res, next) => {
   if (req.path.startsWith("/api/v1/")) {
-    // Request from vercel frontend with credentials
-    corsOptions = {
-      origin: "https://videoplatform-fullstack.vercel.app",
-      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-      credentials: true,
-    };
+    res.header(
+      "Access-Control-Allow-Origin",
+      "https://videoplatform-fullstack.vercel.app",
+    );
+    res.header(
+      "Access-Control-Allow-Methods",
+      "GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS",
+    );
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.header("Access-Control-Allow-Credentials", "true");
   } else {
-    // Access-Control-Allow-Origin: *
-    corsOptions = { origin: "*" };
+    res.header("Access-Control-Allow-Origin", "*");
   }
-  callback(null, corsOptions);
+
+  // Handle preflight requests
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
 };
 
-// Handle preflight for all routes (must be before everything)
-app.options("*", cors(dynamicCorsOptions));
+app.use(customCorsMiddleware);
 
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
