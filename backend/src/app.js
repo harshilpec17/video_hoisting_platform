@@ -6,8 +6,8 @@ const app = express();
 
 var dynamicCorsOptions = function (req, callback) {
   var corsOptions;
-  if (req.path.startsWith("/auth/connect/")) {
-    // Access-Control-Allow-Origin: http://mydomain.com, Access-Control-Allow-Credentials: true, Vary: Origin
+  if (req.path.startsWith("/api/v1/")) {
+    // Request from vercel frontend with credentials
     corsOptions = {
       origin: "https://videoplatform-fullstack.vercel.app",
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
