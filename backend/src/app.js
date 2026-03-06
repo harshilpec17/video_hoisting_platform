@@ -1,16 +1,15 @@
 import express from "express";
-import cors from "cors";
 import cookieParser from "cookie-parser";
 
 const app = express();
 
 // Custom CORS middleware with explicit method handling
 const customCorsMiddleware = (req, res, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigin = "https://videoplatform-fullstack.vercel.app";
+
   if (req.path.startsWith("/api/v1/")) {
-    res.header(
-      "Access-Control-Allow-Origin",
-      "https://videoplatform-fullstack.vercel.app",
-    );
+    res.header("Access-Control-Allow-Origin", allowedOrigin);
     res.header(
       "Access-Control-Allow-Methods",
       "GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS",
