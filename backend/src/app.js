@@ -4,39 +4,24 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 
-const envOrigins = (process.env.CORS_ORIGIN || "")
-  .split(",")
-  .map((s) => s.trim())
-  .filter(Boolean);
-
-const allowList = [
-  "https://videoplatform-fullstack.vercel.app",
-  "http://localhost:5173",
-  ...envOrigins,
-];
-
-const corsOptions = {
-  origin: (origin, cb) => {
-    // allow server-to-server/no-origin (curl, health checks)
-    if (!origin) return cb(null, true);
-    try {
-      const host = new URL(origin).hostname;
-      const isVercelPreview = /\.vercel\.app$/.test(host);
-      if (allowList.includes(origin) || isVercelPreview) return cb(null, true);
-    } catch {}
-    return cb(new Error(`Origin ${origin} not allowed by CORS`));
-  },
-  credentials: true,
-  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  optionsSuccessStatus: 204,
-  maxAge: 86400,
+var dynamicCorsOptions = function (req, callback) {
+  var corsOptions;
+  if (req.path.startsWith("/auth/connect/")) {
+    // Access-Control-Allow-Origin: http://mydomain.com, Access-Control-Allow-Credentials: true, Vary: Origin
+    corsOptions = {
+      origin: "https://videoplatform-fullstack.vercel.app",
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      credentials: true,
+    };
+  } else {
+    // Access-Control-Allow-Origin: *
+    corsOptions = { origin: "*" };
+  }
+  callback(null, corsOptions);
 };
 
 // Handle preflight for all routes (must be before everything)
-app.options("*", cors(corsOptions));
-// CORS must be before routes and auth
-app.use(cors(corsOptions));
+app.options("*", cors(dynamicCorsOptions));
 
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
